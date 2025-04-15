@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { registerUser } from '@/app/lib/actions/user.actions';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { useAuth } from '@/app/hooks/useAuth';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -14,7 +14,9 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const locale = useLocale();
   const t = useTranslations('auth');
+  const { register, error: authError } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,13 +37,10 @@ export default function RegisterPage() {
     }
 
     try {
-      const result = await registerUser({ name, email, password });
+      const success = await register({ name, email, password });
       
-      if (result.success) {
-        router.push('/dashboard');
-        router.refresh();
-      } else {
-        setError(result.error || t('register.error'));
+      if (!success) {
+        setError(authError || t('register.error'));
       }
     } catch (error) {
       setError(t('register.error'));
@@ -170,7 +169,7 @@ export default function RegisterPage() {
 
       <div className="mt-auto text-center p-6 text-sm text-gray-500">
         {t('register.alreadyHaveAccount')} {' '}
-        <Link href="/auth/login" className="font-semibold text-indigo-600 hover:text-indigo-700">
+        <Link href={`/${locale}/auth/login`} className="font-semibold text-indigo-600 hover:text-indigo-700">
           {t('register.login')}
         </Link>
       </div>

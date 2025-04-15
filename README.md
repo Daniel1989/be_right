@@ -77,5 +77,12 @@ bcrypt 是一个原生依赖包，需要编译。如果你是在 CentOS 环境�
 1. npm rebuild bcrypt
 2. 使用 bcryptjs替换
 
+### 其他
+1. 一开始说是prisma的构建包问题，通过按提示安装依赖解决
+2. 然后说是登录失败，但是输入错误的密码，或者登出这些server action都可以，看起来就是（登录或者注册的server action在centos上有问题，不知道原因。。）
+3. 通过改成route完成
+4. 证书要到二级域名
+5. 如果证书可以了，游览器还有报错，则通过重启游览器解决
+
 ## 启动
 pm2 start npm --name beright -- start

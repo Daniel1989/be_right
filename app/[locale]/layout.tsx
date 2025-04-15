@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import '../ui/global.css';
 import { defaultLocale, locales } from '../../middleware';
 import BottomNav from '../components/BottomNav';
+import { AuthProvider } from '../providers/AuthProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -54,8 +55,10 @@ export default async function LocaleLayout({
       </head>
       <body className="pb-16">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <main className="min-h-screen flex flex-col">{children}</main>
-          <BottomNav />
+          <AuthProvider>
+            <main className="min-h-screen flex flex-col">{children}</main>
+            <BottomNav />
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

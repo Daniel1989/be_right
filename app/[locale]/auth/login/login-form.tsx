@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { loginUser } from '@/app/lib/actions/user.actions';
 import { useTranslations, useLocale } from 'next-intl';
+import { useAuth } from '@/app/hooks/useAuth';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -15,9 +15,10 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const locale = useLocale();
   const t = useTranslations('auth');
+  const { login, error: authError } = useAuth();
 
   // Get callback URL from search params if it exists
-  const callbackUrl = searchParams?.get('callbackUrl');
+  const callbackUrl = searchParams?.get('callbackUrl') || undefined;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,18 +26,10 @@ export default function LoginForm() {
     setError('');
 
     try {
-      const result = await loginUser({ email, password });
+      const success = await login({ email, password }, callbackUrl);
       
-      if (result.success) {
-        // If we have a callback URL, redirect there, otherwise go to dashboard
-        if (callbackUrl) {
-          router.push(decodeURIComponent(callbackUrl));
-        } else {
-          router.push(`/${locale}/dashboard`);
-        }
-        router.refresh();
-      } else {
-        setError(result.error || t('login.invalidCredentials'));
+      if (!success) {
+        setError(authError || t('login.invalidCredentials'));
       }
     } catch (error) {
       setError(t('login.error'));
