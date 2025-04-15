@@ -76,3 +76,6 @@ bcrypt 是一个原生依赖包，需要编译。如果你是在 CentOS 环境�
 ### 解决方案
 1. npm rebuild bcrypt
 2. 使用 bcryptjs替换
+
+## 启动
+pm2 start npm --name beright -- start
