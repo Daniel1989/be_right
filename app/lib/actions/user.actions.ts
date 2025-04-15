@@ -92,9 +92,7 @@ export async function loginUser({
 
     // Set authentication cookie
     const cookieStore = await cookies();
-    cookieStore.set({
-      name: 'auth-token',
-      value: JSON.stringify(userData),
+    cookieStore.set('auth-token', JSON.stringify(userData), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7, // 1 week
@@ -103,7 +101,8 @@ export async function loginUser({
 
     // Get locale from headers for path revalidation
     const headersList = await headers();
-    const { pathname } = new URL(headersList.get('referer') || '/');
+    const referer = headersList.get('referer') || '/';
+    const { pathname } = new URL(referer);
     const locale = pathname.split('/')[1] || DEFAULT_LOCALE;
 
     // Revalidate user data with locale
@@ -171,9 +170,7 @@ export async function registerUser({
 
     // Set authentication cookie
     const cookieStore = await cookies();
-    cookieStore.set({
-      name: 'auth-token',
-      value: JSON.stringify(userData),
+    cookieStore.set('auth-token', JSON.stringify(userData), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7, // 1 week
@@ -182,7 +179,8 @@ export async function registerUser({
 
     // Get locale from headers for path revalidation
     const headersList = await headers();
-    const { pathname } = new URL(headersList.get('referer') || '/');
+    const referer = headersList.get('referer') || '/';
+    const { pathname } = new URL(referer);
     const locale = pathname.split('/')[1] || DEFAULT_LOCALE;
 
     // Revalidate user data with locale
@@ -220,7 +218,8 @@ export async function logoutUser() {
   
   // Redirect to login page with locale support
   const headersList = await headers();
-  const { pathname } = new URL(headersList.get('referer') || '/');
+  const referer = headersList.get('referer') || '/';
+  const { pathname } = new URL(referer);
   const locale = pathname.split('/')[1] || DEFAULT_LOCALE;
   
   redirect(`/${locale}/auth/login`);
