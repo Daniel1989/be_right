@@ -160,6 +160,10 @@ const config = {
         "fromEnvVar": null,
         "value": "darwin-arm64",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "rhel-openssl-1.0.x"
       }
     ],
     "previewFeatures": [],
@@ -185,8 +189,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id         String     @id @default(uuid())\n  email      String     @unique\n  name       String?\n  password   String\n  createdAt  DateTime   @default(now())\n  updatedAt  DateTime   @updatedAt\n  tasks      Task[]\n  categories Category[]\n}\n\nmodel Task {\n  id          String    @id @default(uuid())\n  title       String\n  description String?\n  completed   Boolean   @default(false)\n  dueDate     DateTime?\n  priority    Priority  @default(MEDIUM)\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n  userId      String\n  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  categoryId  String?\n  category    Category? @relation(fields: [categoryId], references: [id])\n\n  @@index([userId])\n  @@index([categoryId])\n}\n\nmodel Category {\n  id        String   @id @default(uuid())\n  name      String\n  color     String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n  tasks     Task[]\n\n  @@unique([name, userId])\n  @@index([userId])\n}\n\nenum Priority {\n  LOW\n  MEDIUM\n  HIGH\n}\n",
-  "inlineSchemaHash": "631a0c05ddcf0c0f707637d5791e561217bd739ed04398548953f58166896767",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/prisma\"\n  binaryTargets = [\"native\", \"rhel-openssl-1.0.x\"]\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id         String     @id @default(uuid())\n  email      String     @unique\n  name       String?\n  password   String\n  createdAt  DateTime   @default(now())\n  updatedAt  DateTime   @updatedAt\n  tasks      Task[]\n  categories Category[]\n}\n\nmodel Task {\n  id          String    @id @default(uuid())\n  title       String\n  description String?\n  completed   Boolean   @default(false)\n  dueDate     DateTime?\n  priority    Priority  @default(MEDIUM)\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n  userId      String\n  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  categoryId  String?\n  category    Category? @relation(fields: [categoryId], references: [id])\n\n  @@index([userId])\n  @@index([categoryId])\n}\n\nmodel Category {\n  id        String   @id @default(uuid())\n  name      String\n  color     String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n  tasks     Task[]\n\n  @@unique([name, userId])\n  @@index([userId])\n}\n\nenum Priority {\n  LOW\n  MEDIUM\n  HIGH\n}\n",
+  "inlineSchemaHash": "a1015fcd44d001a65e2dcd8ecef15a560cf0ef802f5abeaeff79b921bc1857a0",
   "copyEngine": true
 }
 
@@ -227,6 +231,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
 path.join(process.cwd(), "generated/prisma/libquery_engine-darwin-arm64.dylib.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-rhel-openssl-1.0.x.so.node");
+path.join(process.cwd(), "generated/prisma/libquery_engine-rhel-openssl-1.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "generated/prisma/schema.prisma")
