@@ -103,11 +103,11 @@ export async function loginUser({
     const headersList = await headers();
     const referer = headersList.get('referer') || '/';
     const { pathname } = new URL(referer);
-    console.log("pathname", pathname, referer);
+    console.log("pathname2", pathname, referer);
     // const locale = pathname.split('/')[1] || DEFAULT_LOCALE;
 
     // Revalidate user data with locale
-    revalidatePath(`/zh/dashboard`);
+    // revalidatePath(`/zh/dashboard`);
     
     return {
       success: true,
