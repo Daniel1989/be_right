@@ -33,6 +33,20 @@ const publicApiRoutes = [
   '/api/auth/reset-password',
 ];
 
+/**
+ * Get the correct base URL considering proxy servers (e.g., Nginx)
+ * This uses X-Forwarded-Host header if present
+ */
+function getBaseUrl(request: NextRequest): string {
+  // Get host from X-Forwarded-Host header or fallback to request.headers
+  const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'localhost';
+  
+  // Get protocol from X-Forwarded-Proto header or fallback to https
+  const protocol = request.headers.get('x-forwarded-proto') || 'https';
+  
+  return `${protocol}://${host}`;
+}
+
 // Middleware function
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -70,10 +84,17 @@ export async function middleware(request: NextRequest) {
   if (!authToken) {
     // Extract locale from URL
     const locale = pathname.split('/')[1] || defaultLocale;
-    const loginUrl = new URL(`/${locale}/auth/login`, request.url);
     
-    // Add the original URL as a parameter to redirect after login
-    loginUrl.searchParams.set('callbackUrl', encodeURIComponent(request.url));
+    // Get base URL considering proxy configuration
+    const baseUrl = getBaseUrl(request);
+    const loginUrl = new URL(`/${locale}/auth/login`, baseUrl);
+    
+    // Add the current path as a callbackUrl parameter to redirect after login
+    // Use the proper base URL for the callback URL as well
+    const currentPath = pathname + request.nextUrl.search;
+    const fullCurrentUrl = `${baseUrl}${currentPath}`;
+    
+    loginUrl.searchParams.set('callbackUrl', encodeURIComponent(fullCurrentUrl));
     
     return NextResponse.redirect(loginUrl);
   }

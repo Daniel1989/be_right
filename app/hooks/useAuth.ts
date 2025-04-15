@@ -27,6 +27,9 @@ interface RegisterData {
   password: string;
 }
 
+/**
+ * Hook for managing authentication state and operations
+ */
 export function useAuth() {
   const [auth, setAuth] = useState<AuthState>({
     user: null,
