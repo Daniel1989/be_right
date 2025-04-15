@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 错题宝</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+        }
+        .profile-container {
+            padding: 20px;
+            padding-bottom: 0;
+            height: 100%;
+            overflow-y: auto;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .settings-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        .profile-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-info {
+            flex-grow: 1;
+        }
+        .user-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .school-info {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 10px;
+        }
+        .achievements {
+            display: flex;
+            gap: 15px;
+        }
+        .achievement {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #4F46E5;
+        }
+        .achievement i {
+            margin-right: 5px;
+        }
+        .edit-profile {
+            width: 40px;
+            height: 40px;
+            background-color: #EEF2FF;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4F46E5;
+            flex-shrink: 0;
+            margin-left: 15px;
+        }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 5px 0;
+            color: #4F46E5;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .view-all {
+            font-size: 14px;
+            font-weight: 500;
+            color: #4F46E5;
+        }
+        .menu-list {
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 18px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .calendar-icon {
+            background-color: #EEF2FF;
+            color: #4F46E5;
+        }
+        .goal-icon {
+            background-color: #FFEDD5;
+            color: #F97316;
+        }
+        .support-icon {
+            background-color: #F0FDF4;
+            color: #22C55E;
+        }
+        .dark-icon {
+            background-color: #F3F4F6;
+            color: #4B5563;
+        }
+        .premium-icon {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+        .menu-text {
+            flex-grow: 1;
+        }
+        .menu-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .menu-description {
+            font-size: 13px;
+            color: #777;
+        }
+        .menu-action {
+            display: flex;
+            align-items: center;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e0e0e0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4F46E5;
+        }
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+        .badge-list {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        .badge-card {
+            flex: 0 0 120px;
+            background-color: white;
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .badge-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 30px;
+        }
+        .streak-icon {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FBBF24 100%);
+            color: #D97706;
+        }
+        .master-icon {
+            background: linear-gradient(135deg, #EEF2FF 0%, #A5B4FC 100%);
+            color: #4F46E5;
+        }
+        .perfect-icon {
+            background: linear-gradient(135deg, #DCFCE7 0%, #86EFAC 100%);
+            color: #16A34A;
+        }
+        .locked-icon {
+            background: linear-gradient(135deg, #F3F4F6 0%, #D1D5DB 100%);
+            color: #6B7280;
+        }
+        .badge-name {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .badge-description {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+        .premium-card {
+            background: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
+        }
+        .premium-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .premium-badge {
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        .premium-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .premium-content {
+            margin-bottom: 20px;
+        }
+        .premium-description {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        .premium-features {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .premium-feature {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .premium-feature i {
+            margin-right: 5px;
+        }
+        .premium-button {
+            width: 100%;
+            padding: 12px;
+            background-color: white;
+            color: #4F46E5;
+            text-align: center;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .logout-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            font-size: 16px;
+            color: #EF4444;
+            margin-bottom: 25px;
+        }
+        .logout-button i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="page-header">
+            <div class="page-title">个人中心</div>
+            <div class="settings-button">
+                <i class="fas fa-cog"></i>
+            </div>
+        </div>
+        
+        <div class="profile-card">
+            <div class="avatar">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像">
+            </div>
+            <div class="profile-info">
+                <div class="user-name">小明</div>
+                <div class="school-info">北京市第八中学 · 高二年级</div>
+                <div class="achievements">
+                    <div class="achievement">
+                        <i class="fas fa-fire"></i>
+                        <span>连续学习 7 天</span>
+                    </div>
+                    <div class="achievement">
+                        <i class="fas fa-medal"></i>
+                        <span>3 个徽章</span>
+                    </div>
+                </div>
+            </div>
+            <div class="edit-profile">
+                <i class="fas fa-pen"></i>
+            </div>
+        </div>
+        
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">错题总数</div>
+                <div class="stat-value">158</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">学习科目</div>
+                <div class="stat-value">6</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">完成计划</div>
+                <div class="stat-value">12</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">学习天数</div>
+                <div class="stat-value">46</div>
+            </div>
+        </div>
+        
+        <div class="section-title">
+            <span>我的成就</span>
+            <a href="#" class="view-all">查看全部</a>
+        </div>
+        
+        <div class="badge-list">
+            <div class="badge-card">
+                <div class="badge-icon streak-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="badge-name">连续学习</div>
+                <div class="badge-description">连续学习7天</div>
+            </div>
+            
+            <div class="badge-card">
+                <div class="badge-icon master-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="badge-name">数学大师</div>
+                <div class="badge-description">掌握30个知识点</div>
+            </div>
+            
+            <div class="badge-card">
+                <div class="badge-icon perfect-icon">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <div class="badge-name">完美复习</div>
+                <div class="badge-description">连续5天全对</div>
+            </div>
+            
+            <div class="badge-card">
+                <div class="badge-icon locked-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="badge-name">物理专家</div>
+                <div class="badge-description">未解锁</div>
+            </div>
+        </div>
+        
+        <div class="premium-card">
+            <div class="premium-header">
+                <div class="premium-badge">会员专享</div>
+                <div class="premium-title">升级到错题宝 Pro</div>
+            </div>
+            <div class="premium-content">
+                <div class="premium-description">
+                    解锁所有高级功能，获得更专业的学习辅导和个性化推荐
+                </div>
+                <div class="premium-features">
+                    <div class="premium-feature">
+                        <i class="fas fa-infinity"></i>
+                        <span>无限错题</span>
+                    </div>
+                    <div class="premium-feature">
+                        <i class="fas fa-brain"></i>
+                        <span>AI辅导</span>
+                    </div>
+                    <div class="premium-feature">
+                        <i class="fas fa-chart-line"></i>
+                        <span>详细分析</span>
+                    </div>
+                    <div class="premium-feature">
+                        <i class="fas fa-ad"></i>
+                        <span>无广告</span>
+                    </div>
+                </div>
+            </div>
+            <div class="premium-button">
+                升级到 Pro
+            </div>
+        </div>
+        
+        <div class="section-title">
+            <span>设置</span>
+        </div>
+        
+        <div class="menu-list">
+            <div class="menu-item">
+                <div class="menu-icon calendar-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="menu-text">
+                    <div class="menu-title">学习提醒</div>
+                    <div class="menu-description">每日学习定时提醒</div>
+                </div>
+                <div class="menu-action">
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="menu-item">
+                <div class="menu-icon goal-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <div class="menu-text">
+                    <div class="menu-title">学习目标</div>
+                    <div class="menu-description">设置每日学习目标</div>
+                </div>
+                <div class="menu-action">
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </div>
+            </div>
+            
+            <div class="menu-item">
+                <div class="menu-icon support-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="menu-text">
+                    <div class="menu-title">帮助与反馈</div>
+                    <div class="menu-description">联系客服获取帮助</div>
+                </div>
+                <div class="menu-action">
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </div>
+            </div>
+            
+            <div class="menu-item">
+                <div class="menu-icon dark-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="menu-text">
+                    <div class="menu-title">深色模式</div>
+                    <div class="menu-description">切换应用显示模式</div>
+                </div>
+                <div class="menu-action">
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="menu-item">
+                <div class="menu-icon premium-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <div class="menu-text">
+                    <div class="menu-title">会员中心</div>
+                    <div class="menu-description">查看我的会员权益</div>
+                </div>
+                <div class="menu-action">
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="logout-button">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>退出登录</span>
+        </div>
+    </div>
+</body>
+</html> 

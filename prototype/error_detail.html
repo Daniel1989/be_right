@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错题详情 - 错题宝</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+        }
+        .detail-container {
+            padding: 20px;
+            padding-bottom: 0;
+            height: 100%;
+            overflow-y: auto;
+        }
+        .nav-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .back-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            margin-right: 15px;
+        }
+        .page-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .error-card {
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+        .error-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .error-subject {
+            display: flex;
+            align-items: center;
+        }
+        .subject-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 20px;
+            background-color: #FFEDD5;
+            color: #F97316;
+        }
+        .subject-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .subject-name {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .subject-chapter {
+            font-size: 13px;
+            color: #777;
+        }
+        .error-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .error-action {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            background-color: #f5f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+        }
+        .error-content {
+            padding: 20px;
+        }
+        .error-image {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .error-image img {
+            width: 100%;
+            display: block;
+        }
+        .question-text {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .answer-section {
+            margin-bottom: 20px;
+        }
+        .answer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .answer-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #F97316;
+            display: flex;
+            align-items: center;
+        }
+        .answer-title i {
+            margin-right: 8px;
+        }
+        .correct-title {
+            color: #22C55E;
+        }
+        .answer-content {
+            font-size: 15px;
+            line-height: 1.5;
+            padding: 15px;
+            background-color: #FFEDD5;
+            border-radius: 12px;
+            color: #9A3412;
+        }
+        .correct-content {
+            background-color: #DCFCE7;
+            color: #166534;
+        }
+        .analysis-section {
+            margin-bottom: 20px;
+        }
+        .analysis-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .analysis-title i {
+            margin-right: 8px;
+            color: #4F46E5;
+        }
+        .analysis-content {
+            font-size: 15px;
+            line-height: 1.6;
+            padding: 15px;
+            background-color: #EEF2FF;
+            border-radius: 12px;
+            color: #3730A3;
+        }
+        .knowledge-section {
+            margin-bottom: 20px;
+        }
+        .knowledge-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .knowledge-title i {
+            margin-right: 8px;
+            color: #0EA5E9;
+        }
+        .knowledge-list {
+            padding: 15px;
+            background-color: #E0F2FE;
+            border-radius: 12px;
+        }
+        .knowledge-item {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+        .knowledge-item:last-child {
+            margin-bottom: 0;
+        }
+        .knowledge-bullet {
+            width: 22px;
+            height: 22px;
+            border-radius: 11px;
+            background-color: #0EA5E9;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .knowledge-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #0C4A6E;
+        }
+        .similar-section {
+            margin-bottom: 20px;
+        }
+        .similar-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .view-all {
+            font-size: 14px;
+            color: #4F46E5;
+        }
+        .similar-list {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .similar-item {
+            flex: 0 0 260px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .similar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .similar-subject-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .similar-subject {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .similar-content {
+            font-size: 13px;
+            margin-bottom: 10px;
+            color: #555;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .difficulty {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #777;
+        }
+        .difficulty i {
+            color: #F59E0B;
+            margin-right: 5px;
+        }
+        .action-button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            background-color: #4F46E5;
+            color: white;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .options-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .option-button {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
+        .save-icon {
+            background-color: #EEF2FF;
+            color: #4F46E5;
+        }
+        .share-icon {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+        .similar-icon {
+            background-color: #DCFCE7;
+            color: #22C55E;
+        }
+        .option-label {
+            font-size: 13px;
+            color: #555;
+        }
+        .math-formula {
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            font-family: serif;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="detail-container">
+        <div class="nav-header">
+            <div class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="page-title">错题详情</div>
+        </div>
+        
+        <div class="error-card">
+            <div class="error-header">
+                <div class="error-subject">
+                    <div class="subject-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="subject-info">
+                        <div class="subject-name">数学</div>
+                        <div class="subject-chapter">函数与导数</div>
+                    </div>
+                </div>
+                <div class="error-actions">
+                    <div class="error-action">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="error-action">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="error-content">
+                <div class="error-image">
+                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=700&q=80" alt="错题图片">
+                </div>
+                
+                <div class="question-text">
+                    <p>已知函数f(x)=2x³-3x²+ax+b在点(1,0)处取得极值，且f(0)=-1，求系数a，b的值和函数的极值。</p>
+                    <div class="math-formula">
+                        f(x) = 2x³ - 3x² + ax + b
+                    </div>
+                </div>
+                
+                <div class="answer-section">
+                    <div class="answer-header">
+                        <div class="answer-title">
+                            <i class="fas fa-times-circle"></i>
+                            <span>你的答案</span>
+                        </div>
+                    </div>
+                    <div class="answer-content">
+                        <p>将(1,0)代入函数得：2(1)³-3(1)²+a(1)+b=0，得出a+b=-1 ... (1)</p>
+                        <p>将(0,-1)代入函数得：f(0)=b=-1 ... (2)</p>
+                        <p>由(1)(2)得 a=0</p>
+                        <p>求导数f'(x)=6x²-6x+a，当x=1时取极值，所以f'(1)=0，即6-6+a=0，得a=0</p>
+                        <p>所以极值为f(1)=0</p>
+                    </div>
+                </div>
+                
+                <div class="answer-section">
+                    <div class="answer-header">
+                        <div class="answer-title correct-title">
+                            <i class="fas fa-check-circle"></i>
+                            <span>正确答案</span>
+                        </div>
+                    </div>
+                    <div class="answer-content correct-content">
+                        <p>将(0,-1)代入函数得：f(0)=b=-1 ... (1)</p>
+                        <p>求导数f'(x)=6x²-6x+a，当x=1时取极值，所以f'(1)=0，即6-6+a=0，得a=0 ... (2)</p>
+                        <p>所以a=0，b=-1</p>
+                        <p>极值为f(1)=2-3+0-1=-2</p>
+                    </div>
+                </div>
+                
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        <i class="fas fa-brain"></i>
+                        <span>错题分析</span>
+                    </div>
+                    <div class="analysis-content">
+                        <p>这道题主要有两个错误点：</p>
+                        <p>1. 错误地理解了题目条件。题目中说f(1)=0是不正确的，题目说的是"在点(1,0)处取得极值"，意味着函数图像在x=1处有一个极值点，而该点的函数值是0。</p>
+                        <p>2. 极值计算错误。在确定了a=0, b=-1后，在计算f(1)时出现了计算失误，正确的计算应为f(1)=2(1)³-3(1)²+0(1)+(-1)=2-3-1=-2。</p>
+                    </div>
+                </div>
+                
+                <div class="knowledge-section">
+                    <div class="knowledge-title">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>相关知识点</span>
+                    </div>
+                    <div class="knowledge-list">
+                        <div class="knowledge-item">
+                            <div class="knowledge-bullet">1</div>
+                            <div class="knowledge-text">导数与函数极值的关系：函数在某点取得极值时，该点的导数为0。</div>
+                        </div>
+                        <div class="knowledge-item">
+                            <div class="knowledge-bullet">2</div>
+                            <div class="knowledge-text">利用函数值条件与导数条件列方程组求解未知系数。</div>
+                        </div>
+                        <div class="knowledge-item">
+                            <div class="knowledge-bullet">3</div>
+                            <div class="knowledge-text">代入求得的未知系数计算函数极值。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-button">
+            加入今日复习
+        </div>
+        
+        <div class="options-row">
+            <div class="option-button">
+                <div class="option-icon save-icon">
+                    <i class="fas fa-bookmark"></i>
+                </div>
+                <div class="option-label">收藏</div>
+            </div>
+            <div class="option-button">
+                <div class="option-icon share-icon">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <div class="option-label">分享</div>
+            </div>
+            <div class="option-button">
+                <div class="option-icon similar-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="option-label">相似题</div>
+            </div>
+        </div>
+        
+        <div class="similar-section">
+            <div class="similar-title">
+                <span>相似错题</span>
+                <a href="#" class="view-all">查看全部</a>
+            </div>
+            
+            <div class="similar-list">
+                <div class="similar-item">
+                    <div class="similar-header">
+                        <div class="similar-subject-icon" style="background-color: #FFEDD5; color: #F97316;">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="similar-subject">数学 - 函数与导数</div>
+                    </div>
+                    <div class="similar-content">
+                        已知函数f(x)=ax³+bx²+cx+d，求导后有零点x=1和x=2，且f(0)=3, f'(0)=1。
+                    </div>
+                    <div class="difficulty">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="similar-item">
+                    <div class="similar-header">
+                        <div class="similar-subject-icon" style="background-color: #FFEDD5; color: #F97316;">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="similar-subject">数学 - 函数与导数</div>
+                    </div>
+                    <div class="similar-content">
+                        已知函数f(x)=x³-3x²+ax+b对任意x∈R有f(x)≥f(2)，求a,b的值。
+                    </div>
+                    <div class="difficulty">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

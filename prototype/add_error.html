@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加错题 - 错题宝</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+        }
+        .add-container {
+            padding: 20px;
+            padding-bottom: 0;
+            height: 100%;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .source-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .source-option {
+            flex: 1;
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .source-option.active {
+            border-color: #4F46E5;
+        }
+        .source-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background-color: #EEF2FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #4F46E5;
+            margin-bottom: 10px;
+        }
+        .source-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .camera-container {
+            position: relative;
+            background-color: #212121;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .camera-preview {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+        }
+        .camera-top-controls {
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        .camera-bottom-controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 10;
+        }
+        .camera-button {
+            width: 70px;
+            height: 70px;
+            border-radius: 35px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .camera-button-inner {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            border: 2px solid #f0f0f0;
+        }
+        .gallery-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+        .flash-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 22.5px;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .recent-photos {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        .photo-item {
+            flex: 0 0 120px;
+            height: 160px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px;
+            color: white;
+        }
+        .photo-subject {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 8px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            align-self: flex-start;
+        }
+        .photo-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        .photo-action {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .tips-section {
+            background-color: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .tip-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .tip-icon {
+            margin-right: 10px;
+            color: #4F46E5;
+        }
+        .tip-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .tip-item i {
+            color: #4F46E5;
+            margin-right: 10px;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="add-container">
+        <div class="page-header">
+            <div class="page-title">添加错题</div>
+        </div>
+        
+        <div class="source-options">
+            <div class="source-option active">
+                <div class="source-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <div class="source-label">拍照</div>
+            </div>
+            <div class="source-option">
+                <div class="source-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+                <div class="source-label">相册</div>
+            </div>
+            <div class="source-option">
+                <div class="source-icon">
+                    <i class="fas fa-keyboard"></i>
+                </div>
+                <div class="source-label">手动输入</div>
+            </div>
+        </div>
+        
+        <div class="camera-container">
+            <img src="https://images.unsplash.com/photo-1621858170710-2bd173de683a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="camera-preview" alt="相机预览">
+            <div class="camera-overlay">
+                <div class="camera-top-controls">
+                    <div class="flash-button">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="flash-button">
+                        <i class="fas fa-times"></i>
+                    </div>
+                </div>
+                <div class="camera-bottom-controls">
+                    <div class="gallery-button">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div class="camera-button">
+                        <div class="camera-button-inner"></div>
+                    </div>
+                    <div class="gallery-button">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-title">最近拍摄</div>
+        
+        <div class="recent-photos">
+            <div class="photo-item">
+                <img src="https://images.unsplash.com/photo-1621858170710-2bd173de683a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="最近拍摄">
+                <div class="photo-overlay">
+                    <div class="photo-subject">数学</div>
+                    <div class="photo-actions">
+                        <div class="photo-action">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <div class="photo-action">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="photo-item">
+                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="最近拍摄">
+                <div class="photo-overlay">
+                    <div class="photo-subject">物理</div>
+                    <div class="photo-actions">
+                        <div class="photo-action">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <div class="photo-action">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="photo-item">
+                <img src="https://images.unsplash.com/photo-1633613286991-611fe299c4be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="最近拍摄">
+                <div class="photo-overlay">
+                    <div class="photo-subject">英语</div>
+                    <div class="photo-actions">
+                        <div class="photo-action">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <div class="photo-action">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tips-section">
+            <div class="tip-title">
+                <i class="fas fa-lightbulb tip-icon"></i>
+                <span>拍摄小技巧</span>
+            </div>
+            <ul class="tip-list">
+                <li class="tip-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>拍摄时保持纸张平整，避免褶皱</span>
+                </li>
+                <li class="tip-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>保持充足的光线，避免阴影遮挡文字</span>
+                </li>
+                <li class="tip-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>确保文字清晰可见，适当调整距离</span>
+                </li>
+                <li class="tip-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>将批改痕迹和错误答案一同拍摄</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html> 

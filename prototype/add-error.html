@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Error</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <header class="bg-indigo-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Add New Error</h1>
+            <a href="collection.html" class="text-white hover:text-indigo-200 transition">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Collection
+            </a>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4">
+        <div class="bg-white rounded-lg shadow-md p-6 max-w-3xl mx-auto">
+            <form id="errorForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column -->
+                    <div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2" for="subject">Subject</label>
+                            <select id="subject" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+                                <option value="">Select a subject</option>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="physics">Physics</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="biology">Biology</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2" for="grade">Grade/Year</label>
+                            <select id="grade" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+                                <option value="">Select grade/year</option>
+                                <option value="9th Grade">9th Grade</option>
+                                <option value="10th Grade">10th Grade</option>
+                                <option value="11th Grade">11th Grade</option>
+                                <option value="12th Grade">12th Grade</option>
+                                <option value="College 1st Year">College 1st Year</option>
+                                <option value="College 2nd Year">College 2nd Year</option>
+                                <option value="College 3rd Year">College 3rd Year</option>
+                                <option value="College 4th Year">College 4th Year</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2" for="semester">Semester</label>
+                            <select id="semester" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+                                <option value="">Select semester</option>
+                                <option value="First Semester">First Semester</option>
+                                <option value="Second Semester">Second Semester</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2" for="difficulty">Difficulty Level</label>
+                            <div class="flex items-center">
+                                <input type="range" id="difficulty" min="1" max="5" value="3" class="w-full mr-3">
+                                <span id="difficultyDisplay" class="text-xl">★★★</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2" for="tags">Tags (comma-separated)</label>
+                            <input type="text" id="tags" placeholder="e.g., algebra, equations, factoring" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <div id="tagsList" class="flex flex-wrap gap-1 mt-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2" for="questionDescription">Question Description</label>
+                            <textarea id="questionDescription" rows="3" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Describe the question that caused the error..." required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2" for="errorDescription">Error Description</label>
+                            <textarea id="errorDescription" rows="3" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Describe what went wrong in your solution..."></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2" for="correctSolution">Correct Solution</label>
+                            <textarea id="correctSolution" rows="3" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Describe the correct solution or approach..."></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2" for="reviewDate">Review Date</label>
+                            <input type="date" id="reviewDate" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 font-medium mb-2" for="imageUpload">Attach Image (optional)</label>
+                            <input type="file" id="imageUpload" accept="image/*" class="w-full p-2 border rounded-lg">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 mt-6">
+                    <a href="collection.html" class="bg-gray-300 px-6 py-2 rounded-lg hover:bg-gray-400 transition">Cancel</a>
+                    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">Save Error</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Handle difficulty slider
+        const difficultySlider = document.getElementById('difficulty');
+        const difficultyDisplay = document.getElementById('difficultyDisplay');
+        
+        difficultySlider.addEventListener('input', function() {
+            const stars = '★'.repeat(this.value);
+            difficultyDisplay.textContent = stars;
+        });
+
+        // Handle tags input
+        const tagsInput = document.getElementById('tags');
+        const tagsList = document.getElementById('tagsList');
+        
+        tagsInput.addEventListener('blur', function() {
+            const tags = this.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            renderTags(tags);
+        });
+        
+        tagsInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                const currentValue = this.value.trim();
+                
+                if (currentValue) {
+                    const currentTags = getCurrentTags();
+                    if (!currentTags.includes(currentValue)) {
+                        currentTags.push(currentValue);
+                        renderTags(currentTags);
+                        this.value = '';
+                    }
+                }
+            }
+        });
+        
+        function getCurrentTags() {
+            const tagElements = tagsList.querySelectorAll('.tag-item');
+            return Array.from(tagElements).map(tag => tag.dataset.value);
+        }
+        
+        function renderTags(tags) {
+            tagsList.innerHTML = tags.map(tag => `
+                <div class="tag-item bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-sm flex items-center" data-value="${tag}">
+                    ${tag}
+                    <button type="button" class="ml-1 text-indigo-500 hover:text-indigo-700" onclick="removeTag(this)">×</button>
+                </div>
+            `).join('');
+            
+            // Update the hidden input
+            tagsInput.value = tags.join(', ');
+        }
+        
+        // This function needs to be global for the onclick to work
+        window.removeTag = function(element) {
+            const tagElement = element.parentNode;
+            const tag = tagElement.dataset.value;
+            const tags = getCurrentTags().filter(t => t !== tag);
+            renderTags(tags);
+        };
+
+        // Form submission
+        document.getElementById('errorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                subject: document.getElementById('subject').value,
+                grade: document.getElementById('grade').value,
+                semester: document.getElementById('semester').value,
+                difficulty: parseInt(document.getElementById('difficulty').value),
+                tags: getCurrentTags(),
+                questionDescription: document.getElementById('questionDescription').value,
+                errorDescription: document.getElementById('errorDescription').value,
+                correctSolution: document.getElementById('correctSolution').value,
+                reviewDate: document.getElementById('reviewDate').value,
+                dateAdded: new Date().toISOString().split('T')[0]
+            };
+            
+            // In a real application, you would send this data to a server
+            console.log('Error data to save:', formData);
+            
+            // For demo, simulate success and redirect
+            alert('Error saved successfully!');
+            window.location.href = 'collection.html';
+        });
+
+        // Set default review date to 2 weeks from today
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const twoWeeksLater = new Date(today);
+            twoWeeksLater.setDate(today.getDate() + 14);
+            
+            const dateString = twoWeeksLater.toISOString().split('T')[0];
+            document.getElementById('reviewDate').value = dateString;
+        });
+    </script>
+</body>
+</html> 

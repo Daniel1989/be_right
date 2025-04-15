@@ -1,0 +1,72 @@
+{
+  "app": {
+    "title": "Be Right",
+    "description": "Your personal task manager",
+    "greeting": "Hello, welcome to Be Right!"
+  },
+  "navigation": {
+    "home": "Home",
+    "tasks": "Tasks",
+    "settings": "Settings",
+    "profile": "Profile",
+    "collection": "Collection",
+    "add": "Add",
+    "stats": "Stats"
+  },
+  "actions": {
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "form": {
+    "required": "This field is required",
+    "email": {
+      "invalid": "Please enter a valid email address"
+    },
+    "password": {
+      "tooShort": "Password must be at least 8 characters long"
+    }
+  },
+  "auth": {
+    "login": {
+      "tagline": "Sign in to your account",
+      "email": "Email",
+      "emailPlaceholder": "Enter your email",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign In",
+      "loggingIn": "Signing in...",
+      "orContinueWith": "Or continue with",
+      "noAccount": "Don't have an account?",
+      "register": "Sign up",
+      "invalidCredentials": "Invalid email or password",
+      "error": "An error occurred during login"
+    },
+    "register": {
+      "tagline": "Create a new account",
+      "createAccount": "Create your account",
+      "name": "Name",
+      "namePlaceholder": "Enter your name",
+      "email": "Email",
+      "emailPlaceholder": "Enter your email",
+      "password": "Password",
+      "passwordPlaceholder": "Create a password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "submit": "Sign Up",
+      "registering": "Signing up...",
+      "creating": "Creating account...",
+      "orContinueWith": "Or continue with",
+      "alreadyHaveAccount": "Already have an account?",
+      "login": "Sign in",
+      "emailInUse": "Email already in use",
+      "error": "An error occurred during registration",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 8 characters long"
+    }
+  }
+} 

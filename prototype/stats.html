@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错题宝 - 统计数据</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .header {
+            background-color: white;
+            padding: 16px 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .stats-container {
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        .stats-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .title-icon {
+            color: #6366f1;
+            margin-right: 8px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .stats-item {
+            background-color: #f9fafb;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stats-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4F46E5;
+            margin-bottom: 4px;
+        }
+        .stats-label {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        .chart-container {
+            position: relative;
+            height: 200px;
+            margin-top: 8px;
+        }
+        .subject-progress {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .subject-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 16px;
+            color: white;
+        }
+        .math-icon {
+            background-color: #4F46E5;
+        }
+        .physics-icon {
+            background-color: #2563EB;
+        }
+        .chemistry-icon {
+            background-color: #10B981;
+        }
+        .english-icon {
+            background-color: #F59E0B;
+        }
+        .progress-content {
+            flex: 1;
+        }
+        .progress-bar-container {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .progress-label {
+            color: #6b7280;
+        }
+        .progress-value {
+            color: #4b5563;
+            font-weight: 500;
+        }
+        .error-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .calendar-day {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .calendar-date {
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            position: relative;
+        }
+        .calendar-date.empty {
+            background-color: #f3f4f6;
+        }
+        .calendar-date.has-errors {
+            background-color: #e0e7ff;
+            color: #4F46E5;
+            font-weight: 500;
+        }
+        .calendar-date.today {
+            border: 2px solid #4F46E5;
+            font-weight: 700;
+        }
+        .error-count {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: #4F46E5;
+            color: white;
+            width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .learning-streak {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        .streak-icon {
+            color: #F59E0B;
+            font-size: 24px;
+            margin-right: 8px;
+        }
+        .streak-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .streak-count {
+            color: #F59E0B;
+            font-weight: 700;
+        }
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .rank-item:last-child {
+            border-bottom: none;
+        }
+        .rank-position {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+        .rank-1 {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .rank-2 {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+        .rank-3 {
+            background-color: #fef2f2;
+            color: #dc2626;
+        }
+        .rank-normal {
+            background-color: #f3f4f6;
+            color: #6b7280;
+        }
+        .rank-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-right: 12px;
+        }
+        .rank-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .rank-info {
+            flex: 1;
+        }
+        .rank-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 2px;
+        }
+        .rank-stats {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        .rank-score {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4F46E5;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #6b7280;
+            text-decoration: none;
+        }
+        .nav-item.active {
+            color: #4F46E5;
+        }
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        .time-filter {
+            display: flex;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            background-color: #f3f4f6;
+        }
+        .time-option {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 14px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .time-option.active {
+            background-color: #4F46E5;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="flex justify-between items-center">
+            <h1 class="text-xl font-bold">学习统计</h1>
+            <div>
+                <button class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm font-medium">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-container">
+        <div class="time-filter">
+            <div class="time-option active">周</div>
+            <div class="time-option">月</div>
+            <div class="time-option">年</div>
+            <div class="time-option">总计</div>
+        </div>
+
+        <div class="stats-card">
+            <div class="card-title">
+                <span><i class="fas fa-chart-line title-icon"></i>数据概览</span>
+                <span class="text-sm font-normal text-gray-500">本周</span>
+            </div>
+            <div class="stats-grid">
+                <div class="stats-item">
+                    <div class="stats-value">42</div>
+                    <div class="stats-label">已收集错题</div>
+                </div>
+                <div class="stats-item">
+                    <div class="stats-value">28</div>
+                    <div class="stats-label">已掌握错题</div>
+                </div>
+                <div class="stats-item">
+                    <div class="stats-value">14</div>
+                    <div class="stats-label">待复习错题</div>
+                </div>
+                <div class="stats-item">
+                    <div class="stats-value">68%</div>
+                    <div class="stats-label">掌握率</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="errorStatsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <div class="card-title">
+                <span><i class="fas fa-fire title-icon"></i>学习热度</span>
+            </div>
+            
+            <div class="calendar-header">
+                <div class="calendar-day">一</div>
+                <div class="calendar-day">二</div>
+                <div class="calendar-day">三</div>
+                <div class="calendar-day">四</div>
+                <div class="calendar-day">五</div>
+                <div class="calendar-day">六</div>
+                <div class="calendar-day">日</div>
+            </div>
+            
+            <div class="error-calendar">
+                <div class="calendar-date empty">27</div>
+                <div class="calendar-date empty">28</div>
+                <div class="calendar-date empty">29</div>
+                <div class="calendar-date empty">30</div>
+                <div class="calendar-date has-errors">1
+                    <div class="error-count">2</div>
+                </div>
+                <div class="calendar-date has-errors">2
+                    <div class="error-count">5</div>
+                </div>
+                <div class="calendar-date empty">3</div>
+                
+                <div class="calendar-date has-errors">4
+                    <div class="error-count">3</div>
+                </div>
+                <div class="calendar-date has-errors">5
+                    <div class="error-count">7</div>
+                </div>
+                <div class="calendar-date has-errors">6
+                    <div class="error-count">2</div>
+                </div>
+                <div class="calendar-date empty">7</div>
+                <div class="calendar-date has-errors">8
+                    <div class="error-count">4</div>
+                </div>
+                <div class="calendar-date has-errors">9
+                    <div class="error-count">6</div>
+                </div>
+                <div class="calendar-date has-errors">10
+                    <div class="error-count">1</div>
+                </div>
+                
+                <div class="calendar-date has-errors">11
+                    <div class="error-count">5</div>
+                </div>
+                <div class="calendar-date has-errors">12
+                    <div class="error-count">3</div>
+                </div>
+                <div class="calendar-date has-errors">13
+                    <div class="error-count">4</div>
+                </div>
+                <div class="calendar-date has-errors today">14</div>
+                <div class="calendar-date empty">15</div>
+                <div class="calendar-date empty">16</div>
+                <div class="calendar-date empty">17</div>
+            </div>
+            
+            <div class="learning-streak">
+                <div class="streak-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="streak-text">
+                    已连续学习 <span class="streak-count">8</span> 天
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <div class="card-title">
+                <span><i class="fas fa-graduation-cap title-icon"></i>学科掌握情况</span>
+            </div>
+            
+            <div class="subject-progress">
+                <div class="subject-icon math-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="progress-content">
+                    <div class="progress-info">
+                        <div class="progress-label">数学</div>
+                        <div class="progress-value">78%</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 78%; background-color: #4F46E5;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subject-progress">
+                <div class="subject-icon physics-icon">
+                    <i class="fas fa-atom"></i>
+                </div>
+                <div class="progress-content">
+                    <div class="progress-info">
+                        <div class="progress-label">物理</div>
+                        <div class="progress-value">65%</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 65%; background-color: #2563EB;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subject-progress">
+                <div class="subject-icon chemistry-icon">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <div class="progress-content">
+                    <div class="progress-info">
+                        <div class="progress-label">化学</div>
+                        <div class="progress-value">42%</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 42%; background-color: #10B981;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subject-progress">
+                <div class="subject-icon english-icon">
+                    <i class="fas fa-language"></i>
+                </div>
+                <div class="progress-content">
+                    <div class="progress-info">
+                        <div class="progress-label">英语</div>
+                        <div class="progress-value">55%</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 55%; background-color: #F59E0B;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <div class="card-title">
+                <span><i class="fas fa-trophy title-icon"></i>排行榜</span>
+                <span class="text-sm font-normal text-indigo-600">查看全部</span>
+            </div>
+            
+            <div class="rank-item">
+                <div class="rank-position rank-1">1</div>
+                <div class="rank-avatar">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="用户头像">
+                </div>
+                <div class="rank-info">
+                    <div class="rank-name">林小明</div>
+                    <div class="rank-stats">已掌握 156 个错题</div>
+                </div>
+                <div class="rank-score">1024</div>
+            </div>
+            
+            <div class="rank-item">
+                <div class="rank-position rank-2">2</div>
+                <div class="rank-avatar">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像">
+                </div>
+                <div class="rank-info">
+                    <div class="rank-name">张三</div>
+                    <div class="rank-stats">已掌握 142 个错题</div>
+                </div>
+                <div class="rank-score">986</div>
+            </div>
+            
+            <div class="rank-item">
+                <div class="rank-position rank-3">3</div>
+                <div class="rank-avatar">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="用户头像">
+                </div>
+                <div class="rank-info">
+                    <div class="rank-name">李四</div>
+                    <div class="rank-stats">已掌握 135 个错题</div>
+                </div>
+                <div class="rank-score">957</div>
+            </div>
+            
+            <div class="rank-item">
+                <div class="rank-position rank-normal">12</div>
+                <div class="rank-avatar">
+                    <img src="https://randomuser.me/api/portraits/men/15.jpg" alt="用户头像">
+                </div>
+                <div class="rank-info">
+                    <div class="rank-name">我</div>
+                    <div class="rank-stats">已掌握 42 个错题</div>
+                </div>
+                <div class="rank-score">468</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="home.html" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            首页
+        </a>
+        <a href="collection.html" class="nav-item">
+            <i class="fas fa-book-open nav-icon"></i>
+            错题集
+        </a>
+        <a href="add-error.html" class="nav-item">
+            <i class="fas fa-plus-circle nav-icon"></i>
+            添加
+        </a>
+        <a href="stats.html" class="nav-item active">
+            <i class="fas fa-chart-line nav-icon"></i>
+            数据
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user nav-icon"></i>
+            我的
+        </a>
+    </div>
+
+    <script>
+        // Initialize Chart.js
+        const ctx = document.getElementById('errorStatsChart').getContext('2d');
+        const errorStatsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                datasets: [
+                    {
+                        label: '已收集错题',
+                        data: [5, 7, 3, 8, 10, 6, 3],
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderColor: '#4F46E5',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '已掌握错题',
+                        data: [2, 4, 1, 6, 7, 5, 3],
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderColor: '#10B981',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 6,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: true,
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Time filter functionality
+        document.querySelectorAll('.time-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.time-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html> 

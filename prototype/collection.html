@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Collection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <header class="bg-indigo-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">My Error Collection</h1>
+            <div class="flex gap-3">
+                <button id="filterBtn" class="bg-indigo-700 px-4 py-2 rounded-lg hover:bg-indigo-800 transition">
+                    <i class="fas fa-filter mr-2"></i>Filter
+                </button>
+                <a href="add-error.html" class="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                    <i class="fas fa-plus mr-2"></i>Add Error
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Panel (hidden by default) -->
+    <div id="filterPanel" class="hidden bg-white p-4 shadow-md mb-4 container mx-auto mt-4 rounded-lg">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-gray-700 mb-1">Subject</label>
+                <select class="w-full p-2 border rounded-lg">
+                    <option value="">All Subjects</option>
+                    <option value="math">Mathematics</option>
+                    <option value="physics">Physics</option>
+                    <option value="chemistry">Chemistry</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-700 mb-1">Difficulty</label>
+                <select class="w-full p-2 border rounded-lg">
+                    <option value="">Any Difficulty</option>
+                    <option value="1">★</option>
+                    <option value="2">★★</option>
+                    <option value="3">★★★</option>
+                    <option value="4">★★★★</option>
+                    <option value="5">★★★★★</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-700 mb-1">Tags</label>
+                <input type="text" placeholder="Search tags..." class="w-full p-2 border rounded-lg">
+            </div>
+        </div>
+        <div class="flex justify-end mt-3">
+            <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition mr-2">Apply</button>
+            <button class="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 transition">Reset</button>
+        </div>
+    </div>
+
+    <!-- Error Collection Cards -->
+    <main class="container mx-auto p-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Error Cards will be dynamically generated -->
+        </div>
+    </main>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="container mx-auto p-8 text-center">
+        <img src="https://cdn-icons-png.flaticon.com/512/5058/5058432.png" alt="Empty collection" class="w-40 mx-auto mb-6 opacity-50">
+        <h2 class="text-xl font-bold text-gray-700 mb-2">Your collection is empty</h2>
+        <p class="text-gray-500 mb-4">Start by adding errors to keep track of your learning progress</p>
+        <a href="add-error.html" class="bg-indigo-600 text-white px-6 py-3 rounded-lg inline-block hover:bg-indigo-700 transition">
+            <i class="fas fa-plus mr-2"></i>Add Your First Error
+        </a>
+    </div>
+
+    <script>
+        // Sample error data
+        const errorCollection = [
+            {
+                id: 1,
+                subject: "Mathematics",
+                grade: "12th Grade",
+                semester: "First Semester",
+                difficulty: 4,
+                questionDescription: "Integration by parts problem",
+                tags: ["calculus", "integration", "exam preparation"],
+                dateAdded: "2023-04-15",
+                reviewDate: "2023-04-30"
+            },
+            {
+                id: 2,
+                subject: "Physics",
+                grade: "11th Grade",
+                semester: "Second Semester",
+                difficulty: 3,
+                questionDescription: "Newton's Third Law application in a pulley system",
+                tags: ["mechanics", "forces", "newton"],
+                dateAdded: "2023-04-10",
+                reviewDate: "2023-04-25"
+            },
+            {
+                id: 3,
+                subject: "Chemistry",
+                grade: "12th Grade",
+                semester: "First Semester",
+                difficulty: 5,
+                questionDescription: "Redox reaction balancing in acidic medium",
+                tags: ["redox", "electrochemistry", "difficult"],
+                dateAdded: "2023-04-05",
+                reviewDate: "2023-04-20"
+            }
+        ];
+
+        // Toggle filter panel
+        document.getElementById('filterBtn').addEventListener('click', function() {
+            const filterPanel = document.getElementById('filterPanel');
+            filterPanel.classList.toggle('hidden');
+        });
+
+        // Display error cards
+        function renderErrorCards() {
+            const cardsContainer = document.querySelector('main .grid');
+            const emptyState = document.getElementById('emptyState');
+            
+            // Show/hide empty state based on collection
+            if (errorCollection.length === 0) {
+                cardsContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                cardsContainer.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+            }
+            
+            // Generate cards
+            cardsContainer.innerHTML = errorCollection.map(error => `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                    <div class="bg-indigo-600 p-3 text-white flex justify-between items-center">
+                        <span class="font-medium">${error.subject}</span>
+                        <span>${"★".repeat(error.difficulty)}</span>
+                    </div>
+                    <div class="p-4">
+                        <div class="text-gray-500 text-sm mb-2">${error.grade} · ${error.semester}</div>
+                        <p class="font-medium mb-3">${error.questionDescription}</p>
+                        <div class="flex flex-wrap gap-1 mb-3">
+                            ${error.tags.map(tag => `
+                                <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">${tag}</span>
+                            `).join('')}
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>Added: ${error.dateAdded}</span>
+                            <span>Review: ${error.reviewDate}</span>
+                        </div>
+                        <div class="mt-4 flex justify-between">
+                            <button class="text-indigo-600 hover:text-indigo-800 transition">
+                                <i class="fas fa-edit mr-1"></i>Edit
+                            </button>
+                            <button class="text-red-600 hover:text-red-800 transition">
+                                <i class="fas fa-trash mr-1"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderErrorCards();
+        });
+    </script>
+</body>
+</html> 

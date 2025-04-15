@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分析 - 错题宝</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+        }
+        .analytics-container {
+            padding: 20px;
+            padding-bottom: 0;
+            height: 100%;
+            overflow-y: auto;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .date-picker {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 20px;
+            padding: 6px 15px;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .date-picker i {
+            margin-right: 5px;
+            color: #4F46E5;
+        }
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 5px 0;
+            color: #4F46E5;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+        .trend-indicator {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .trend-up {
+            color: #22C55E;
+        }
+        .trend-down {
+            color: #EF4444;
+        }
+        .trend-indicator i {
+            margin-right: 3px;
+        }
+        .chart-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .chart-options {
+            display: flex;
+            background-color: #f5f7fa;
+            border-radius: 20px;
+            overflow: hidden;
+            font-size: 12px;
+        }
+        .chart-option {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+        .chart-option.active {
+            background-color: #4F46E5;
+            color: white;
+        }
+        .chart-container {
+            position: relative;
+            height: 200px;
+            width: 100%;
+        }
+        .subject-performance {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .subject-cards {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .subject-card {
+            flex: 0 0 260px;
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .subject-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .subject-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .math-icon {
+            background-color: #FFEDD5;
+            color: #F97316;
+        }
+        .physics-icon {
+            background-color: #E0F2FE;
+            color: #0EA5E9;
+        }
+        .chemistry-icon {
+            background-color: #DCFCE7;
+            color: #22C55E;
+        }
+        .subject-name {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .subject-content {
+            padding: 15px;
+        }
+        .subject-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .subject-stat {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+        .math-stat {
+            color: #F97316;
+        }
+        .physics-stat {
+            color: #0EA5E9;
+        }
+        .chemistry-stat {
+            color: #22C55E;
+        }
+        .stat-desc {
+            font-size: 12px;
+            color: #777;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        .progress-text {
+            font-weight: 600;
+        }
+        .progress-value {
+            color: #777;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        .math-fill {
+            background-color: #F97316;
+        }
+        .physics-fill {
+            background-color: #0EA5E9;
+        }
+        .chemistry-fill {
+            background-color: #22C55E;
+        }
+        .calendar-view {
+            margin-bottom: 25px;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .calendar-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .calendar-button {
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background-color: #f5f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+        }
+        .current-month {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            background-color: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .calendar-day {
+            text-align: center;
+            position: relative;
+        }
+        .day-label {
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #777;
+        }
+        .day-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            position: relative;
+        }
+        .day-active {
+            background-color: #4F46E5;
+            color: white;
+        }
+        .day-has-errors {
+            position: relative;
+        }
+        .day-has-errors::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: #4F46E5;
+        }
+        .ai-insights {
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .insights-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .insights-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: #EEF2FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 20px;
+            color: #4F46E5;
+        }
+        .insights-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .insight-card {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .insight-card:last-child {
+            margin-bottom: 0;
+        }
+        .insight-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #555;
+        }
+        .insight-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .insight-action {
+            font-size: 12px;
+            color: #4F46E5;
+            margin-left: 15px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="analytics-container">
+        <div class="page-header">
+            <div class="page-title">数据分析</div>
+            <div class="date-picker">
+                <i class="fas fa-calendar-alt"></i>
+                <span>本月</span>
+            </div>
+        </div>
+        
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-label">总错题数</div>
+                <div class="stat-value">158</div>
+                <div class="trend-indicator trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>较上月 12%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">平均学习时长</div>
+                <div class="stat-value">46<span style="font-size: 16px; font-weight: 500;">分钟/天</span></div>
+                <div class="trend-indicator trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>较上月 8%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">复习正确率</div>
+                <div class="stat-value">85%</div>
+                <div class="trend-indicator trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>较上月 5%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">知识点掌握</div>
+                <div class="stat-value">76%</div>
+                <div class="trend-indicator trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>较上月 3%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title">学习趋势</div>
+                <div class="chart-options">
+                    <div class="chart-option">7天</div>
+                    <div class="chart-option active">30天</div>
+                    <div class="chart-option">90天</div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="studyTrendChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="subject-performance">
+            <div class="section-title">学科表现</div>
+            <div class="subject-cards">
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon math-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="subject-name">数学</div>
+                    </div>
+                    <div class="subject-content">
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="stat-number math-stat">32</div>
+                                <div class="stat-desc">错题数</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="stat-number math-stat">85%</div>
+                                <div class="stat-desc">正确率</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="stat-number math-stat">8</div>
+                                <div class="stat-desc">知识点</div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="progress-label">
+                                <div class="progress-text">函数与导数</div>
+                                <div class="progress-value">12题</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill math-fill" style="width: 40%;"></div>
+                            </div>
+                            
+                            <div class="progress-label">
+                                <div class="progress-text">三角函数</div>
+                                <div class="progress-value">8题</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill math-fill" style="width: 25%;"></div>
+                            </div>
+                            
+                            <div class="progress-label">
+                                <div class="progress-text">立体几何</div>
+                                <div class="progress-value">7题</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill math-fill" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon physics-icon">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <div class="subject-name">物理</div>
+                    </div>
+                    <div class="subject-content">
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="stat-number physics-stat">24</div>
+                                <div class="stat-desc">错题数</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="stat-number physics-stat">78%</div>
+                                <div class="stat-desc">正确率</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="stat-number physics-stat">6</div>
+                                <div class="stat-desc">知识点</div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="progress-label">
+                                <div class="progress-text">力学</div>
+                                <div class="progress-value">10题</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill physics-fill" style="width: 42%;"></div>
+                            </div>
+                            
+                            <div class="progress-label">
+                                <div class="progress-text">电磁学</div>
+                                <div class="progress-value">8题</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill physics-fill" style="width: 33%;"></div>
+                            </div>
+                            
+                            <div class="progress-label">
+                                <div class="progress-text">光学</div>
+                                <div class="progress-value">6题</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill physics-fill" style="width: 25%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon chemistry-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <div class="subject-name">化学</div>
+                    </div>
+                    <div class="subject-content">
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="stat-number chemistry-stat">18</div>
+                                <div class="stat-desc">错题数</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="stat-number chemistry-stat">82%</div>
+                                <div class="stat-desc">正确率</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="stat-number chemistry-stat">5</div>
+                                <div class="stat-desc">知识点</div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="progress-label">
+                                <div class="progress-text">有机化学</div>
+                                <div class="progress-value">8题</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill chemistry-fill" style="width: 44%;"></div>
+                            </div>
+                            
+                            <div class="progress-label">
+                                <div class="progress-text">元素化学</div>
+                                <div class="progress-value">6题</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill chemistry-fill" style="width: 33%;"></div>
+                            </div>
+                            
+                            <div class="progress-label">
+                                <div class="progress-text">化学平衡</div>
+                                <div class="progress-value">4题</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill chemistry-fill" style="width: 22%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar-view">
+            <div class="calendar-header">
+                <div class="calendar-title">学习日历</div>
+                <div class="calendar-nav">
+                    <div class="calendar-button">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                    <div class="current-month">2024年6月</div>
+                    <div class="calendar-button">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="calendar-grid">
+                <div class="calendar-day">
+                    <div class="day-label">日</div>
+                    <div class="day-number">1</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">一</div>
+                    <div class="day-number">2</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">二</div>
+                    <div class="day-number day-has-errors">3</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">三</div>
+                    <div class="day-number day-has-errors">4</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">四</div>
+                    <div class="day-number">5</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">五</div>
+                    <div class="day-number day-has-errors">6</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">六</div>
+                    <div class="day-number">7</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">日</div>
+                    <div class="day-number day-has-errors">8</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">一</div>
+                    <div class="day-number day-has-errors">9</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">二</div>
+                    <div class="day-number day-active">10</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">三</div>
+                    <div class="day-number">11</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">四</div>
+                    <div class="day-number">12</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">五</div>
+                    <div class="day-number">13</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="day-label">六</div>
+                    <div class="day-number">14</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ai-insights">
+            <div class="insights-header">
+                <div class="insights-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="insights-title">AI 学习洞察</div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-text">
+                    <p>你在函数与导数的知识点上出错率较高，建议针对"函数极值"和"隐函数求导"进行专项练习。</p>
+                </div>
+                <div class="insight-actions">
+                    <a href="#" class="insight-action">创建专项计划</a>
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-text">
+                    <p>你的物理学科复习频率较低，最近7天只有2天有复习记录，建议保持每日复习习惯。</p>
+                </div>
+                <div class="insight-actions">
+                    <a href="#" class="insight-action">设置提醒</a>
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-text">
+                    <p>根据你的错题模式分析，你在"计算型"题目上的错误率高于"概念型"题目，建议加强计算训练。</p>
+                </div>
+                <div class="insight-actions">
+                    <a href="#" class="insight-action">查看训练计划</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 学习趋势图表
+        const trendCtx = document.getElementById('studyTrendChart').getContext('2d');
+        const studyTrendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['6/1', '6/5', '6/10', '6/15', '6/20', '6/25', '6/30'],
+                datasets: [
+                    {
+                        label: '学习时长(分钟)',
+                        data: [30, 45, 60, 35, 50, 45, 55],
+                        borderColor: '#4F46E5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#4F46E5',
+                    },
+                    {
+                        label: '错题数量',
+                        data: [8, 12, 6, 10, 5, 8, 6],
+                        borderColor: '#F97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#F97316',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 6
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f0f0f0'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

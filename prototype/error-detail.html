@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <header class="bg-indigo-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="collection.html" class="text-white mr-4">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="text-2xl font-bold">Error Detail</h1>
+            </div>
+            <div class="flex gap-3">
+                <button id="editBtn" class="bg-indigo-700 px-4 py-2 rounded-lg hover:bg-indigo-800 transition">
+                    <i class="fas fa-edit mr-2"></i>Edit
+                </button>
+                <button id="deleteBtn" class="bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                    <i class="fas fa-trash mr-2"></i>Delete
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4">
+        <div class="bg-white rounded-lg shadow-md p-6 max-w-4xl mx-auto mb-4">
+            <!-- Subject & Difficulty -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center">
+                    <span class="bg-indigo-600 text-white text-sm py-1 px-3 rounded-full mr-2">Mathematics</span>
+                    <span class="text-gray-500 text-sm">12th Grade • First Semester</span>
+                </div>
+                <div class="text-amber-400 text-xl">★★★★</div>
+            </div>
+
+            <!-- Question -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold mb-2 text-gray-800">Integration by parts problem</h2>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-gray-700 mb-4">
+                        Compute the integral: ∫x·ln(x)dx using integration by parts.
+                    </p>
+                    <div id="questionImage" class="my-4">
+                        <img src="https://mathworld.wolfram.com/images/equations/IntegrationByParts/Inline3.svg" 
+                             alt="Integration by parts formula" 
+                             class="mx-auto rounded-lg shadow-sm">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Description -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold mb-2 text-gray-800">Where I Went Wrong</h3>
+                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
+                    <p class="text-gray-700">
+                        I incorrectly chose u = ln(x) and dv = x dx, which made the resulting integral more complicated
+                        than the original. The correct choice should have been u = ln(x) and dv = x dx, but I made an 
+                        error in computing v after integration.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Correct Solution -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold mb-2 text-gray-800">Correct Solution</h3>
+                <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
+                    <p class="text-gray-700 mb-4">
+                        Using integration by parts formula: ∫u·dv = u·v - ∫v·du
+                    </p>
+                    <ul class="list-disc ml-6 mb-4 text-gray-700 space-y-2">
+                        <li>Let u = ln(x) and dv = x dx</li>
+                        <li>Then du = (1/x) dx and v = x²/2</li>
+                        <li>∫x·ln(x)dx = ln(x) · (x²/2) - ∫(x²/2) · (1/x) dx</li>
+                        <li>= (x²/2)·ln(x) - ∫(x/2) dx</li>
+                        <li>= (x²/2)·ln(x) - (x²/4) + C</li>
+                    </ul>
+                    <p class="text-gray-700 font-semibold">
+                        Final answer: ∫x·ln(x)dx = (x²/2)·ln(x) - (x²/4) + C
+                    </p>
+                </div>
+            </div>
+
+            <!-- Personal Notes -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold mb-2 text-gray-800">Personal Notes</h3>
+                <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
+                    <p class="text-gray-700">
+                        For integration by parts, remember to choose u and dv strategically. A good strategy is LIATE:
+                        choose u as the first function that appears in the LIATE order (Logarithmic, Inverse trigonometric,
+                        Algebraic, Trigonometric, Exponential), and dv as the remaining factor.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tags & Metadata -->
+            <div>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">calculus</span>
+                    <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">integration</span>
+                    <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">exam preparation</span>
+                </div>
+                <div class="flex justify-between text-sm text-gray-500">
+                    <span>Added: April 15, 2023</span>
+                    <span>Next Review: April 30, 2023</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next/Previous Navigation -->
+        <div class="flex justify-between max-w-4xl mx-auto">
+            <a href="#" class="bg-white shadow-md p-4 rounded-lg flex items-center hover:bg-gray-50 transition w-48">
+                <i class="fas fa-arrow-left mr-3 text-indigo-600"></i>
+                <div>
+                    <div class="text-xs text-gray-500">Previous</div>
+                    <div class="font-medium text-gray-800 truncate">Newton's Third Law</div>
+                </div>
+            </a>
+            <a href="#" class="bg-white shadow-md p-4 rounded-lg flex items-center hover:bg-gray-50 transition w-48 justify-end text-right">
+                <div>
+                    <div class="text-xs text-gray-500">Next</div>
+                    <div class="font-medium text-gray-800 truncate">Redox reaction balancing</div>
+                </div>
+                <i class="fas fa-arrow-right ml-3 text-indigo-600"></i>
+            </a>
+        </div>
+    </main>
+
+    <script>
+        // Handle Delete Button
+        document.getElementById('deleteBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to delete this error? This action cannot be undone.')) {
+                // In a real app, you would call an API to delete the error
+                alert('Error deleted successfully!');
+                window.location.href = 'collection.html';
+            }
+        });
+
+        // Handle Edit Button
+        document.getElementById('editBtn').addEventListener('click', function() {
+            window.location.href = 'add-error.html?edit=1';
+        });
+    </script>
+</body>
+</html> 

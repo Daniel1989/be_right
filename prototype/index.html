@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错题集APP原型</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+        }
+        .phone-container {
+            width: 390px;
+            height: 844px;
+            border-radius: 40px;
+            overflow: hidden;
+            border: 12px solid #1a1a1a;
+            position: relative;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+            background-color: white;
+        }
+        .status-bar {
+            height: 44px;
+            background-color: #000;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            align-items: center;
+            font-size: 14px;
+        }
+        .iframe-content {
+            height: calc(100% - 44px - 83px);
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 30px;
+            background-color: #1a1a1a;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            z-index: 10;
+        }
+        .tab-bar {
+            height: 83px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 20px;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8e8e93;
+            font-size: 10px;
+        }
+        .tab-item.active {
+            color: #007aff;
+        }
+        .tab-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        .prototype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(410px, 1fr));
+            gap: 30px;
+            padding: 30px;
+        }
+        .prototype-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .prototype-label {
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-white py-6 shadow-sm">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold text-gray-800">错题集APP原型展示</h1>
+            <p class="text-gray-600 mt-2">高保真UI原型，用于小学升学和高中学生的错题收集与学习应用</p>
+        </div>
+    </header>
+
+    <div class="prototype-grid">
+        <!-- 登录/注册屏幕 -->
+        <div class="prototype-item">
+            <div class="phone-container">
+                <div class="phone-notch"></div>
+                <div class="status-bar">
+                    <span>20:49</span>
+                    <div>
+                        <span><i class="fas fa-signal"></i></span>
+                        <span class="ml-1"><i class="fas fa-wifi"></i></span>
+                        <span class="ml-1"><i class="fas fa-battery-full"></i></span>
+                    </div>
+                </div>
+                <div class="iframe-content">
+                    <iframe src="login.html" frameborder="0"></iframe>
+                </div>
+            </div>
+            <div class="prototype-label">登录/注册</div>
+        </div>
+
+        <!-- 主页/首页 -->
+        <div class="prototype-item">
+            <div class="phone-container">
+                <div class="phone-notch"></div>
+                <div class="status-bar">
+                    <span>20:49</span>
+                    <div>
+                        <span><i class="fas fa-signal"></i></span>
+                        <span class="ml-1"><i class="fas fa-wifi"></i></span>
+                        <span class="ml-1"><i class="fas fa-battery-full"></i></span>
+                    </div>
+                </div>
+                <div class="iframe-content">
+                    <iframe src="home.html" frameborder="0"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item active">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-book"></i>
+                        <span>错题集</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>添加</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>数据</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-user"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prototype-label">首页</div>
+        </div>
+
+        <!-- 错题集列表 -->
+        <div class="prototype-item">
+            <div class="phone-container">
+                <div class="phone-notch"></div>
+                <div class="status-bar">
+                    <span>20:49</span>
+                    <div>
+                        <span><i class="fas fa-signal"></i></span>
+                        <span class="ml-1"><i class="fas fa-wifi"></i></span>
+                        <span class="ml-1"><i class="fas fa-battery-full"></i></span>
+                    </div>
+                </div>
+                <div class="iframe-content">
+                    <iframe src="collection.html" frameborder="0"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-book"></i>
+                        <span>错题集</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>添加</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>数据</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-user"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prototype-label">错题集列表</div>
+        </div>
+
+        <!-- 添加错题 -->
+        <div class="prototype-item">
+            <div class="phone-container">
+                <div class="phone-notch"></div>
+                <div class="status-bar">
+                    <span>20:49</span>
+                    <div>
+                        <span><i class="fas fa-signal"></i></span>
+                        <span class="ml-1"><i class="fas fa-wifi"></i></span>
+                        <span class="ml-1"><i class="fas fa-battery-full"></i></span>
+                    </div>
+                </div>
+                <div class="iframe-content">
+                    <iframe src="add_error.html" frameborder="0"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-book"></i>
+                        <span>错题集</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>添加</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>数据</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-user"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prototype-label">添加错题</div>
+        </div>
+
+        <!-- 错题详情 -->
+        <div class="prototype-item">
+            <div class="phone-container">
+                <div class="phone-notch"></div>
+                <div class="status-bar">
+                    <span>20:49</span>
+                    <div>
+                        <span><i class="fas fa-signal"></i></span>
+                        <span class="ml-1"><i class="fas fa-wifi"></i></span>
+                        <span class="ml-1"><i class="fas fa-battery-full"></i></span>
+                    </div>
+                </div>
+                <div class="iframe-content">
+                    <iframe src="error_detail.html" frameborder="0"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-book"></i>
+                        <span>错题集</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>添加</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>数据</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-user"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prototype-label">错题详情</div>
+        </div>
+
+        <!-- 数据分析 -->
+        <div class="prototype-item">
+            <div class="phone-container">
+                <div class="phone-notch"></div>
+                <div class="status-bar">
+                    <span>20:49</span>
+                    <div>
+                        <span><i class="fas fa-signal"></i></span>
+                        <span class="ml-1"><i class="fas fa-wifi"></i></span>
+                        <span class="ml-1"><i class="fas fa-battery-full"></i></span>
+                    </div>
+                </div>
+                <div class="iframe-content">
+                    <iframe src="analytics.html" frameborder="0"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-book"></i>
+                        <span>错题集</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>添加</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>数据</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-user"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prototype-label">数据分析</div>
+        </div>
+
+        <!-- 个人中心 -->
+        <div class="prototype-item">
+            <div class="phone-container">
+                <div class="phone-notch"></div>
+                <div class="status-bar">
+                    <span>20:49</span>
+                    <div>
+                        <span><i class="fas fa-signal"></i></span>
+                        <span class="ml-1"><i class="fas fa-wifi"></i></span>
+                        <span class="ml-1"><i class="fas fa-battery-full"></i></span>
+                    </div>
+                </div>
+                <div class="iframe-content">
+                    <iframe src="profile.html" frameborder="0"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-book"></i>
+                        <span>错题集</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>添加</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>数据</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-user"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prototype-label">个人中心</div>
+        </div>
+
+        <!-- 学习模式 -->
+        <div class="prototype-item">
+            <div class="phone-container">
+                <div class="phone-notch"></div>
+                <div class="status-bar">
+                    <span>20:49</span>
+                    <div>
+                        <span><i class="fas fa-signal"></i></span>
+                        <span class="ml-1"><i class="fas fa-wifi"></i></span>
+                        <span class="ml-1"><i class="fas fa-battery-full"></i></span>
+                    </div>
+                </div>
+                <div class="iframe-content">
+                    <iframe src="study_mode.html" frameborder="0"></iframe>
+                </div>
+                <div class="tab-bar">
+                    <div class="tab-item">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                    </div>
+                    <div class="tab-item active">
+                        <i class="fas fa-book"></i>
+                        <span>错题集</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>添加</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>数据</span>
+                    </div>
+                    <div class="tab-item">
+                        <i class="fas fa-user"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+            </div>
+            <div class="prototype-label">学习模式(Anki)</div>
+        </div>
+    </div>
+</body>
+</html> 

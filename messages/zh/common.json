@@ -1,0 +1,72 @@
+{
+  "app": {
+    "title": "马上到",
+    "description": "您的个人任务管理器",
+    "greeting": "您好，欢迎使用马上到！"
+  },
+  "navigation": {
+    "home": "首页",
+    "tasks": "任务",
+    "settings": "设置",
+    "profile": "我的",
+    "collection": "错题集",
+    "add": "添加",
+    "stats": "数据"
+  },
+  "actions": {
+    "add": "添加",
+    "edit": "编辑",
+    "delete": "删除",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认"
+  },
+  "form": {
+    "required": "此字段为必填项",
+    "email": {
+      "invalid": "请输入有效的电子邮件地址"
+    },
+    "password": {
+      "tooShort": "密码长度必须至少为8个字符"
+    }
+  },
+  "auth": {
+    "login": {
+      "tagline": "登录您的账户以继续操作",
+      "email": "邮箱",
+      "emailPlaceholder": "请输入您的邮箱",
+      "password": "密码",
+      "passwordPlaceholder": "请输入您的密码",
+      "forgotPassword": "忘记密码?",
+      "submit": "登录",
+      "loggingIn": "正在登录...",
+      "orContinueWith": "或继续使用",
+      "noAccount": "还没有账户?",
+      "register": "立即注册",
+      "invalidCredentials": "邮箱或密码不正确",
+      "error": "登录过程中发生错误"
+    },
+    "register": {
+      "tagline": "创建新账户",
+      "createAccount": "创建您的账户",
+      "name": "姓名",
+      "namePlaceholder": "请输入您的姓名",
+      "email": "邮箱",
+      "emailPlaceholder": "请输入您的邮箱",
+      "password": "密码",
+      "passwordPlaceholder": "请输入您的密码",
+      "confirmPassword": "确认密码",
+      "confirmPasswordPlaceholder": "请再次输入您的密码",
+      "submit": "注册",
+      "registering": "正在注册...",
+      "creating": "正在创建账户...",
+      "orContinueWith": "或继续使用",
+      "alreadyHaveAccount": "已有账户?",
+      "login": "登录",
+      "emailInUse": "该邮箱已被注册",
+      "error": "注册过程中发生错误",
+      "passwordsDoNotMatch": "两次输入的密码不一致",
+      "passwordTooShort": "密码长度必须至少为8个字符"
+    }
+  }
+} 
