@@ -2,7 +2,7 @@
 
 import { prisma } from '../prisma';
 import { z } from 'zod';
-import { hash, compare } from 'bcrypt';
+import { hash, compare } from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { sign, verify } from 'jsonwebtoken';
 import { revalidatePath } from 'next/cache';

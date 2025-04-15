@@ -67,3 +67,12 @@ pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+
+
+## bcrypt的问题
+
+bcrypt 是一个原生依赖包，需要编译。如果你是在 CentOS 环境中，很可能缺少一些编译环境。
+
+### 解决方案
+1. npm rebuild bcrypt
+2. 使用 bcryptjs替换
