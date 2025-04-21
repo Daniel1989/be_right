@@ -197,11 +197,14 @@ export default function AddPage() {
       const formData = new FormData();
       formData.append('image', file);
       
-      // Upload using FormData
-      await uploadImageFile(formData);
+      // Upload using FormData (which now automatically calls analyzeImage)
+      const uploadedImage = await uploadImageFile(formData);
       
       // Refresh recent images
       fetchRecentImages();
+      
+      // Switch to manual mode to view the analysis results
+      setActiveSource('manual');
     } catch (err) {
       console.error('Error taking photo:', err);
       setError('Failed to capture or upload image');
@@ -223,11 +226,14 @@ export default function AddPage() {
       const uploadForm = new FormData();
       uploadForm.append('image', file);
       
-      // Upload using FormData
-      await uploadImageFile(uploadForm);
+      // Upload using FormData (which now automatically calls analyzeImage)
+      const uploadedImage = await uploadImageFile(uploadForm);
       
       // Refresh recent images
       fetchRecentImages();
+      
+      // Switch to manual mode to view the analysis results
+      setActiveSource('manual');
     } catch (err) {
       console.error('Error uploading file:', err);
       setError('Failed to upload image');
@@ -266,6 +272,9 @@ export default function AddPage() {
           }
           return updated;
         });
+        
+        // Automatically analyze the uploaded image
+        await analyzeImage(data.data.id, data.data.url);
       }
       
       return data.data;
@@ -400,18 +409,43 @@ export default function AddPage() {
     }
   };
   
-  const analyzeImage = async (imageId: string) => {
+  const analyzeImage = async (imageId: string, imageUrl?: string) => {
     try {
       setIsAnalyzing(true);
       setAnalysisError('');
       
-      // Find image URL
-      const image = recentImages.find(img => img.id === imageId);
-      if (!image) {
+      // Try to find image from recentImages
+      let imageToAnalyze = recentImages.find(img => img.id === imageId);
+      
+      // If not found in recentImages but we have the URL from a fresh upload, use that
+      if (!imageToAnalyze && imageUrl) {
+        imageToAnalyze = {
+          id: imageId,
+          url: imageUrl,
+          createdAt: new Date().toISOString()
+        };
+      }
+      
+      // If still not found, fetch the image directly
+      if (!imageToAnalyze) {
+        try {
+          const response = await fetch(`/${locale}/api/images?imageId=${imageId}`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.data) {
+              imageToAnalyze = data.data;
+            }
+          }
+        } catch (fetchError) {
+          console.error('Error fetching image details:', fetchError);
+        }
+      }
+      
+      if (!imageToAnalyze) {
         throw new Error('Image not found');
       }
       
-      console.log('Analyzing image:', image.url);
+      console.log('Analyzing image:', imageToAnalyze.url);
       
       // Call the analysis API
       const response = await fetch(`/${locale}/api/analyze-image`, {
@@ -419,7 +453,7 @@ export default function AddPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ imageUrl: image.url }),
+        body: JSON.stringify({ imageUrl: imageToAnalyze.url }),
       });
       
       if (!response.ok) {
@@ -766,6 +800,9 @@ export default function AddPage() {
   };
 
   const editImage = (imageId: string) => {
+    // Find the image from recentImages
+    const image = recentImages.find(img => img.id === imageId);
+    
     // Set the current image ID to the current form's imageIds array
     setFormData(prev => {
       const updated = [...prev];
@@ -779,7 +816,7 @@ export default function AddPage() {
     });
     
     // Analyze the image with OpenAI
-    analyzeImage(imageId);
+    analyzeImage(imageId, image?.url);
   };
 
   return (
