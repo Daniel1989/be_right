@@ -326,7 +326,7 @@ export default function AddPage() {
       
       // Navigate if all questions are submitted
       if (formData.length === 1) {
-        router.push(`/${locale}/questions`);
+        router.push(`/${locale}/collection`);
       }
     } catch (err) {
       console.error('Error saving question:', err);
@@ -702,57 +702,67 @@ export default function AddPage() {
       return;
     }
     
-    setIsLoading(true);
-    let failures = 0;
-    
-    for (let i = 0; i < formData.length; i++) {
-      try {
-        const question = formData[i];
-        
-        // Skip incomplete questions
-        if (!question.subjectId || !question.content) {
-          failures++;
-          continue;
-        }
-        
-        const response = await fetch(`/${locale}/api/questions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(question),
-        });
-        
-        if (!response.ok) {
-          failures++;
-        }
-      } catch (err) {
-        failures++;
-        console.error('Error submitting question:', err);
+    try {
+      setIsLoading(true);
+      
+      // Filter out incomplete questions
+      const validQuestions = formData.filter(
+        question => question.subjectId && question.content
+      );
+      
+      if (validQuestions.length === 0) {
+        setError('No valid questions to submit. Please complete at least one question.');
+        setIsLoading(false);
+        return;
       }
+      
+      // Use the batch API by sending the array of questions
+      const response = await fetch(`/${locale}/api/questions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(validQuestions),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit questions');
+      }
+      
+      const result = await response.json();
+      
+      // Show summary of the results
+      if (result.success) {
+        const { total, successful, failed } = result.data;
+        if (failed > 0) {
+          alert(`已保存 ${successful} 个问题，${failed} 个问题保存失败。`);
+        } else {
+          alert(`成功保存了 ${successful} 个问题！`);
+        }
+      } else {
+        throw new Error(result.error || 'Failed to submit questions');
+      }
+      
+      // Reset form with one empty question
+      setFormData([{
+        subjectId: '',
+        content: '',
+        wrongAnswer: '',
+        rightAnswer: '',
+        difficulty: 3,
+        imageIds: [],
+      }]);
+      setCurrentQuestionIndex(0);
+      
+      // Redirect to questions page
+      router.push(`/${locale}/collection`);
+    } catch (err) {
+      console.error('Error submitting questions:', err);
+      setError(err instanceof Error ? err.message : 'Failed to submit questions');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
-    
-    if (failures > 0) {
-      alert(`已保存 ${formData.length - failures} 个问题，${failures} 个问题保存失败。`);
-    } else {
-      alert(`成功保存了 ${formData.length} 个问题！`);
-    }
-    
-    // Reset form with one empty question
-    setFormData([{
-      subjectId: '',
-      content: '',
-      wrongAnswer: '',
-      rightAnswer: '',
-      difficulty: 3,
-      imageIds: [],
-    }]);
-    setCurrentQuestionIndex(0);
-    
-    // Redirect to questions page
-    router.push(`/${locale}/questions`);
   };
 
   const editImage = (imageId: string) => {

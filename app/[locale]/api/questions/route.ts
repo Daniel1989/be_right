@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
 }
 
 /**
- * Create a new question
+ * Create a new question or multiple questions in batch
  */
 export async function POST(request: NextRequest) {
   try {
@@ -114,79 +114,273 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     
-    const { 
-      title, 
-      content, 
-      wrongAnswer, 
-      rightAnswer, 
-      subjectId, 
-      difficulty = 3,
-      imageIds = [] 
-    } = body;
+    // Check if it's a batch operation (array of questions)
+    const isBatchOperation = Array.isArray(body);
+    
+    if (isBatchOperation) {
+      return await handleBatchQuestions(body, userData.id);
+    } else {
+      return await handleSingleQuestion(body, userData.id);
+    }
+  } catch (error) {
+    console.error('Error creating question(s):', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to create question(s)' },
+      { status: 500 }
+    );
+  }
+}
 
-    // Validate required fields
-    if (!title || !content || !subjectId) {
-      return NextResponse.json(
-        { success: false, error: 'Title, content, and subject are required' },
-        { status: 400 }
-      );
+/**
+ * Handle creating a single question
+ */
+async function handleSingleQuestion(data: any, userId: string) {
+  const { 
+    content, 
+    wrongAnswer, 
+    rightAnswer, 
+    subjectId, 
+    difficulty = 3,
+    imageIds = [] 
+  } = data;
+
+  // Validate required fields
+  if (!content || !subjectId) {
+    return NextResponse.json(
+      { success: false, error: 'Content and subject are required' },
+      { status: 400 }
+    );
+  }
+  
+  // Validate subject exists
+  const subject = await prisma.subject.findUnique({
+    where: { id: subjectId }
+  });
+  
+  if (!subject) {
+    return NextResponse.json(
+      { success: false, error: 'Invalid subject' },
+      { status: 400 }
+    );
+  }
+  
+  // Create the question
+  const question = await prisma.question.create({
+    data: {
+      text: content,
+      answer: rightAnswer || '',
+      notes: wrongAnswer || '',
+      difficulty: difficulty.toString(),
+      userId: userId,
+      subjectId
     }
-    
-    // Validate subject exists
-    const subject = await prisma.subject.findUnique({
-      where: { id: subjectId }
-    });
-    
-    if (!subject) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid subject' },
-        { status: 400 }
-      );
-    }
-    
-    // Create the question - the text field contains the main content, including the title
-    const question = await prisma.question.create({
+  });
+  
+  // If there are associated images, connect them to the question
+  if (imageIds.length > 0) {
+    await prisma.questionImage.updateMany({
+      where: {
+        id: {
+          in: imageIds
+        },
+        userId: userId // Only update images owned by this user
+      },
       data: {
-        text: content,  // Schema uses 'text' for main content
-        answer: rightAnswer,  // Changed from rightAnswer to answer to match schema
-        notes: wrongAnswer,   // Use notes for wrongAnswer
-        difficulty: difficulty.toString(),  // Convert to string as per schema
-        userId: userData.id,
-        subjectId
+        questionId: question.id
+      }
+    });
+  }
+  
+  // Return the created question with relations
+  const createdQuestion = await prisma.question.findUnique({
+    where: { id: question.id },
+    include: {
+      subject: true,
+      images: true
+    }
+  });
+  
+  return NextResponse.json({
+    success: true,
+    data: createdQuestion
+  });
+}
+
+/**
+ * Handle creating multiple questions in a batch
+ */
+async function handleBatchQuestions(questionsData: any[], userId: string) {
+  const results = {
+    success: true,
+    data: {
+      total: questionsData.length,
+      successful: 0,
+      failed: 0,
+      createdQuestions: [] as any[]
+    }
+  };
+  
+  // Check if any questions were provided
+  if (questionsData.length === 0) {
+    return NextResponse.json({
+      success: false, 
+      error: 'No questions provided for batch creation'
+    }, { status: 400 });
+  }
+  
+  // Process each question in the batch
+  for (const questionData of questionsData) {
+    try {
+      const { 
+        content, 
+        wrongAnswer, 
+        rightAnswer, 
+        subjectId, 
+        difficulty = 3,
+        imageIds = [] 
+      } = questionData;
+      
+      // Skip questions with missing required fields
+      if (!content || !subjectId) {
+        results.data.failed++;
+        continue;
+      }
+      
+      // Validate subject exists
+      const subject = await prisma.subject.findUnique({
+        where: { id: subjectId }
+      });
+      
+      if (!subject) {
+        results.data.failed++;
+        continue;
+      }
+      
+      // Create the question
+      const question = await prisma.question.create({
+        data: {
+          text: content,
+          answer: rightAnswer || '',
+          notes: wrongAnswer || '',
+          difficulty: difficulty.toString(),
+          userId: userId,
+          subjectId
+        }
+      });
+      
+      // If there are associated images, connect them to the question
+      if (imageIds.length > 0) {
+        await prisma.questionImage.updateMany({
+          where: {
+            id: {
+              in: imageIds
+            },
+            userId: userId
+          },
+          data: {
+            questionId: question.id
+          }
+        });
+      }
+      
+      // Get the created question with relations
+      const createdQuestion = await prisma.question.findUnique({
+        where: { id: question.id },
+        include: {
+          subject: true,
+          images: true
+        }
+      });
+      
+      if (createdQuestion) {
+        results.data.successful++;
+        results.data.createdQuestions.push(createdQuestion);
+      } else {
+        results.data.failed++;
+      }
+    } catch (error) {
+      console.error('Error creating question in batch:', error);
+      results.data.failed++;
+    }
+  }
+  
+  // If all questions failed, return an error
+  if (results.data.successful === 0) {
+    return NextResponse.json({
+      success: false,
+      error: 'Failed to create any questions in the batch'
+    }, { status: 500 });
+  }
+  
+  return NextResponse.json(results);
+}
+
+/**
+ * Delete a question
+ */
+export async function DELETE(request: NextRequest) {
+  try {
+    // Get current user from cookie
+    const cookieStore = await cookies();
+    const authToken = cookieStore.get('auth-token');
+    
+    if (!authToken) {
+      return NextResponse.json(
+        { success: false, error: 'Not authenticated' },
+        { status: 401 }
+      );
+    }
+    
+    const userData = JSON.parse(authToken.value);
+    
+    if (!userData || !userData.id) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid authentication' },
+        { status: 401 }
+      );
+    }
+
+    // Parse request body
+    const body = await request.json();
+    const { questionId } = body;
+    
+    if (!questionId) {
+      return NextResponse.json(
+        { success: false, error: 'Question ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    // Verify the question exists and belongs to the user
+    const question = await prisma.question.findFirst({
+      where: {
+        id: questionId,
+        userId: userData.id
       }
     });
     
-    // If there are associated images, connect them to the question
-    if (imageIds.length > 0) {
-      await prisma.questionImage.updateMany({
-        where: {
-          id: {
-            in: imageIds
-          }
-        },
-        data: {
-          questionId: question.id
-        }
-      });
+    if (!question) {
+      return NextResponse.json(
+        { success: false, error: 'Question not found or you do not have permission' },
+        { status: 404 }
+      );
     }
     
-    // Return the created question with relations
-    const createdQuestion = await prisma.question.findUnique({
-      where: { id: question.id },
-      include: {
-        subject: true,
-        images: true
+    // Delete the question
+    await prisma.question.delete({
+      where: {
+        id: questionId
       }
     });
     
     return NextResponse.json({
       success: true,
-      data: createdQuestion
+      message: 'Question deleted successfully'
     });
   } catch (error) {
-    console.error('Error creating question:', error);
+    console.error('Error deleting question:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to create question' },
+      { success: false, error: 'Failed to delete question' },
       { status: 500 }
     );
   }
