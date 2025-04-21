@@ -17,21 +17,34 @@ const intlMiddleware = createIntlMiddleware({
   }
 });
 
-// Define public routes that don't require authentication
-const publicRoutes = [
+// Define paths that don't require authentication
+const PUBLIC_PATHS = [
+  '/api/auth/login',
+  '/api/auth/register',
+  '/api/auth/logout',
   '/auth/login',
   '/auth/register',
   '/auth/forgot-password',
   '/auth/reset-password',
+  '/',
+  '/about',
+  '/contact',
+  '/terms',
+  '/privacy',
 ];
 
-// API routes that should be accessible without authentication
-const publicApiRoutes = [
-  '/api/auth/login',
-  '/api/auth/register',
-  '/api/auth/forgot-password',
-  '/api/auth/reset-password',
-];
+// Check if path is public (doesn't require authentication)
+function isPublicPath(path: string): boolean {
+  return PUBLIC_PATHS.some(publicPath => 
+    path === publicPath || 
+    path.startsWith('/api/auth/') || 
+    path.startsWith('/_next/') || 
+    path.startsWith('/static/') ||
+    path.startsWith('/uploads/') ||
+    path.startsWith('/favicon') ||
+    path.includes('.') // Skip file requests
+  );
+}
 
 /**
  * Get the correct base URL considering proxy servers (e.g., Nginx)
@@ -49,57 +62,40 @@ function getBaseUrl(request: NextRequest): string {
 
 // Middleware function
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+  const { pathname } = request.nextUrl;
   
-  // Skip middleware for public API routes
-  if (publicApiRoutes.some(route => pathname.startsWith(route))) {
-    return NextResponse.next();
-  }
-  
-  // Handle /api/auth/me and /api/auth/logout routes
-  if (pathname === '/api/auth/me' || pathname === '/api/auth/logout') {
-    // These routes require authentication but shouldn't redirect to login
-    const authToken = request.cookies.get('auth-token');
-    if (!authToken && pathname === '/api/auth/me') {
-      // For /api/auth/me, just return a 401 response if not authenticated
-      return NextResponse.json(
-        { success: false, error: 'Not authenticated' },
-        { status: 401 }
-      );
-    }
-    return NextResponse.next();
-  }
-  
-  // Public paths are accessible without authentication
-  if (publicRoutes.some(route => 
-    pathname.includes(route) || pathname === '/' || pathname === '/about'
-  )) {
+  // Skip middleware for public paths
+  if (isPublicPath(pathname)) {
     return intlMiddleware(request);
   }
   
-  // Check if user has auth token
-  const authToken = request.cookies.get('auth-token');
+  // Get auth token from cookie
+  const authToken = request.cookies.get('auth-token')?.value;
   
-  // If no auth token, redirect to login page
+  // If no token and accessing protected route, redirect to login
   if (!authToken) {
-    // Extract locale from URL
     const locale = pathname.split('/')[1] || defaultLocale;
     
-    // Get base URL considering proxy configuration
+    // If API request, return 401 Unauthorized
+    if (pathname.startsWith('/api/')) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+    
+    // For non-API requests, redirect to login
     const baseUrl = getBaseUrl(request);
     const loginUrl = new URL(`/${locale}/auth/login`, baseUrl);
     
-    // Add the current path as a callbackUrl parameter to redirect after login
-    // Use the proper base URL for the callback URL as well
+    // Add the current path as a callbackUrl parameter
     const currentPath = pathname + request.nextUrl.search;
-    const fullCurrentUrl = `${baseUrl}${currentPath}`;
-    
-    loginUrl.searchParams.set('callbackUrl', encodeURIComponent(fullCurrentUrl));
+    loginUrl.searchParams.set('callbackUrl', encodeURIComponent(currentPath));
     
     return NextResponse.redirect(loginUrl);
   }
   
-  // User is authenticated, proceed with intl middleware
+  // Continue to protected route if token exists
   return intlMiddleware(request);
 }
 

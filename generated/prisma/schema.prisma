@@ -13,14 +13,20 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(uuid())
-  email      String     @unique
-  name       String?
-  password   String
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  tasks      Task[]
-  categories Category[]
+  id             String          @id @default(uuid())
+  email          String          @unique
+  name           String?
+  avatar         String?
+  password       String
+  isActive       Boolean         @default(true)
+  lastLogin      DateTime?
+  subjects       Subject[]
+  questions      Question[]
+  questionImages QuestionImage[]
+  tasks          Task[]
+  categories     Category[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model Task {
@@ -59,4 +65,59 @@ enum Priority {
   LOW
   MEDIUM
   HIGH
+}
+
+// Subject represents academic subjects like math, physics, etc.
+model Subject {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  color       String?
+  icon        String?
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+// Question model for error questions
+model Question {
+  id         String          @id @default(uuid())
+  text       String
+  answer     String?
+  difficulty String?         @default("MEDIUM") // EASY, MEDIUM, HARD
+  status     String          @default("PENDING") // PENDING, SOLVED, SKIPPED, REVIEWED
+  notes      String?
+  subjectId  String
+  subject    Subject         @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images     QuestionImage[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([subjectId])
+}
+
+// QuestionImage model for storing images related to questions
+model QuestionImage {
+  id               String    @id @default(uuid())
+  url              String
+  localPath        String?
+  textContent      String?
+  analyzedContent  String?
+  processingStatus String    @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED, ANALYZING
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId       String?
+  question         Question? @relation(fields: [questionId], references: [id], onDelete: SetNull)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([questionId])
 }

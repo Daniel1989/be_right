@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import { hash } from 'bcryptjs';
-import { prisma } from '@/app/lib/prisma';
 import { cookies } from 'next/headers';
+import { prisma } from '@/app/lib/prisma';
+import { hash } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
+import { z } from 'zod';
 
+// Constants
 const SALT_ROUNDS = 10;
+const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret-key';
+const JWT_EXPIRES_IN = '7d';
 
+// Validation schema
 const UserRegistrationSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
@@ -59,6 +64,11 @@ export async function POST(request: NextRequest) {
       email: newUser.email
     };
     
+    // Generate JWT token
+    const token = sign(userData, JWT_SECRET, {
+      expiresIn: JWT_EXPIRES_IN
+    });
+    
     // Set authentication cookie
     const cookieStore = await cookies();
     cookieStore.set('auth-token', JSON.stringify(userData), {
@@ -71,12 +81,13 @@ export async function POST(request: NextRequest) {
     // Return success response
     return NextResponse.json({
       success: true,
-      user: userData
+      user: userData,
+      token
     });
   } catch (error) {
     console.error('Registration error:', error);
     
-    // Handle Zod validation errors (should be caught above, but just in case)
+    // Handle Zod validation errors
     if (error instanceof z.ZodError) {
       const firstError = error.errors[0];
       return NextResponse.json(

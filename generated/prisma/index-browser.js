@@ -118,7 +118,10 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   name: 'name',
+  avatar: 'avatar',
   password: 'password',
+  isActive: 'isActive',
+  lastLogin: 'lastLogin',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -145,6 +148,43 @@ exports.Prisma.CategoryScalarFieldEnum = {
   userId: 'userId'
 };
 
+exports.Prisma.SubjectScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  color: 'color',
+  icon: 'icon',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QuestionScalarFieldEnum = {
+  id: 'id',
+  text: 'text',
+  answer: 'answer',
+  difficulty: 'difficulty',
+  status: 'status',
+  notes: 'notes',
+  subjectId: 'subjectId',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QuestionImageScalarFieldEnum = {
+  id: 'id',
+  url: 'url',
+  localPath: 'localPath',
+  textContent: 'textContent',
+  analyzedContent: 'analyzedContent',
+  processingStatus: 'processingStatus',
+  userId: 'userId',
+  questionId: 'questionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -163,7 +203,10 @@ exports.Priority = exports.$Enums.Priority = {
 exports.Prisma.ModelName = {
   User: 'User',
   Task: 'Task',
-  Category: 'Category'
+  Category: 'Category',
+  Subject: 'Subject',
+  Question: 'Question',
+  QuestionImage: 'QuestionImage'
 };
 
 /**

@@ -1,29 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import { compare } from 'bcryptjs';
-import { prisma } from '@/app/lib/prisma';
 import { cookies } from 'next/headers';
+import { prisma } from '@/app/lib/prisma';
+import { compare } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
 
-const UserLoginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
+// JWT config
+const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret-key';
+const JWT_EXPIRES_IN = '7d';
 
 export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const body = await request.json();
-    
-    // Validate input data
-    const result = UserLoginSchema.safeParse(body);
-    if (!result.success) {
-      return NextResponse.json(
-        { success: false, error: result.error.errors[0].message },
-        { status: 400 }
-      );
-    }
-    
-    const { email, password } = result.data;
+    const { email, password } = body;
     
     // Find user in database
     const user = await prisma.user.findUnique({
@@ -53,7 +42,12 @@ export async function POST(request: NextRequest) {
       email: user.email
     };
     
-    // Set authentication cookie
+    // Generate JWT token
+    const token = sign(userData, JWT_SECRET, { 
+      expiresIn: JWT_EXPIRES_IN 
+    });
+    
+    // Set authentication cookie with the token
     const cookieStore = await cookies();
     cookieStore.set('auth-token', JSON.stringify(userData), {
       httpOnly: true,
@@ -62,10 +56,11 @@ export async function POST(request: NextRequest) {
       path: '/',
     });
     
-    // Return success response
+    // Return success response with token
     return NextResponse.json({
       success: true,
-      user: userData
+      user: userData,
+      token
     });
   } catch (error) {
     console.error('Login error:', error);
