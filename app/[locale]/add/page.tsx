@@ -30,6 +30,15 @@ type QuestionFormData = {
   imageIds: string[];
 };
 
+type AnalyzedQuestion = {
+  subjectName: string;
+  content: string;
+  wrongAnswer: string;
+  rightAnswer: string;
+  difficulty: number;
+  selected?: boolean; // Track selection state
+};
+
 export default function AddPage() {
   const t = useTranslations('navigation');
   const router = useRouter();
@@ -37,23 +46,32 @@ export default function AddPage() {
   const locale = pathname.split('/')[1] || 'en'; // Extract locale from path
   const [activeSource, setActiveSource] = useState<'camera' | 'gallery' | 'manual'>('camera');
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [subjectGroups, setSubjectGroups] = useState<{[key: string]: Subject[]}>({});
   const [recentImages, setRecentImages] = useState<QuestionImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [formData, setFormData] = useState<QuestionFormData>({
-    subjectId: '',
-    content: '',
-    wrongAnswer: '',
-    rightAnswer: '',
-    difficulty: 3,
-    imageIds: [],
-  });
+  const [formData, setFormData] = useState<QuestionFormData[]>([
+    {
+      subjectId: '',
+      content: '',
+      wrongAnswer: '',
+      rightAnswer: '',
+      difficulty: 3,
+      imageIds: [],
+    }
+  ]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   
   // Camera ref and state
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cameraActive, setCameraActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Add new state for multiple questions
+  const [analyzedQuestions, setAnalyzedQuestions] = useState<AnalyzedQuestion[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisError, setAnalysisError] = useState('');
   
   // Fetch subjects on mount
   useEffect(() => {
@@ -75,7 +93,31 @@ export default function AddPage() {
       const response = await fetch(`/${locale}/api/subjects`);
       const data = await response.json();
       if (data.success) {
-        setSubjects(data.data || []);
+        const allSubjects = data.data || [];
+        setSubjects(allSubjects);
+        
+        // Group subjects by level (小学/初中/高中)
+        const groups: {[key: string]: Subject[]} = {
+          '小学': [],
+          '初中': [],
+          '高中': [],
+          '其他': []
+        };
+        
+        allSubjects.forEach((subject: Subject) => {
+          // Check if the subject name contains a level identifier
+          if (subject.name.includes('小学')) {
+            groups['小学'].push(subject);
+          } else if (subject.name.includes('初中')) {
+            groups['初中'].push(subject);
+          } else if (subject.name.includes('高中')) {
+            groups['高中'].push(subject);
+          } else {
+            groups['其他'].push(subject);
+          }
+        });
+        
+        setSubjectGroups(groups);
       }
     } catch (err) {
       console.error('Error fetching subjects:', err);
@@ -212,12 +254,18 @@ export default function AddPage() {
       const data = await response.json();
       console.log('Upload success response:', data);
       
-      // Add the uploaded image ID to the form data
+      // Add the uploaded image ID to the current form data
       if (data.data && data.data.id) {
-        setFormData(prev => ({
-          ...prev,
-          imageIds: [...prev.imageIds, data.data.id]
-        }));
+        setFormData(prev => {
+          const updated = [...prev];
+          if (updated[currentQuestionIndex]) {
+            updated[currentQuestionIndex] = {
+              ...updated[currentQuestionIndex],
+              imageIds: [...updated[currentQuestionIndex].imageIds, data.data.id]
+            };
+          }
+          return updated;
+        });
       }
       
       return data.data;
@@ -230,7 +278,8 @@ export default function AddPage() {
   const handleSubmitQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.subjectId || !formData.content) {
+    const currentForm = formData[currentQuestionIndex];
+    if (!currentForm || !currentForm.subjectId || !currentForm.content) {
       setError('Subject and content are required');
       return;
     }
@@ -243,14 +292,7 @@ export default function AddPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          subjectId: formData.subjectId,
-          content: formData.content,
-          wrongAnswer: formData.wrongAnswer,
-          rightAnswer: formData.rightAnswer,
-          difficulty: formData.difficulty,
-          imageIds: formData.imageIds,
-        }),
+        body: JSON.stringify(currentForm),
       });
       
       if (!response.ok) {
@@ -258,17 +300,34 @@ export default function AddPage() {
         throw new Error(errorData.error || 'Failed to save question');
       }
       
-      // Reset form and navigate
-      setFormData({
-        subjectId: '',
-        content: '',
-        wrongAnswer: '',
-        rightAnswer: '',
-        difficulty: 3,
-        imageIds: [],
+      // Remove the submitted question from the form data array
+      setFormData(prev => {
+        const updated = [...prev];
+        updated.splice(currentQuestionIndex, 1);
+        // Add an empty form if all questions are submitted
+        if (updated.length === 0) {
+          updated.push({
+            subjectId: '',
+            content: '',
+            wrongAnswer: '',
+            rightAnswer: '',
+            difficulty: 3,
+            imageIds: [],
+          });
+        }
+        return updated;
       });
       
-      router.push(`/${locale}/questions`);
+      // Adjust the current index if needed
+      setCurrentQuestionIndex(prev => {
+        const newIndex = Math.min(prev, formData.length - 2);
+        return Math.max(0, newIndex);
+      });
+      
+      // Navigate if all questions are submitted
+      if (formData.length === 1) {
+        router.push(`/${locale}/questions`);
+      }
     } catch (err) {
       console.error('Error saving question:', err);
       setError(err instanceof Error ? err.message : 'Failed to save question');
@@ -279,11 +338,29 @@ export default function AddPage() {
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => {
+      const updated = [...prev];
+      if (updated[currentQuestionIndex]) {
+        updated[currentQuestionIndex] = {
+          ...updated[currentQuestionIndex],
+          [name]: value
+        };
+      }
+      return updated;
+    });
   };
   
   const setDifficulty = (level: number) => {
-    setFormData(prev => ({ ...prev, difficulty: level }));
+    setFormData(prev => {
+      const updated = [...prev];
+      if (updated[currentQuestionIndex]) {
+        updated[currentQuestionIndex] = {
+          ...updated[currentQuestionIndex],
+          difficulty: level
+        };
+      }
+      return updated;
+    });
   };
   
   const deleteImage = async (imageId: string) => {
@@ -307,11 +384,11 @@ export default function AddPage() {
         throw new Error(errorData.error || 'Failed to delete image');
       }
       
-      // Remove the deleted image ID from the form data
-      setFormData(prev => ({
-        ...prev,
-        imageIds: prev.imageIds.filter(id => id !== imageId)
-      }));
+      // Remove the deleted image ID from all form data entries
+      setFormData(prev => prev.map(form => ({
+        ...form,
+        imageIds: form.imageIds.filter(id => id !== imageId)
+      })));
       
       // Refresh recent images
       fetchRecentImages();
@@ -323,15 +400,376 @@ export default function AddPage() {
     }
   };
   
-  const editImage = (imageId: string) => {
-    // Set the current image ID to the form's imageIds array
-    setFormData(prev => ({ 
-      ...prev, 
-      imageIds: [imageId] 
-    }));
+  const analyzeImage = async (imageId: string) => {
+    try {
+      setIsAnalyzing(true);
+      setAnalysisError('');
+      
+      // Find image URL
+      const image = recentImages.find(img => img.id === imageId);
+      if (!image) {
+        throw new Error('Image not found');
+      }
+      
+      console.log('Analyzing image:', image.url);
+      
+      // Call the analysis API
+      const response = await fetch(`/${locale}/api/analyze-image`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageUrl: image.url }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Analysis error response:', errorData);
+        throw new Error(errorData.error || 'Failed to analyze image');
+      }
+      
+      const result = await response.json();
+      console.log('Analysis result:', result);
+      
+      if (!result.success) {
+        setAnalysisError(result.error || 'Analysis failed');
+        return;
+      }
+      
+      // Process analyzed questions and add directly to form data
+      const analyzedQuestions = result.data || [];
+      if (analyzedQuestions.length === 0) {
+        setAnalysisError('No questions detected in the image');
+        return;
+      }
+      
+      // Convert analyzed questions to form data format
+      const questionForms = analyzedQuestions.map((q: AnalyzedQuestion) => {
+        // Find subject ID by name
+        let matchedSubject: Subject | undefined;
+        
+        // First try to match by name
+        matchedSubject = subjects.find(s => 
+          s.name.toLowerCase() === q.subjectName.toLowerCase()
+        );
+        
+        // If no exact match, try to find a subject that contains the subjectName
+        if (!matchedSubject) {
+          // Check for common subject patterns and map to appropriate subjects
+          let subjectKeyword = q.subjectName.toLowerCase();
+          
+          // Map from detected keywords to likely subject areas
+          const subjectMapping: {[key: string]: string[]} = {
+            'math': ['数学', '算术'],
+            'mathematics': ['数学', '算术'],
+            'chinese': ['语文', '中文'],
+            'english': ['英语', '外语'],
+            'physics': ['物理'],
+            'chemistry': ['化学'],
+            'biology': ['生物'],
+            'history': ['历史'],
+            'geography': ['地理'],
+            'politics': ['政治'],
+            // Add more mappings as needed
+          };
+          
+          // Look for keyword matches
+          for (const [key, alternatives] of Object.entries(subjectMapping)) {
+            if (subjectKeyword.includes(key)) {
+              // Try to find a subject containing any of the alternative terms
+              for (const alt of alternatives) {
+                matchedSubject = subjects.find(s => s.name.includes(alt));
+                if (matchedSubject) break;
+              }
+              if (matchedSubject) break;
+            }
+          }
+          
+          // If still no match, just find anything that contains part of the name
+          if (!matchedSubject) {
+            matchedSubject = subjects.find(s => 
+              s.name.toLowerCase().includes(subjectKeyword) || 
+              subjectKeyword.includes(s.name.toLowerCase())
+            );
+          }
+        }
+        
+        // If still no match, use the first subject as fallback
+        if (!matchedSubject && subjects.length > 0) {
+          matchedSubject = subjects[0];
+        }
+        
+        // Get current image IDs
+        const currentImageIds = [imageId];
+        
+        // Convert to QuestionFormData format
+        return {
+          subjectId: matchedSubject?.id || '',
+          content: q.content,
+          wrongAnswer: q.wrongAnswer,
+          rightAnswer: q.rightAnswer,
+          difficulty: q.difficulty,
+          imageIds: currentImageIds,
+        };
+      });
+      
+      // Replace form data with new questions if current form is empty,
+      // otherwise add the new questions to the existing list
+      setFormData(prev => {
+        if (prev.length === 1 && 
+            !prev[0].subjectId && 
+            !prev[0].content && 
+            !prev[0].wrongAnswer && 
+            !prev[0].rightAnswer) {
+          return questionForms;
+        }
+        return [...prev, ...questionForms];
+      });
+      
+      // Set current question to the first new one
+      const newIndex = formData.length > 0 && formData[0].content 
+        ? formData.length 
+        : 0;
+      setCurrentQuestionIndex(newIndex);
+      
+      // Automatically switch to manual mode to edit
+      setActiveSource('manual');
+      
+    } catch (err) {
+      console.error('Error analyzing image:', err);
+      setAnalysisError(err instanceof Error ? err.message : 'Failed to analyze image');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+  
+  const toggleQuestionSelection = (index: number) => {
+    setAnalyzedQuestions(prev => 
+      prev.map((q, i) => i === index ? { ...q, selected: !q.selected } : q)
+    );
+  };
+  
+  const addSelectedQuestionsToQueue = () => {
+    // Get selected questions
+    const selectedQuestions = analyzedQuestions
+      .filter(q => q.selected)
+      .map((q: AnalyzedQuestion) => {
+        // Find subject ID by name - improved matching logic
+        let matchedSubject: Subject | undefined;
+        
+        // First try to match by name
+        matchedSubject = subjects.find(s => 
+          s.name.toLowerCase() === q.subjectName.toLowerCase()
+        );
+        
+        // If no exact match, try to find a subject that contains the subjectName
+        if (!matchedSubject) {
+          // Check for common subject patterns and map to appropriate subjects
+          let subjectKeyword = q.subjectName.toLowerCase();
+          
+          // Map from detected keywords to likely subject areas
+          const subjectMapping: {[key: string]: string[]} = {
+            'math': ['数学', '算术'],
+            'mathematics': ['数学', '算术'],
+            'chinese': ['语文', '中文'],
+            'english': ['英语', '外语'],
+            'physics': ['物理'],
+            'chemistry': ['化学'],
+            'biology': ['生物'],
+            'history': ['历史'],
+            'geography': ['地理'],
+            'politics': ['政治'],
+            // Add more mappings as needed
+          };
+          
+          // Look for keyword matches
+          for (const [key, alternatives] of Object.entries(subjectMapping)) {
+            if (subjectKeyword.includes(key)) {
+              // Try to find a subject containing any of the alternative terms
+              for (const alt of alternatives) {
+                matchedSubject = subjects.find(s => s.name.includes(alt));
+                if (matchedSubject) break;
+              }
+              if (matchedSubject) break;
+            }
+          }
+          
+          // If still no match, just find anything that contains part of the name
+          if (!matchedSubject) {
+            matchedSubject = subjects.find(s => 
+              s.name.toLowerCase().includes(subjectKeyword) || 
+              subjectKeyword.includes(s.name.toLowerCase())
+            );
+          }
+        }
+        
+        // If still no match, use the first subject as fallback
+        if (!matchedSubject && subjects.length > 0) {
+          matchedSubject = subjects[0];
+        }
+        
+        // Get current question's imageIds
+        const currentImageIds = formData[currentQuestionIndex]?.imageIds || [];
+        
+        // Convert to QuestionFormData format
+        return {
+          subjectId: matchedSubject?.id || '',
+          content: q.content,
+          wrongAnswer: q.wrongAnswer,
+          rightAnswer: q.rightAnswer,
+          difficulty: q.difficulty,
+          imageIds: [...currentImageIds], // Keep existing image IDs
+        };
+      });
     
-    // Switch to manual mode to edit the question details
-    setActiveSource('manual');
+    if (selectedQuestions.length === 0) {
+      setError('Please select at least one question');
+      return;
+    }
+    
+    // Add to formData
+    setFormData(prev => {
+      // If there's only one empty item, replace it
+      if (prev.length === 1 && 
+          !prev[0].subjectId && 
+          !prev[0].content && 
+          !prev[0].wrongAnswer && 
+          !prev[0].rightAnswer) {
+        return selectedQuestions;
+      }
+      // Otherwise add to the existing array
+      return [...prev, ...selectedQuestions];
+    });
+    
+    // Set current question to the first new one
+    setCurrentQuestionIndex(formData.length > 0 && formData[0].content ? formData.length : 0);
+    
+    // Clear analyzed questions
+    setAnalyzedQuestions([]);
+  };
+  
+  const selectQuestion = (index: number) => {
+    setCurrentQuestionIndex(index);
+  };
+  
+  const removeQuestion = (index: number) => {
+    setFormData(prev => {
+      const updated = prev.filter((_, i) => i !== index);
+      // Always have at least one form
+      if (updated.length === 0) {
+        updated.push({
+          subjectId: '',
+          content: '',
+          wrongAnswer: '',
+          rightAnswer: '',
+          difficulty: 3,
+          imageIds: [],
+        });
+      }
+      return updated;
+    });
+    
+    // Adjust current question index
+    setCurrentQuestionIndex(prev => {
+      if (prev >= index) {
+        return Math.max(0, prev - 1);
+      }
+      return prev;
+    });
+  };
+  
+  const addNewQuestion = () => {
+    // Add a new empty question to the form data
+    setFormData(prev => [
+      ...prev,
+      {
+        subjectId: '',
+        content: '',
+        wrongAnswer: '',
+        rightAnswer: '',
+        difficulty: 3,
+        imageIds: [...(prev[currentQuestionIndex]?.imageIds || [])], // Copy images from current question
+      }
+    ]);
+    
+    // Set current index to the new question
+    setCurrentQuestionIndex(formData.length);
+  };
+  
+  const handleSubmitAllQuestions = async () => {
+    if (formData.length === 0) {
+      setError('No questions to submit');
+      return;
+    }
+    
+    setIsLoading(true);
+    let failures = 0;
+    
+    for (let i = 0; i < formData.length; i++) {
+      try {
+        const question = formData[i];
+        
+        // Skip incomplete questions
+        if (!question.subjectId || !question.content) {
+          failures++;
+          continue;
+        }
+        
+        const response = await fetch(`/${locale}/api/questions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(question),
+        });
+        
+        if (!response.ok) {
+          failures++;
+        }
+      } catch (err) {
+        failures++;
+        console.error('Error submitting question:', err);
+      }
+    }
+    
+    setIsLoading(false);
+    
+    if (failures > 0) {
+      alert(`已保存 ${formData.length - failures} 个问题，${failures} 个问题保存失败。`);
+    } else {
+      alert(`成功保存了 ${formData.length} 个问题！`);
+    }
+    
+    // Reset form with one empty question
+    setFormData([{
+      subjectId: '',
+      content: '',
+      wrongAnswer: '',
+      rightAnswer: '',
+      difficulty: 3,
+      imageIds: [],
+    }]);
+    setCurrentQuestionIndex(0);
+    
+    // Redirect to questions page
+    router.push(`/${locale}/questions`);
+  };
+
+  const editImage = (imageId: string) => {
+    // Set the current image ID to the current form's imageIds array
+    setFormData(prev => {
+      const updated = [...prev];
+      if (updated[currentQuestionIndex]) {
+        updated[currentQuestionIndex] = {
+          ...updated[currentQuestionIndex],
+          imageIds: [imageId]
+        };
+      }
+      return updated;
+    });
+    
+    // Analyze the image with OpenAI
+    analyzeImage(imageId);
   };
 
   return (
@@ -560,123 +998,231 @@ export default function AddPage() {
         </div>
       )}
       
+      {/* Error message for analysis */}
+      {analysisError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+          {analysisError}
+          <button 
+            className="ml-2 text-red-700" 
+            onClick={() => setAnalysisError('')}
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        </div>
+      )}
+      
+      {/* Loading indicator for analysis */}
+      {isAnalyzing && (
+        <div className="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-3 rounded-lg mb-4 flex items-center">
+          <i className="fas fa-spinner fa-spin mr-2"></i>
+          Analyzing image with AI...
+        </div>
+      )}
+      
       {/* Manual Input UI */}
       {activeSource === 'manual' && (
         <div className="bg-white rounded-xl p-5 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">添加错题</h2>
           
-          <form className="space-y-4" onSubmit={handleSubmitQuestion}>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">科目</label>
-              <select 
-                name="subjectId"
-                value={formData.subjectId}
-                onChange={handleInputChange}
-                className="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              >
-                <option value="">选择科目</option>
-                {subjects.map(subject => (
-                  <option key={subject.id} value={subject.id}>
-                    {subject.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">题目内容</label>
-              <textarea 
-                name="content"
-                value={formData.content}
-                onChange={handleInputChange}
-                rows={4} 
-                className="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
-                placeholder="输入题目内容"
-              ></textarea>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">错误答案</label>
-              <textarea 
-                name="wrongAnswer"
-                value={formData.wrongAnswer}
-                onChange={handleInputChange}
-                rows={3} 
-                className="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
-                placeholder="输入错误答案"
-              ></textarea>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">正确答案</label>
-              <textarea 
-                name="rightAnswer"
-                value={formData.rightAnswer}
-                onChange={handleInputChange}
-                rows={3} 
-                className="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
-                placeholder="输入正确答案"
-              ></textarea>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">难度</label>
-              <div className="flex text-yellow-500">
-                {[1, 2, 3, 4, 5].map(level => (
-                  <i 
-                    key={level}
-                    className={`${level <= formData.difficulty ? 'fas' : 'far'} fa-star mr-1 cursor-pointer`}
-                    onClick={() => setDifficulty(level)}
-                  ></i>
-                ))}
-              </div>
-            </div>
-            
-            {formData.imageIds.length > 0 && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">已选图片</label>
-                <div className="flex gap-2">
-                  {formData.imageIds.map(id => {
-                    const image = recentImages.find(img => img.id === id);
-                    return image ? (
-                      <div key={id} className="relative w-20 h-20 rounded-md overflow-hidden">
-                        <Image 
-                          src={image.url}
-                          alt="Selected image"
-                          width={80}
-                          height={80}
-                          className="object-cover"
-                        />
-                        <button
-                          type="button"
-                          className="absolute top-0 right-0 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-bl-md"
-                          onClick={() => setFormData(prev => ({
-                            ...prev,
-                            imageIds: prev.imageIds.filter(imgId => imgId !== id)
-                          }))}
-                        >
-                          <i className="fas fa-times text-xs"></i>
-                        </button>
-                      </div>
-                    ) : null;
-                  })}
+          {/* Question tabs */}
+          {formData.length > 0 && (
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-medium">题目列表 ({formData.length})</h3>
+                <div className="flex space-x-2">
+                  <button 
+                    className="px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700"
+                    onClick={addNewQuestion}
+                  >
+                    新增题目
+                  </button>
+                  <button 
+                    className="px-3 py-1 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700"
+                    onClick={handleSubmitAllQuestions}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? '提交中...' : '提交全部'}
+                  </button>
                 </div>
               </div>
-            )}
-            
-            <div className="pt-4">
-              <button 
-                type="submit" 
-                disabled={isLoading || !formData.subjectId || !formData.content}
-                className={`w-full py-3 px-4 rounded-lg shadow-sm text-white font-medium 
-                  ${isLoading || !formData.subjectId || !formData.content 
-                    ? 'bg-indigo-400' 
-                    : 'bg-indigo-600 hover:bg-indigo-700'}`}
-              >
-                {isLoading ? '保存中...' : '保存错题'}
-              </button>
+              <div className="flex space-x-2 overflow-x-auto pb-2">
+                {formData.map((question, index) => (
+                  <div 
+                    key={index} 
+                    className={`flex-shrink-0 w-40 border rounded-lg p-2 cursor-pointer ${
+                      index === currentQuestionIndex 
+                        ? 'border-indigo-500 bg-indigo-50' 
+                        : 'border-gray-200'
+                    }`}
+                    onClick={() => selectQuestion(index)}
+                  >
+                    <div className="flex justify-between mb-1">
+                      <span className="text-xs font-medium text-gray-500">#{index + 1}</span>
+                      <button 
+                        className="text-xs text-red-500"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeQuestion(index);
+                        }}
+                      >
+                        <i className="fas fa-times"></i>
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-700 mb-1 truncate">{question.content || "空题目"}</p>
+                    <div className="flex justify-between items-center">
+                      <div className="text-yellow-500">
+                        {[1, 2, 3, 4, 5].map(level => (
+                          <i 
+                            key={level}
+                            className={`${level <= question.difficulty ? 'fas' : 'far'} fa-star text-xs`}
+                            style={{ fontSize: '0.6rem' }}
+                          ></i>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </form>
+          )}
+          
+          {/* Question Form */}
+          {formData.length > 0 && (
+            <form className="space-y-4" onSubmit={handleSubmitQuestion}>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">科目</label>
+                <select 
+                  name="subjectId"
+                  value={formData[currentQuestionIndex]?.subjectId || ''}
+                  onChange={handleInputChange}
+                  className="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                >
+                  <option value="">选择科目</option>
+                  
+                  {Object.keys(subjectGroups).map(level => (
+                    subjectGroups[level].length > 0 && (
+                      <optgroup key={level} label={level}>
+                        {subjectGroups[level].map(subject => (
+                          <option key={subject.id} value={subject.id}>
+                            {subject.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )
+                  ))}
+                  
+                  {/* Fallback to flat list if grouping doesn't work */}
+                  {Object.keys(subjectGroups).length === 0 && subjects.map(subject => (
+                    <option key={subject.id} value={subject.id}>
+                      {subject.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">题目内容</label>
+                <textarea 
+                  name="content"
+                  value={formData[currentQuestionIndex]?.content || ''}
+                  onChange={handleInputChange}
+                  rows={4} 
+                  className="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                  placeholder="输入题目内容"
+                ></textarea>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">错误答案</label>
+                <textarea 
+                  name="wrongAnswer"
+                  value={formData[currentQuestionIndex]?.wrongAnswer || ''}
+                  onChange={handleInputChange}
+                  rows={3} 
+                  className="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                  placeholder="输入错误答案"
+                ></textarea>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">正确答案</label>
+                <textarea 
+                  name="rightAnswer"
+                  value={formData[currentQuestionIndex]?.rightAnswer || ''}
+                  onChange={handleInputChange}
+                  rows={3} 
+                  className="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                  placeholder="输入正确答案"
+                ></textarea>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">难度</label>
+                <div className="flex text-yellow-500">
+                  {[1, 2, 3, 4, 5].map(level => (
+                    <i 
+                      key={level}
+                      className={`${level <= (formData[currentQuestionIndex]?.difficulty || 3) ? 'fas' : 'far'} fa-star mr-1 cursor-pointer`}
+                      onClick={() => setDifficulty(level)}
+                    ></i>
+                  ))}
+                </div>
+              </div>
+              
+              {formData[currentQuestionIndex]?.imageIds.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">已选图片</label>
+                  <div className="flex gap-2">
+                    {formData[currentQuestionIndex]?.imageIds.map(id => {
+                      const image = recentImages.find(img => img.id === id);
+                      return image ? (
+                        <div key={id} className="relative w-20 h-20 rounded-md overflow-hidden">
+                          <Image 
+                            src={image.url}
+                            alt="Selected image"
+                            width={80}
+                            height={80}
+                            className="object-cover"
+                          />
+                          <button
+                            type="button"
+                            className="absolute top-0 right-0 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-bl-md"
+                            onClick={() => {
+                              setFormData(prev => {
+                                const updated = [...prev];
+                                if (updated[currentQuestionIndex]) {
+                                  updated[currentQuestionIndex] = {
+                                    ...updated[currentQuestionIndex],
+                                    imageIds: updated[currentQuestionIndex].imageIds.filter(imgId => imgId !== id)
+                                  };
+                                }
+                                return updated;
+                              });
+                            }}
+                          >
+                            <i className="fas fa-times text-xs"></i>
+                          </button>
+                        </div>
+                      ) : null;
+                    })}
+                  </div>
+                </div>
+              )}
+              
+              <div className="pt-4">
+                <button 
+                  type="submit" 
+                  disabled={isLoading || !formData[currentQuestionIndex]?.subjectId || !formData[currentQuestionIndex]?.content}
+                  className={`w-full py-3 px-4 rounded-lg shadow-sm text-white font-medium 
+                    ${isLoading || !formData[currentQuestionIndex]?.subjectId || !formData[currentQuestionIndex]?.content 
+                      ? 'bg-indigo-400' 
+                      : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                >
+                  {isLoading ? '保存中...' : `保存当前题目 (${currentQuestionIndex + 1}/${formData.length})`}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       )}
     </div>
