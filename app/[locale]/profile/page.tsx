@@ -1,13 +1,21 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { logoutUser } from '@/app/lib/actions/user.actions';
 
 export default function ProfilePage() {
   const t = useTranslations('navigation');
 
   const handleLogout = async () => {
-    await logoutUser();
+    fetch('/api/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then(response => {
+      if (response.ok) {
+        window.location.href = '/';
+      }
+    });
   };
 
   return (

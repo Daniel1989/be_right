@@ -16,8 +16,9 @@ type Subject = {
 type QuestionImage = {
   id: string;
   url: string;
-  processingStatus: string;
+  processingStatus?: string;
   createdAt: string;
+  localPath?: string;
 };
 
 type QuestionFormData = {
@@ -83,10 +84,16 @@ export default function AddPage() {
   
   const fetchRecentImages = async () => {
     try {
+      console.log('Fetching recent images...');
       const response = await fetch(`/${locale}/api/images?limit=5`);
       const data = await response.json();
-      if (data.images) {
-        setRecentImages(data.images);
+      
+      console.log('Recent images response:', data);
+      
+      if (data.success && data.data) {
+        setRecentImages(data.data);
+      } else {
+        console.error('Invalid response format:', data);
       }
     } catch (err) {
       console.error('Error fetching recent images:', err);
@@ -132,10 +139,24 @@ export default function AddPage() {
       if (!ctx) return;
       
       ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL('image/jpeg');
       
-      // Upload image
-      await uploadImage(dataUrl);
+      // Convert canvas to Blob instead of data URL
+      const blob = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else throw new Error('Could not create image blob');
+        }, 'image/jpeg', 0.9);
+      });
+      
+      // Create a File object from the Blob
+      const file = new File([blob], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
+      
+      // Create FormData and upload
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      // Upload using FormData
+      await uploadImageFile(formData);
       
       // Refresh recent images
       fetchRecentImages();
@@ -173,41 +194,33 @@ export default function AddPage() {
     }
   };
   
-  const uploadImage = async (base64Data: string) => {
-    try {
-      const response = await fetch(`/${locale}/api/images`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ base64: base64Data.split(',')[1] }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to upload image');
-      }
-      
-      const data = await response.json();
-      return data.image;
-    } catch (err) {
-      console.error('Error uploading image:', err);
-      throw err;
-    }
-  };
-  
   const uploadImageFile = async (uploadForm: FormData) => {
     try {
+      console.log('Uploading image file to server...');
+      
       const response = await fetch(`/${locale}/api/images`, {
         method: 'POST',
         body: uploadForm,
       });
       
       if (!response.ok) {
-        throw new Error('Failed to upload image');
+        const errorData = await response.json();
+        console.error('Upload error response:', errorData);
+        throw new Error(errorData.error || 'Failed to upload image');
       }
       
       const data = await response.json();
-      return data.image;
+      console.log('Upload success response:', data);
+      
+      // Add the uploaded image ID to the form data
+      if (data.data && data.data.id) {
+        setFormData(prev => ({
+          ...prev,
+          imageIds: [...prev.imageIds, data.data.id]
+        }));
+      }
+      
+      return data.data;
     } catch (err) {
       console.error('Error uploading image file:', err);
       throw err;
@@ -276,21 +289,29 @@ export default function AddPage() {
   const deleteImage = async (imageId: string) => {
     try {
       setIsLoading(true);
-      // Instead of deleting, we'll set processingStatus to DELETED
+      
+      // Use the new DELETE method for image deletion
       const response = await fetch(`/${locale}/api/images`, {
-        method: 'PATCH',
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: imageId,
-          processingStatus: 'DELETED',
+          imageId: imageId,
         }),
       });
       
       if (!response.ok) {
-        throw new Error('Failed to delete image');
+        const errorData = await response.json();
+        console.error('Delete error response:', errorData);
+        throw new Error(errorData.error || 'Failed to delete image');
       }
+      
+      // Remove the deleted image ID from the form data
+      setFormData(prev => ({
+        ...prev,
+        imageIds: prev.imageIds.filter(id => id !== imageId)
+      }));
       
       // Refresh recent images
       fetchRecentImages();
@@ -435,7 +456,7 @@ export default function AddPage() {
                 />
                 <div className="absolute top-0 left-0 w-full h-full bg-black/30 flex flex-col justify-between p-2">
                   <div className="text-xs font-semibold text-white bg-black/50 self-start px-2 py-1 rounded-lg">
-                    {image.processingStatus}
+                    {image.processingStatus || 'UPLOADED'}
                   </div>
                   <div className="flex justify-between">
                     <button 

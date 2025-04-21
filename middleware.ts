@@ -34,15 +34,18 @@ const PUBLIC_PATHS = [
 ];
 
 // Check if path is public (doesn't require authentication)
-function isPublicPath(path: string): boolean {
-  return PUBLIC_PATHS.some(publicPath => 
-    path === publicPath || 
-    path.startsWith('/api/auth/') || 
+function isPublicPath(path: string, locale: string): boolean {
+  return PUBLIC_PATHS.some(publicPath => {
+    // console.log('publicPath', publicPath, path, `/${locale}${path}`);
+    return path === publicPath || 
+     path === `/${locale}${publicPath}` || 
+    path.startsWith(`/${locale}/api/auth/`) || 
     path.startsWith('/_next/') || 
     path.startsWith('/static/') ||
     path.startsWith('/uploads/') ||
     path.startsWith('/favicon') ||
     path.includes('.') // Skip file requests
+  }
   );
 }
 
@@ -63,18 +66,16 @@ function getBaseUrl(request: NextRequest): string {
 // Middleware function
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
+  const locale = pathname.split('/')[1] || defaultLocale;
   // Skip middleware for public paths
-  if (isPublicPath(pathname)) {
+  if (isPublicPath(pathname, locale)) {
     return intlMiddleware(request);
   }
-  
   // Get auth token from cookie
   const authToken = request.cookies.get('auth-token')?.value;
   
   // If no token and accessing protected route, redirect to login
   if (!authToken) {
-    const locale = pathname.split('/')[1] || defaultLocale;
     
     // If API request, return 401 Unauthorized
     if (pathname.startsWith('/api/')) {
