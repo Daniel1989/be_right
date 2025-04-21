@@ -4,7 +4,6 @@
     "build": "next build",
     "dev": "next dev --turbopack --port 3001 -H 0.0.0.0",
     "start": "next start -p 3001 -H 0.0.0.0",
-
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
@@ -22,6 +21,7 @@
     "@tailwindcss/forms": "^0.5.10",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/uuid": "^10.0.0",
+    "ali-oss": "^6.22.0",
     "autoprefixer": "10.4.20",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
@@ -34,6 +34,7 @@
     "postcss": "8.5.1",
     "postgres": "^3.4.5",
     "prisma": "^6.6.0",
+    "proxy-agent": "^5.0.0",
     "react": "latest",
     "react-dom": "latest",
     "tailwindcss": "3.4.17",

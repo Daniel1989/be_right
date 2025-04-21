@@ -4,7 +4,12 @@ import withNextIntl from 'next-intl/plugin';
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    remotePatterns: [new URL('http://localhost:3001/uploads/**')],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'ywfedps.oss-cn-hangzhou.aliyuncs.com',
+      },
+    ],
   },
 };
 

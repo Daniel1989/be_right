@@ -5,6 +5,14 @@ import { writeFile, unlink } from 'fs/promises';
 import { mkdir } from 'fs/promises';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import OSS from 'ali-oss';
+
+const client = new OSS({
+  bucket: process.env.bucket,
+  region: process.env.region,
+  accessKeyId: process.env.accessKeyId,
+  accessKeySecret: process.env.accessKeySecret,
+});
 
 // Configure uploads directory
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
@@ -115,9 +123,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Ensure user upload directory exists
-    const userUploadDir = path.join(UPLOAD_DIR, userData.id);
-    await mkdir(userUploadDir, { recursive: true });
 
     // Handle FormData with uploaded file
     const formData = await request.formData();
@@ -134,21 +139,16 @@ export async function POST(request: NextRequest) {
     // Generate a unique filename
     const fileExt = file.name.split('.').pop() || 'jpg';
     const fileName = `${uuidv4()}.${fileExt}`;
-    const filePath = path.join(userUploadDir, fileName);
-    
-    // Convert File to Buffer and save to disk
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(filePath, buffer);
-    
+    const result = await client.put(`/v1/${userData.id}/${fileName}`, buffer);
     // Generate URL for the saved file
-    const fileUrl = `${UPLOADS_BASE_URL}/${userData.id}/${fileName}`;
+    const fileUrl = result.url.replace("http://", "https://");
     
     // Create image record in database
     const image = await prisma.questionImage.create({
       data: {
         userId: userData.id,
         url: fileUrl,
-        localPath: filePath,
         processingStatus: 'UPLOADED',
         questionId: questionId || null
       }

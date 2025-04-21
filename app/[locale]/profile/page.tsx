@@ -1,21 +1,50 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
+import { useState } from 'react';
+import { useAuthContext } from '@/app/providers/AuthProvider';
 
 export default function ProfilePage() {
   const t = useTranslations('navigation');
+  const router = useRouter();
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1] || 'en'; // Extract locale from path
+  const { user, logout } = useAuthContext();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    fetch('/api/logout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(response => {
-      if (response.ok) {
-        window.location.href = '/';
+    try {
+      setIsLoggingOut(true);
+      
+      // Call the API to logout
+      const response = await fetch(`/${locale}/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        console.error('Logout failed:', data);
+        throw new Error(data.error || 'Logout failed');
       }
-    });
+      
+      // Update auth context (if using auth context)
+      if (logout) {
+        await logout();
+      }
+      
+      // Redirect to login page
+      router.push(`/${locale}/auth/login`);
+      router.refresh();
+    } catch (error) {
+      console.error('Error during logout:', error);
+      alert('Failed to logout. Please try again.');
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -27,8 +56,8 @@ export default function ProfilePage() {
           <div className="w-20 h-20 rounded-full bg-white mx-auto mb-3 flex items-center justify-center text-indigo-600">
             <i className="fas fa-user text-3xl"></i>
           </div>
-          <h2 className="text-xl font-bold text-white">Test User</h2>
-          <p className="text-indigo-200 text-sm">test@example.com</p>
+          <h2 className="text-xl font-bold text-white">{user?.name || 'Guest User'}</h2>
+          <p className="text-indigo-200 text-sm">{user?.email || 'Not logged in'}</p>
         </div>
         
         <div className="p-6">
@@ -76,10 +105,22 @@ export default function ProfilePage() {
             
             <button
               onClick={handleLogout}
-              className="w-full p-3 border border-red-200 text-red-600 rounded-lg flex items-center justify-center mt-6"
+              disabled={isLoggingOut}
+              className={`w-full p-3 border border-red-200 text-red-600 rounded-lg flex items-center justify-center mt-6 ${
+                isLoggingOut ? 'opacity-60 cursor-not-allowed' : 'hover:bg-red-50'
+              }`}
             >
-              <i className="fas fa-sign-out-alt mr-2"></i>
-              Logout
+              {isLoggingOut ? (
+                <>
+                  <i className="fas fa-spinner fa-spin mr-2"></i>
+                  Logging out...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-sign-out-alt mr-2"></i>
+                  Logout
+                </>
+              )}
             </button>
           </div>
         </div>
