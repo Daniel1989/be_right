@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import OpenAI from 'openai';
+import { staticSubjects } from '@/app/lib/constants';
 
 // Import static subjects from the subjects route
-import { staticSubjects } from '../subjects/route';
 
 // Initialize OpenAI client
 const openai = new OpenAI({

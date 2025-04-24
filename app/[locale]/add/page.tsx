@@ -153,7 +153,7 @@ export default function AddPage() {
       }
     } catch (err) {
       console.error('Error accessing camera:', err);
-      setError('Could not access camera. Please check permissions.');
+      setError('无法访问摄像头。请检查权限。');
     }
   };
   
@@ -941,7 +941,7 @@ export default function AddPage() {
                 />
                 <div className="absolute top-0 left-0 w-full h-full bg-black/30 flex flex-col justify-between p-2">
                   <div className="text-xs font-semibold text-white bg-black/50 self-start px-2 py-1 rounded-lg">
-                    {image.processingStatus || 'UPLOADED'}
+                    {image.processingStatus || '已上传'}
                   </div>
                   <div className="flex justify-between">
                     <button 
@@ -1062,7 +1062,7 @@ export default function AddPage() {
       {isAnalyzing && (
         <div className="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-3 rounded-lg mb-4 flex items-center">
           <i className="fas fa-spinner fa-spin mr-2"></i>
-          Analyzing image with AI...
+          正在分析图片...
         </div>
       )}
       

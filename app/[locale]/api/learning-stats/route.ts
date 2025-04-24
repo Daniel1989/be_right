@@ -61,7 +61,10 @@ export async function GET(request: NextRequest) {
       }
     });
     
-    const defaultGoal = 10;
+    const defaultGoal = await prisma.userSettings.findUnique({
+      where: { userId },
+      select: { dailyGoal: true }
+    }).then(settings => settings?.dailyGoal || 10);
     const todayGoal = Math.min(defaultGoal, pendingQuestionsCount);
     
     // Calculate learning streak
