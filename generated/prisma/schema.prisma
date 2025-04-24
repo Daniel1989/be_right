@@ -26,6 +26,7 @@ model User {
   reviews        QuestionReview[]
   tasks          Task[]
   categories     Category[]
+  settings       UserSettings?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 }
@@ -144,4 +145,16 @@ model QuestionReview {
   @@index([questionId])
   @@index([nextReviewDate])
   @@index([createdAt])
+}
+
+// UserSettings model for user preferences
+model UserSettings {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  dailyGoal Int      @default(10)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }

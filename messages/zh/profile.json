@@ -1,0 +1,19 @@
+{
+  "guestUser": "访客用户",
+  "notLoggedIn": "未登录",
+  "selfDisciplineScore": "自律分数",
+  "learningAchievements": "学习成就",
+  "dailyReviewGoal": "每日复习目标",
+  "dailyGoalDescription": "设置您每天想要复习的题目数量，保持一个持续的学习习惯。",
+  "questionsPerDay": "题/天",
+  "settingsSavedSuccess": "每日目标更新成功！",
+  "settingsSaveError": "设置更新失败，请重试。",
+  "settings": "设置",
+  "notifications": "通知",
+  "privacy": "隐私",
+  "helpSupport": "帮助与支持",
+  "logout": "退出登录",
+  "loggingOut": "正在退出...",
+  "logoutFailed": "退出登录失败",
+  "logoutErrorAlert": "退出登录失败，请重试。"
+} 

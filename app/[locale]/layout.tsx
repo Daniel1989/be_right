@@ -12,6 +12,21 @@ export function generateStaticParams() {
   return locales.map(locale => ({ locale }));
 }
 
+// Function to load a translation file with fallback
+async function loadTranslations(locale: string, namespace: string) {
+  try {
+    return (await import(`../../messages/${locale}/${namespace}.json`)).default;
+  } catch (error) {
+    console.error(`Failed to load ${namespace} messages for locale: ${locale}`, error);
+    try {
+      return (await import(`../../messages/${defaultLocale}/${namespace}.json`)).default;
+    } catch (fallbackError) {
+      console.error(`Failed to load even default ${namespace} messages`, fallbackError);
+      return {};
+    }
+  }
+}
+
 export default async function LocaleLayout({
   children,
   params,
@@ -28,19 +43,15 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  let messages;
-  try {
-    messages = (await import(`../../messages/${locale}/common.json`)).default;
-  } catch (error) {
-    console.error(`Failed to load messages for locale: ${locale}`, error);
-    // If messages can't be loaded, try to use the default locale
-    try {
-      messages = (await import(`../../messages/${defaultLocale}/common.json`)).default;
-    } catch (fallbackError) {
-      console.error('Failed to load even default messages', fallbackError);
-      notFound();
-    }
-  }
+  // Load all translation namespaces
+  const commonMessages = await loadTranslations(locale, 'common');
+  const profileMessages = await loadTranslations(locale, 'profile');
+  
+  // Combine all messages into a single object
+  const messages = {
+    ...commonMessages,
+    profile: profileMessages
+  };
 
   return (
     <html lang={locale} className={inter.className}>

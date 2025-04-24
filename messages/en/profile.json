@@ -1,0 +1,19 @@
+{
+  "guestUser": "Guest User",
+  "notLoggedIn": "Not logged in",
+  "selfDisciplineScore": "Self-discipline Score",
+  "learningAchievements": "Learning Achievements",
+  "dailyReviewGoal": "Daily Review Goal",
+  "dailyGoalDescription": "Set how many questions you want to review each day to maintain a consistent study routine.",
+  "questionsPerDay": "questions per day",
+  "settingsSavedSuccess": "Daily goal updated successfully!",
+  "settingsSaveError": "Failed to update settings. Please try again.",
+  "settings": "Settings",
+  "notifications": "Notifications",
+  "privacy": "Privacy",
+  "helpSupport": "Help & Support",
+  "logout": "Logout",
+  "loggingOut": "Logging out...",
+  "logoutFailed": "Logout failed",
+  "logoutErrorAlert": "Failed to logout. Please try again."
+} 

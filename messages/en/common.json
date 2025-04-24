@@ -21,6 +21,8 @@
     "cancel": "Cancel",
     "confirm": "Confirm"
   },
+  "saving": "Saving...",
+  "saveChanges": "Save Changes",
   "form": {
     "required": "This field is required",
     "email": {

@@ -197,6 +197,14 @@ exports.Prisma.QuestionReviewScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.UserSettingsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  dailyGoal: 'dailyGoal',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -219,7 +227,8 @@ exports.Prisma.ModelName = {
   Subject: 'Subject',
   Question: 'Question',
   QuestionImage: 'QuestionImage',
-  QuestionReview: 'QuestionReview'
+  QuestionReview: 'QuestionReview',
+  UserSettings: 'UserSettings'
 };
 
 /**
