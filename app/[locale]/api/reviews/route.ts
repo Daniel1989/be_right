@@ -37,11 +37,15 @@ export async function GET(request: NextRequest) {
     const subjectId = searchParams.get('subjectId');
     const limit = limitParam ? parseInt(limitParam) : 10;
     
+    // For development: include questions with review dates up to one day in the future
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
     // Build the filter
     const filter: any = {
       userId,
       nextReviewDate: {
-        lte: new Date() // Due for review (now or in the past)
+        lte: tomorrow // Modified: Due for review (now or tomorrow)
       }
     };
     
@@ -71,7 +75,6 @@ export async function GET(request: NextRequest) {
       },
       take: limit,
     });
-    
     const questionIds = reviewRecords.map(record => record.questionId);
     
     // Then fetch the actual questions with their review data

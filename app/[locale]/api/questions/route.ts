@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import { cookies } from 'next/headers';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Get all questions for the current user
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
     // Extract query parameters
     const url = new URL(request.url);
     const subjectId = url.searchParams.get('subjectId');
+    const status = url.searchParams.get('status');
     const page = parseInt(url.searchParams.get('page') || '1');
     const limit = parseInt(url.searchParams.get('limit') || '10');
     const skip = (page - 1) * limit;
@@ -41,6 +43,10 @@ export async function GET(request: NextRequest) {
 
     if (subjectId) {
       filters.subjectId = subjectId;
+    }
+    
+    if (status) {
+      filters.status = status;
     }
 
     // Get total count for pagination
@@ -191,6 +197,25 @@ async function handleSingleQuestion(data: any, userId: string) {
     });
   }
   
+  // Create initial review record for the question
+  const initialInterval = 1; // Start with 1 day interval
+  const initialEaseFactor = 2.5; // Default ease factor
+  const nextReviewDate = new Date();
+  nextReviewDate.setDate(nextReviewDate.getDate() + initialInterval); // Set to tomorrow
+  
+  await prisma.questionReview.create({
+    data: {
+      id: uuidv4(), // Generate a UUID
+      questionId: question.id,
+      userId: userId,
+      difficulty: 'new', // Initial difficulty
+      interval: initialInterval,
+      easeFactor: initialEaseFactor,
+      reviewCount: 0,
+      nextReviewDate: nextReviewDate
+    }
+  });
+  
   // Return the created question with relations
   const createdQuestion = await prisma.question.findUnique({
     where: { id: question.id },
@@ -282,6 +307,25 @@ async function handleBatchQuestions(questionsData: any[], userId: string) {
           }
         });
       }
+      
+      // Create initial review record for the question
+      const initialInterval = 1; // Start with 1 day interval
+      const initialEaseFactor = 2.5; // Default ease factor
+      const nextReviewDate = new Date();
+      nextReviewDate.setDate(nextReviewDate.getDate() + initialInterval); // Set to tomorrow
+      
+      await prisma.questionReview.create({
+        data: {
+          id: uuidv4(), // Generate a UUID
+          questionId: question.id,
+          userId: userId,
+          difficulty: 'new', // Initial difficulty
+          interval: initialInterval,
+          easeFactor: initialEaseFactor,
+          reviewCount: 0,
+          nextReviewDate: nextReviewDate
+        }
+      });
       
       // Get the created question with relations
       const createdQuestion = await prisma.question.findUnique({

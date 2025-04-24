@@ -563,7 +563,6 @@ export default function DashboardPage() {
           <>
             <div className="divide-y">
               {questions
-                .slice(0, 3)
                 .map(question => (
                 <div key={question.id} className="py-3">
                   <div className="flex items-center mb-2">
