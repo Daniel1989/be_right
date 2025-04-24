@@ -23,6 +23,7 @@ model User {
   subjects          Subject[]
   questions         Question[]
   questionImages    QuestionImage[]
+  reviews           QuestionReview[]
   tasks             Task[]
   categories        Category[]
   createdAt         DateTime         @default(now())
@@ -98,6 +99,7 @@ model Question {
   images      QuestionImage[]
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
+  reviews     QuestionReview[]
 
   @@index([userId])
   @@index([subjectId])
@@ -120,4 +122,26 @@ model QuestionImage {
 
   @@index([userId])
   @@index([questionId])
+}
+
+// New model for tracking spaced repetition reviews
+model QuestionReview {
+  id             String   @id @default(uuid())
+  questionId     String
+  userId         String
+  difficulty     String   // "again", "hard", "good", "easy"
+  interval       Int      // Days until next review
+  easeFactor     Float    // Ease factor for SM-2 algorithm
+  reviewCount    Int      // Number of times reviewed
+  nextReviewDate DateTime // When to review next
+  createdAt      DateTime @default(now())
+  
+  // Relations
+  question       Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([questionId])
+  @@index([nextReviewDate])
+  @@index([createdAt])
 }

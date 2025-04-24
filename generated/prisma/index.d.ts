@@ -43,6 +43,11 @@ export type Question = $Result.DefaultSelection<Prisma.$QuestionPayload>
  * 
  */
 export type QuestionImage = $Result.DefaultSelection<Prisma.$QuestionImagePayload>
+/**
+ * Model QuestionReview
+ * 
+ */
+export type QuestionReview = $Result.DefaultSelection<Prisma.$QuestionReviewPayload>
 
 /**
  * Enums
@@ -246,6 +251,16 @@ export class PrismaClient<
     * ```
     */
   get questionImage(): Prisma.QuestionImageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.questionReview`: Exposes CRUD operations for the **QuestionReview** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more QuestionReviews
+    * const questionReviews = await prisma.questionReview.findMany()
+    * ```
+    */
+  get questionReview(): Prisma.QuestionReviewDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -691,7 +706,8 @@ export namespace Prisma {
     Category: 'Category',
     Subject: 'Subject',
     Question: 'Question',
-    QuestionImage: 'QuestionImage'
+    QuestionImage: 'QuestionImage',
+    QuestionReview: 'QuestionReview'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -710,7 +726,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "task" | "category" | "subject" | "question" | "questionImage"
+      modelProps: "user" | "task" | "category" | "subject" | "question" | "questionImage" | "questionReview"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1158,6 +1174,80 @@ export namespace Prisma {
           }
         }
       }
+      QuestionReview: {
+        payload: Prisma.$QuestionReviewPayload<ExtArgs>
+        fields: Prisma.QuestionReviewFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.QuestionReviewFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.QuestionReviewFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload>
+          }
+          findFirst: {
+            args: Prisma.QuestionReviewFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.QuestionReviewFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload>
+          }
+          findMany: {
+            args: Prisma.QuestionReviewFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload>[]
+          }
+          create: {
+            args: Prisma.QuestionReviewCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload>
+          }
+          createMany: {
+            args: Prisma.QuestionReviewCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.QuestionReviewCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload>[]
+          }
+          delete: {
+            args: Prisma.QuestionReviewDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload>
+          }
+          update: {
+            args: Prisma.QuestionReviewUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload>
+          }
+          deleteMany: {
+            args: Prisma.QuestionReviewDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.QuestionReviewUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.QuestionReviewUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload>[]
+          }
+          upsert: {
+            args: Prisma.QuestionReviewUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestionReviewPayload>
+          }
+          aggregate: {
+            args: Prisma.QuestionReviewAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateQuestionReview>
+          }
+          groupBy: {
+            args: Prisma.QuestionReviewGroupByArgs<ExtArgs>
+            result: $Utils.Optional<QuestionReviewGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.QuestionReviewCountArgs<ExtArgs>
+            result: $Utils.Optional<QuestionReviewCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1248,6 +1338,7 @@ export namespace Prisma {
     subject?: SubjectOmit
     question?: QuestionOmit
     questionImage?: QuestionImageOmit
+    questionReview?: QuestionReviewOmit
   }
 
   /* Types for Logging */
@@ -1345,6 +1436,7 @@ export namespace Prisma {
     subjects: number
     questions: number
     questionImages: number
+    reviews: number
     tasks: number
     categories: number
   }
@@ -1353,6 +1445,7 @@ export namespace Prisma {
     subjects?: boolean | UserCountOutputTypeCountSubjectsArgs
     questions?: boolean | UserCountOutputTypeCountQuestionsArgs
     questionImages?: boolean | UserCountOutputTypeCountQuestionImagesArgs
+    reviews?: boolean | UserCountOutputTypeCountReviewsArgs
     tasks?: boolean | UserCountOutputTypeCountTasksArgs
     categories?: boolean | UserCountOutputTypeCountCategoriesArgs
   }
@@ -1387,6 +1480,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountQuestionImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: QuestionImageWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuestionReviewWhereInput
   }
 
   /**
@@ -1472,10 +1572,12 @@ export namespace Prisma {
 
   export type QuestionCountOutputType = {
     images: number
+    reviews: number
   }
 
   export type QuestionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     images?: boolean | QuestionCountOutputTypeCountImagesArgs
+    reviews?: boolean | QuestionCountOutputTypeCountReviewsArgs
   }
 
   // Custom InputTypes
@@ -1494,6 +1596,13 @@ export namespace Prisma {
    */
   export type QuestionCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: QuestionImageWhereInput
+  }
+
+  /**
+   * QuestionCountOutputType without action
+   */
+  export type QuestionCountOutputTypeCountReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuestionReviewWhereInput
   }
 
 
@@ -1700,6 +1809,7 @@ export namespace Prisma {
     subjects?: boolean | User$subjectsArgs<ExtArgs>
     questions?: boolean | User$questionsArgs<ExtArgs>
     questionImages?: boolean | User$questionImagesArgs<ExtArgs>
+    reviews?: boolean | User$reviewsArgs<ExtArgs>
     tasks?: boolean | User$tasksArgs<ExtArgs>
     categories?: boolean | User$categoriesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1746,6 +1856,7 @@ export namespace Prisma {
     subjects?: boolean | User$subjectsArgs<ExtArgs>
     questions?: boolean | User$questionsArgs<ExtArgs>
     questionImages?: boolean | User$questionImagesArgs<ExtArgs>
+    reviews?: boolean | User$reviewsArgs<ExtArgs>
     tasks?: boolean | User$tasksArgs<ExtArgs>
     categories?: boolean | User$categoriesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1759,6 +1870,7 @@ export namespace Prisma {
       subjects: Prisma.$SubjectPayload<ExtArgs>[]
       questions: Prisma.$QuestionPayload<ExtArgs>[]
       questionImages: Prisma.$QuestionImagePayload<ExtArgs>[]
+      reviews: Prisma.$QuestionReviewPayload<ExtArgs>[]
       tasks: Prisma.$TaskPayload<ExtArgs>[]
       categories: Prisma.$CategoryPayload<ExtArgs>[]
     }
@@ -2169,6 +2281,7 @@ export namespace Prisma {
     subjects<T extends User$subjectsArgs<ExtArgs> = {}>(args?: Subset<T, User$subjectsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     questions<T extends User$questionsArgs<ExtArgs> = {}>(args?: Subset<T, User$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     questionImages<T extends User$questionImagesArgs<ExtArgs> = {}>(args?: Subset<T, User$questionImagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reviews<T extends User$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     tasks<T extends User$tasksArgs<ExtArgs> = {}>(args?: Subset<T, User$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     categories<T extends User$categoriesArgs<ExtArgs> = {}>(args?: Subset<T, User$categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -2664,6 +2777,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: QuestionImageScalarFieldEnum | QuestionImageScalarFieldEnum[]
+  }
+
+  /**
+   * User.reviews
+   */
+  export type User$reviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    where?: QuestionReviewWhereInput
+    orderBy?: QuestionReviewOrderByWithRelationInput | QuestionReviewOrderByWithRelationInput[]
+    cursor?: QuestionReviewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuestionReviewScalarFieldEnum | QuestionReviewScalarFieldEnum[]
   }
 
   /**
@@ -6312,6 +6449,7 @@ export namespace Prisma {
     subject?: boolean | SubjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     images?: boolean | Question$imagesArgs<ExtArgs>
+    reviews?: boolean | Question$reviewsArgs<ExtArgs>
     _count?: boolean | QuestionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["question"]>
 
@@ -6363,6 +6501,7 @@ export namespace Prisma {
     subject?: boolean | SubjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     images?: boolean | Question$imagesArgs<ExtArgs>
+    reviews?: boolean | Question$reviewsArgs<ExtArgs>
     _count?: boolean | QuestionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type QuestionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6380,6 +6519,7 @@ export namespace Prisma {
       subject: Prisma.$SubjectPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
       images: Prisma.$QuestionImagePayload<ExtArgs>[]
+      reviews: Prisma.$QuestionReviewPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6789,6 +6929,7 @@ export namespace Prisma {
     subject<T extends SubjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SubjectDefaultArgs<ExtArgs>>): Prisma__SubjectClient<$Result.GetResult<Prisma.$SubjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     images<T extends Question$imagesArgs<ExtArgs> = {}>(args?: Subset<T, Question$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reviews<T extends Question$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Question$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7243,6 +7384,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: QuestionImageScalarFieldEnum | QuestionImageScalarFieldEnum[]
+  }
+
+  /**
+   * Question.reviews
+   */
+  export type Question$reviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    where?: QuestionReviewWhereInput
+    orderBy?: QuestionReviewOrderByWithRelationInput | QuestionReviewOrderByWithRelationInput[]
+    cursor?: QuestionReviewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuestionReviewScalarFieldEnum | QuestionReviewScalarFieldEnum[]
   }
 
   /**
@@ -8413,6 +8578,1164 @@ export namespace Prisma {
 
 
   /**
+   * Model QuestionReview
+   */
+
+  export type AggregateQuestionReview = {
+    _count: QuestionReviewCountAggregateOutputType | null
+    _avg: QuestionReviewAvgAggregateOutputType | null
+    _sum: QuestionReviewSumAggregateOutputType | null
+    _min: QuestionReviewMinAggregateOutputType | null
+    _max: QuestionReviewMaxAggregateOutputType | null
+  }
+
+  export type QuestionReviewAvgAggregateOutputType = {
+    interval: number | null
+    easeFactor: number | null
+    reviewCount: number | null
+  }
+
+  export type QuestionReviewSumAggregateOutputType = {
+    interval: number | null
+    easeFactor: number | null
+    reviewCount: number | null
+  }
+
+  export type QuestionReviewMinAggregateOutputType = {
+    id: string | null
+    questionId: string | null
+    userId: string | null
+    difficulty: string | null
+    interval: number | null
+    easeFactor: number | null
+    reviewCount: number | null
+    nextReviewDate: Date | null
+    createdAt: Date | null
+  }
+
+  export type QuestionReviewMaxAggregateOutputType = {
+    id: string | null
+    questionId: string | null
+    userId: string | null
+    difficulty: string | null
+    interval: number | null
+    easeFactor: number | null
+    reviewCount: number | null
+    nextReviewDate: Date | null
+    createdAt: Date | null
+  }
+
+  export type QuestionReviewCountAggregateOutputType = {
+    id: number
+    questionId: number
+    userId: number
+    difficulty: number
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type QuestionReviewAvgAggregateInputType = {
+    interval?: true
+    easeFactor?: true
+    reviewCount?: true
+  }
+
+  export type QuestionReviewSumAggregateInputType = {
+    interval?: true
+    easeFactor?: true
+    reviewCount?: true
+  }
+
+  export type QuestionReviewMinAggregateInputType = {
+    id?: true
+    questionId?: true
+    userId?: true
+    difficulty?: true
+    interval?: true
+    easeFactor?: true
+    reviewCount?: true
+    nextReviewDate?: true
+    createdAt?: true
+  }
+
+  export type QuestionReviewMaxAggregateInputType = {
+    id?: true
+    questionId?: true
+    userId?: true
+    difficulty?: true
+    interval?: true
+    easeFactor?: true
+    reviewCount?: true
+    nextReviewDate?: true
+    createdAt?: true
+  }
+
+  export type QuestionReviewCountAggregateInputType = {
+    id?: true
+    questionId?: true
+    userId?: true
+    difficulty?: true
+    interval?: true
+    easeFactor?: true
+    reviewCount?: true
+    nextReviewDate?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type QuestionReviewAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QuestionReview to aggregate.
+     */
+    where?: QuestionReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuestionReviews to fetch.
+     */
+    orderBy?: QuestionReviewOrderByWithRelationInput | QuestionReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: QuestionReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuestionReviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuestionReviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned QuestionReviews
+    **/
+    _count?: true | QuestionReviewCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: QuestionReviewAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: QuestionReviewSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: QuestionReviewMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: QuestionReviewMaxAggregateInputType
+  }
+
+  export type GetQuestionReviewAggregateType<T extends QuestionReviewAggregateArgs> = {
+        [P in keyof T & keyof AggregateQuestionReview]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateQuestionReview[P]>
+      : GetScalarType<T[P], AggregateQuestionReview[P]>
+  }
+
+
+
+
+  export type QuestionReviewGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuestionReviewWhereInput
+    orderBy?: QuestionReviewOrderByWithAggregationInput | QuestionReviewOrderByWithAggregationInput[]
+    by: QuestionReviewScalarFieldEnum[] | QuestionReviewScalarFieldEnum
+    having?: QuestionReviewScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: QuestionReviewCountAggregateInputType | true
+    _avg?: QuestionReviewAvgAggregateInputType
+    _sum?: QuestionReviewSumAggregateInputType
+    _min?: QuestionReviewMinAggregateInputType
+    _max?: QuestionReviewMaxAggregateInputType
+  }
+
+  export type QuestionReviewGroupByOutputType = {
+    id: string
+    questionId: string
+    userId: string
+    difficulty: string
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: Date
+    createdAt: Date
+    _count: QuestionReviewCountAggregateOutputType | null
+    _avg: QuestionReviewAvgAggregateOutputType | null
+    _sum: QuestionReviewSumAggregateOutputType | null
+    _min: QuestionReviewMinAggregateOutputType | null
+    _max: QuestionReviewMaxAggregateOutputType | null
+  }
+
+  type GetQuestionReviewGroupByPayload<T extends QuestionReviewGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<QuestionReviewGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof QuestionReviewGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], QuestionReviewGroupByOutputType[P]>
+            : GetScalarType<T[P], QuestionReviewGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type QuestionReviewSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    questionId?: boolean
+    userId?: boolean
+    difficulty?: boolean
+    interval?: boolean
+    easeFactor?: boolean
+    reviewCount?: boolean
+    nextReviewDate?: boolean
+    createdAt?: boolean
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["questionReview"]>
+
+  export type QuestionReviewSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    questionId?: boolean
+    userId?: boolean
+    difficulty?: boolean
+    interval?: boolean
+    easeFactor?: boolean
+    reviewCount?: boolean
+    nextReviewDate?: boolean
+    createdAt?: boolean
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["questionReview"]>
+
+  export type QuestionReviewSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    questionId?: boolean
+    userId?: boolean
+    difficulty?: boolean
+    interval?: boolean
+    easeFactor?: boolean
+    reviewCount?: boolean
+    nextReviewDate?: boolean
+    createdAt?: boolean
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["questionReview"]>
+
+  export type QuestionReviewSelectScalar = {
+    id?: boolean
+    questionId?: boolean
+    userId?: boolean
+    difficulty?: boolean
+    interval?: boolean
+    easeFactor?: boolean
+    reviewCount?: boolean
+    nextReviewDate?: boolean
+    createdAt?: boolean
+  }
+
+  export type QuestionReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "questionId" | "userId" | "difficulty" | "interval" | "easeFactor" | "reviewCount" | "nextReviewDate" | "createdAt", ExtArgs["result"]["questionReview"]>
+  export type QuestionReviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type QuestionReviewIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type QuestionReviewIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    question?: boolean | QuestionDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $QuestionReviewPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "QuestionReview"
+    objects: {
+      question: Prisma.$QuestionPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      questionId: string
+      userId: string
+      difficulty: string
+      interval: number
+      easeFactor: number
+      reviewCount: number
+      nextReviewDate: Date
+      createdAt: Date
+    }, ExtArgs["result"]["questionReview"]>
+    composites: {}
+  }
+
+  type QuestionReviewGetPayload<S extends boolean | null | undefined | QuestionReviewDefaultArgs> = $Result.GetResult<Prisma.$QuestionReviewPayload, S>
+
+  type QuestionReviewCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<QuestionReviewFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: QuestionReviewCountAggregateInputType | true
+    }
+
+  export interface QuestionReviewDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['QuestionReview'], meta: { name: 'QuestionReview' } }
+    /**
+     * Find zero or one QuestionReview that matches the filter.
+     * @param {QuestionReviewFindUniqueArgs} args - Arguments to find a QuestionReview
+     * @example
+     * // Get one QuestionReview
+     * const questionReview = await prisma.questionReview.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends QuestionReviewFindUniqueArgs>(args: SelectSubset<T, QuestionReviewFindUniqueArgs<ExtArgs>>): Prisma__QuestionReviewClient<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one QuestionReview that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {QuestionReviewFindUniqueOrThrowArgs} args - Arguments to find a QuestionReview
+     * @example
+     * // Get one QuestionReview
+     * const questionReview = await prisma.questionReview.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends QuestionReviewFindUniqueOrThrowArgs>(args: SelectSubset<T, QuestionReviewFindUniqueOrThrowArgs<ExtArgs>>): Prisma__QuestionReviewClient<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first QuestionReview that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestionReviewFindFirstArgs} args - Arguments to find a QuestionReview
+     * @example
+     * // Get one QuestionReview
+     * const questionReview = await prisma.questionReview.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends QuestionReviewFindFirstArgs>(args?: SelectSubset<T, QuestionReviewFindFirstArgs<ExtArgs>>): Prisma__QuestionReviewClient<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first QuestionReview that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestionReviewFindFirstOrThrowArgs} args - Arguments to find a QuestionReview
+     * @example
+     * // Get one QuestionReview
+     * const questionReview = await prisma.questionReview.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends QuestionReviewFindFirstOrThrowArgs>(args?: SelectSubset<T, QuestionReviewFindFirstOrThrowArgs<ExtArgs>>): Prisma__QuestionReviewClient<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more QuestionReviews that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestionReviewFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all QuestionReviews
+     * const questionReviews = await prisma.questionReview.findMany()
+     * 
+     * // Get first 10 QuestionReviews
+     * const questionReviews = await prisma.questionReview.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const questionReviewWithIdOnly = await prisma.questionReview.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends QuestionReviewFindManyArgs>(args?: SelectSubset<T, QuestionReviewFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a QuestionReview.
+     * @param {QuestionReviewCreateArgs} args - Arguments to create a QuestionReview.
+     * @example
+     * // Create one QuestionReview
+     * const QuestionReview = await prisma.questionReview.create({
+     *   data: {
+     *     // ... data to create a QuestionReview
+     *   }
+     * })
+     * 
+     */
+    create<T extends QuestionReviewCreateArgs>(args: SelectSubset<T, QuestionReviewCreateArgs<ExtArgs>>): Prisma__QuestionReviewClient<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many QuestionReviews.
+     * @param {QuestionReviewCreateManyArgs} args - Arguments to create many QuestionReviews.
+     * @example
+     * // Create many QuestionReviews
+     * const questionReview = await prisma.questionReview.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends QuestionReviewCreateManyArgs>(args?: SelectSubset<T, QuestionReviewCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many QuestionReviews and returns the data saved in the database.
+     * @param {QuestionReviewCreateManyAndReturnArgs} args - Arguments to create many QuestionReviews.
+     * @example
+     * // Create many QuestionReviews
+     * const questionReview = await prisma.questionReview.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many QuestionReviews and only return the `id`
+     * const questionReviewWithIdOnly = await prisma.questionReview.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends QuestionReviewCreateManyAndReturnArgs>(args?: SelectSubset<T, QuestionReviewCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a QuestionReview.
+     * @param {QuestionReviewDeleteArgs} args - Arguments to delete one QuestionReview.
+     * @example
+     * // Delete one QuestionReview
+     * const QuestionReview = await prisma.questionReview.delete({
+     *   where: {
+     *     // ... filter to delete one QuestionReview
+     *   }
+     * })
+     * 
+     */
+    delete<T extends QuestionReviewDeleteArgs>(args: SelectSubset<T, QuestionReviewDeleteArgs<ExtArgs>>): Prisma__QuestionReviewClient<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one QuestionReview.
+     * @param {QuestionReviewUpdateArgs} args - Arguments to update one QuestionReview.
+     * @example
+     * // Update one QuestionReview
+     * const questionReview = await prisma.questionReview.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends QuestionReviewUpdateArgs>(args: SelectSubset<T, QuestionReviewUpdateArgs<ExtArgs>>): Prisma__QuestionReviewClient<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more QuestionReviews.
+     * @param {QuestionReviewDeleteManyArgs} args - Arguments to filter QuestionReviews to delete.
+     * @example
+     * // Delete a few QuestionReviews
+     * const { count } = await prisma.questionReview.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends QuestionReviewDeleteManyArgs>(args?: SelectSubset<T, QuestionReviewDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QuestionReviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestionReviewUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many QuestionReviews
+     * const questionReview = await prisma.questionReview.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends QuestionReviewUpdateManyArgs>(args: SelectSubset<T, QuestionReviewUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QuestionReviews and returns the data updated in the database.
+     * @param {QuestionReviewUpdateManyAndReturnArgs} args - Arguments to update many QuestionReviews.
+     * @example
+     * // Update many QuestionReviews
+     * const questionReview = await prisma.questionReview.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more QuestionReviews and only return the `id`
+     * const questionReviewWithIdOnly = await prisma.questionReview.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends QuestionReviewUpdateManyAndReturnArgs>(args: SelectSubset<T, QuestionReviewUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one QuestionReview.
+     * @param {QuestionReviewUpsertArgs} args - Arguments to update or create a QuestionReview.
+     * @example
+     * // Update or create a QuestionReview
+     * const questionReview = await prisma.questionReview.upsert({
+     *   create: {
+     *     // ... data to create a QuestionReview
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the QuestionReview we want to update
+     *   }
+     * })
+     */
+    upsert<T extends QuestionReviewUpsertArgs>(args: SelectSubset<T, QuestionReviewUpsertArgs<ExtArgs>>): Prisma__QuestionReviewClient<$Result.GetResult<Prisma.$QuestionReviewPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of QuestionReviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestionReviewCountArgs} args - Arguments to filter QuestionReviews to count.
+     * @example
+     * // Count the number of QuestionReviews
+     * const count = await prisma.questionReview.count({
+     *   where: {
+     *     // ... the filter for the QuestionReviews we want to count
+     *   }
+     * })
+    **/
+    count<T extends QuestionReviewCountArgs>(
+      args?: Subset<T, QuestionReviewCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], QuestionReviewCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a QuestionReview.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestionReviewAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends QuestionReviewAggregateArgs>(args: Subset<T, QuestionReviewAggregateArgs>): Prisma.PrismaPromise<GetQuestionReviewAggregateType<T>>
+
+    /**
+     * Group by QuestionReview.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestionReviewGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends QuestionReviewGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: QuestionReviewGroupByArgs['orderBy'] }
+        : { orderBy?: QuestionReviewGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, QuestionReviewGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetQuestionReviewGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the QuestionReview model
+   */
+  readonly fields: QuestionReviewFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for QuestionReview.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__QuestionReviewClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    question<T extends QuestionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, QuestionDefaultArgs<ExtArgs>>): Prisma__QuestionClient<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the QuestionReview model
+   */
+  interface QuestionReviewFieldRefs {
+    readonly id: FieldRef<"QuestionReview", 'String'>
+    readonly questionId: FieldRef<"QuestionReview", 'String'>
+    readonly userId: FieldRef<"QuestionReview", 'String'>
+    readonly difficulty: FieldRef<"QuestionReview", 'String'>
+    readonly interval: FieldRef<"QuestionReview", 'Int'>
+    readonly easeFactor: FieldRef<"QuestionReview", 'Float'>
+    readonly reviewCount: FieldRef<"QuestionReview", 'Int'>
+    readonly nextReviewDate: FieldRef<"QuestionReview", 'DateTime'>
+    readonly createdAt: FieldRef<"QuestionReview", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * QuestionReview findUnique
+   */
+  export type QuestionReviewFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which QuestionReview to fetch.
+     */
+    where: QuestionReviewWhereUniqueInput
+  }
+
+  /**
+   * QuestionReview findUniqueOrThrow
+   */
+  export type QuestionReviewFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which QuestionReview to fetch.
+     */
+    where: QuestionReviewWhereUniqueInput
+  }
+
+  /**
+   * QuestionReview findFirst
+   */
+  export type QuestionReviewFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which QuestionReview to fetch.
+     */
+    where?: QuestionReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuestionReviews to fetch.
+     */
+    orderBy?: QuestionReviewOrderByWithRelationInput | QuestionReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QuestionReviews.
+     */
+    cursor?: QuestionReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuestionReviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuestionReviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QuestionReviews.
+     */
+    distinct?: QuestionReviewScalarFieldEnum | QuestionReviewScalarFieldEnum[]
+  }
+
+  /**
+   * QuestionReview findFirstOrThrow
+   */
+  export type QuestionReviewFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which QuestionReview to fetch.
+     */
+    where?: QuestionReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuestionReviews to fetch.
+     */
+    orderBy?: QuestionReviewOrderByWithRelationInput | QuestionReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QuestionReviews.
+     */
+    cursor?: QuestionReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuestionReviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuestionReviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QuestionReviews.
+     */
+    distinct?: QuestionReviewScalarFieldEnum | QuestionReviewScalarFieldEnum[]
+  }
+
+  /**
+   * QuestionReview findMany
+   */
+  export type QuestionReviewFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which QuestionReviews to fetch.
+     */
+    where?: QuestionReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuestionReviews to fetch.
+     */
+    orderBy?: QuestionReviewOrderByWithRelationInput | QuestionReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing QuestionReviews.
+     */
+    cursor?: QuestionReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuestionReviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuestionReviews.
+     */
+    skip?: number
+    distinct?: QuestionReviewScalarFieldEnum | QuestionReviewScalarFieldEnum[]
+  }
+
+  /**
+   * QuestionReview create
+   */
+  export type QuestionReviewCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    /**
+     * The data needed to create a QuestionReview.
+     */
+    data: XOR<QuestionReviewCreateInput, QuestionReviewUncheckedCreateInput>
+  }
+
+  /**
+   * QuestionReview createMany
+   */
+  export type QuestionReviewCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many QuestionReviews.
+     */
+    data: QuestionReviewCreateManyInput | QuestionReviewCreateManyInput[]
+  }
+
+  /**
+   * QuestionReview createManyAndReturn
+   */
+  export type QuestionReviewCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * The data used to create many QuestionReviews.
+     */
+    data: QuestionReviewCreateManyInput | QuestionReviewCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * QuestionReview update
+   */
+  export type QuestionReviewUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    /**
+     * The data needed to update a QuestionReview.
+     */
+    data: XOR<QuestionReviewUpdateInput, QuestionReviewUncheckedUpdateInput>
+    /**
+     * Choose, which QuestionReview to update.
+     */
+    where: QuestionReviewWhereUniqueInput
+  }
+
+  /**
+   * QuestionReview updateMany
+   */
+  export type QuestionReviewUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update QuestionReviews.
+     */
+    data: XOR<QuestionReviewUpdateManyMutationInput, QuestionReviewUncheckedUpdateManyInput>
+    /**
+     * Filter which QuestionReviews to update
+     */
+    where?: QuestionReviewWhereInput
+    /**
+     * Limit how many QuestionReviews to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * QuestionReview updateManyAndReturn
+   */
+  export type QuestionReviewUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * The data used to update QuestionReviews.
+     */
+    data: XOR<QuestionReviewUpdateManyMutationInput, QuestionReviewUncheckedUpdateManyInput>
+    /**
+     * Filter which QuestionReviews to update
+     */
+    where?: QuestionReviewWhereInput
+    /**
+     * Limit how many QuestionReviews to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * QuestionReview upsert
+   */
+  export type QuestionReviewUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    /**
+     * The filter to search for the QuestionReview to update in case it exists.
+     */
+    where: QuestionReviewWhereUniqueInput
+    /**
+     * In case the QuestionReview found by the `where` argument doesn't exist, create a new QuestionReview with this data.
+     */
+    create: XOR<QuestionReviewCreateInput, QuestionReviewUncheckedCreateInput>
+    /**
+     * In case the QuestionReview was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<QuestionReviewUpdateInput, QuestionReviewUncheckedUpdateInput>
+  }
+
+  /**
+   * QuestionReview delete
+   */
+  export type QuestionReviewDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+    /**
+     * Filter which QuestionReview to delete.
+     */
+    where: QuestionReviewWhereUniqueInput
+  }
+
+  /**
+   * QuestionReview deleteMany
+   */
+  export type QuestionReviewDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QuestionReviews to delete
+     */
+    where?: QuestionReviewWhereInput
+    /**
+     * Limit how many QuestionReviews to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * QuestionReview without action
+   */
+  export type QuestionReviewDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestionReview
+     */
+    select?: QuestionReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestionReview
+     */
+    omit?: QuestionReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestionReviewInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8512,6 +9835,21 @@ export namespace Prisma {
   export type QuestionImageScalarFieldEnum = (typeof QuestionImageScalarFieldEnum)[keyof typeof QuestionImageScalarFieldEnum]
 
 
+  export const QuestionReviewScalarFieldEnum: {
+    id: 'id',
+    questionId: 'questionId',
+    userId: 'userId',
+    difficulty: 'difficulty',
+    interval: 'interval',
+    easeFactor: 'easeFactor',
+    reviewCount: 'reviewCount',
+    nextReviewDate: 'nextReviewDate',
+    createdAt: 'createdAt'
+  };
+
+  export type QuestionReviewScalarFieldEnum = (typeof QuestionReviewScalarFieldEnum)[keyof typeof QuestionReviewScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -8566,6 +9904,13 @@ export namespace Prisma {
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
   /**
    * Deep Input Types
    */
@@ -8587,6 +9932,7 @@ export namespace Prisma {
     subjects?: SubjectListRelationFilter
     questions?: QuestionListRelationFilter
     questionImages?: QuestionImageListRelationFilter
+    reviews?: QuestionReviewListRelationFilter
     tasks?: TaskListRelationFilter
     categories?: CategoryListRelationFilter
   }
@@ -8604,6 +9950,7 @@ export namespace Prisma {
     subjects?: SubjectOrderByRelationAggregateInput
     questions?: QuestionOrderByRelationAggregateInput
     questionImages?: QuestionImageOrderByRelationAggregateInput
+    reviews?: QuestionReviewOrderByRelationAggregateInput
     tasks?: TaskOrderByRelationAggregateInput
     categories?: CategoryOrderByRelationAggregateInput
   }
@@ -8624,6 +9971,7 @@ export namespace Prisma {
     subjects?: SubjectListRelationFilter
     questions?: QuestionListRelationFilter
     questionImages?: QuestionImageListRelationFilter
+    reviews?: QuestionReviewListRelationFilter
     tasks?: TaskListRelationFilter
     categories?: CategoryListRelationFilter
   }, "id" | "email">
@@ -8895,6 +10243,7 @@ export namespace Prisma {
     subject?: XOR<SubjectScalarRelationFilter, SubjectWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     images?: QuestionImageListRelationFilter
+    reviews?: QuestionReviewListRelationFilter
   }
 
   export type QuestionOrderByWithRelationInput = {
@@ -8911,6 +10260,7 @@ export namespace Prisma {
     subject?: SubjectOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     images?: QuestionImageOrderByRelationAggregateInput
+    reviews?: QuestionReviewOrderByRelationAggregateInput
   }
 
   export type QuestionWhereUniqueInput = Prisma.AtLeast<{
@@ -8930,6 +10280,7 @@ export namespace Prisma {
     subject?: XOR<SubjectScalarRelationFilter, SubjectWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     images?: QuestionImageListRelationFilter
+    reviews?: QuestionReviewListRelationFilter
   }, "id">
 
   export type QuestionOrderByWithAggregationInput = {
@@ -9047,6 +10398,86 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"QuestionImage"> | Date | string
   }
 
+  export type QuestionReviewWhereInput = {
+    AND?: QuestionReviewWhereInput | QuestionReviewWhereInput[]
+    OR?: QuestionReviewWhereInput[]
+    NOT?: QuestionReviewWhereInput | QuestionReviewWhereInput[]
+    id?: StringFilter<"QuestionReview"> | string
+    questionId?: StringFilter<"QuestionReview"> | string
+    userId?: StringFilter<"QuestionReview"> | string
+    difficulty?: StringFilter<"QuestionReview"> | string
+    interval?: IntFilter<"QuestionReview"> | number
+    easeFactor?: FloatFilter<"QuestionReview"> | number
+    reviewCount?: IntFilter<"QuestionReview"> | number
+    nextReviewDate?: DateTimeFilter<"QuestionReview"> | Date | string
+    createdAt?: DateTimeFilter<"QuestionReview"> | Date | string
+    question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type QuestionReviewOrderByWithRelationInput = {
+    id?: SortOrder
+    questionId?: SortOrder
+    userId?: SortOrder
+    difficulty?: SortOrder
+    interval?: SortOrder
+    easeFactor?: SortOrder
+    reviewCount?: SortOrder
+    nextReviewDate?: SortOrder
+    createdAt?: SortOrder
+    question?: QuestionOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type QuestionReviewWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: QuestionReviewWhereInput | QuestionReviewWhereInput[]
+    OR?: QuestionReviewWhereInput[]
+    NOT?: QuestionReviewWhereInput | QuestionReviewWhereInput[]
+    questionId?: StringFilter<"QuestionReview"> | string
+    userId?: StringFilter<"QuestionReview"> | string
+    difficulty?: StringFilter<"QuestionReview"> | string
+    interval?: IntFilter<"QuestionReview"> | number
+    easeFactor?: FloatFilter<"QuestionReview"> | number
+    reviewCount?: IntFilter<"QuestionReview"> | number
+    nextReviewDate?: DateTimeFilter<"QuestionReview"> | Date | string
+    createdAt?: DateTimeFilter<"QuestionReview"> | Date | string
+    question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type QuestionReviewOrderByWithAggregationInput = {
+    id?: SortOrder
+    questionId?: SortOrder
+    userId?: SortOrder
+    difficulty?: SortOrder
+    interval?: SortOrder
+    easeFactor?: SortOrder
+    reviewCount?: SortOrder
+    nextReviewDate?: SortOrder
+    createdAt?: SortOrder
+    _count?: QuestionReviewCountOrderByAggregateInput
+    _avg?: QuestionReviewAvgOrderByAggregateInput
+    _max?: QuestionReviewMaxOrderByAggregateInput
+    _min?: QuestionReviewMinOrderByAggregateInput
+    _sum?: QuestionReviewSumOrderByAggregateInput
+  }
+
+  export type QuestionReviewScalarWhereWithAggregatesInput = {
+    AND?: QuestionReviewScalarWhereWithAggregatesInput | QuestionReviewScalarWhereWithAggregatesInput[]
+    OR?: QuestionReviewScalarWhereWithAggregatesInput[]
+    NOT?: QuestionReviewScalarWhereWithAggregatesInput | QuestionReviewScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"QuestionReview"> | string
+    questionId?: StringWithAggregatesFilter<"QuestionReview"> | string
+    userId?: StringWithAggregatesFilter<"QuestionReview"> | string
+    difficulty?: StringWithAggregatesFilter<"QuestionReview"> | string
+    interval?: IntWithAggregatesFilter<"QuestionReview"> | number
+    easeFactor?: FloatWithAggregatesFilter<"QuestionReview"> | number
+    reviewCount?: IntWithAggregatesFilter<"QuestionReview"> | number
+    nextReviewDate?: DateTimeWithAggregatesFilter<"QuestionReview"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"QuestionReview"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -9060,6 +10491,7 @@ export namespace Prisma {
     subjects?: SubjectCreateNestedManyWithoutUserInput
     questions?: QuestionCreateNestedManyWithoutUserInput
     questionImages?: QuestionImageCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewCreateNestedManyWithoutUserInput
     tasks?: TaskCreateNestedManyWithoutUserInput
     categories?: CategoryCreateNestedManyWithoutUserInput
   }
@@ -9077,6 +10509,7 @@ export namespace Prisma {
     subjects?: SubjectUncheckedCreateNestedManyWithoutUserInput
     questions?: QuestionUncheckedCreateNestedManyWithoutUserInput
     questionImages?: QuestionImageUncheckedCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewUncheckedCreateNestedManyWithoutUserInput
     tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
     categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
   }
@@ -9094,6 +10527,7 @@ export namespace Prisma {
     subjects?: SubjectUpdateManyWithoutUserNestedInput
     questions?: QuestionUpdateManyWithoutUserNestedInput
     questionImages?: QuestionImageUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUpdateManyWithoutUserNestedInput
     tasks?: TaskUpdateManyWithoutUserNestedInput
     categories?: CategoryUpdateManyWithoutUserNestedInput
   }
@@ -9111,6 +10545,7 @@ export namespace Prisma {
     subjects?: SubjectUncheckedUpdateManyWithoutUserNestedInput
     questions?: QuestionUncheckedUpdateManyWithoutUserNestedInput
     questionImages?: QuestionImageUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUncheckedUpdateManyWithoutUserNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
     categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -9398,6 +10833,7 @@ export namespace Prisma {
     subject: SubjectCreateNestedOneWithoutQuestionsInput
     user: UserCreateNestedOneWithoutQuestionsInput
     images?: QuestionImageCreateNestedManyWithoutQuestionInput
+    reviews?: QuestionReviewCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateInput = {
@@ -9412,6 +10848,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     images?: QuestionImageUncheckedCreateNestedManyWithoutQuestionInput
+    reviews?: QuestionReviewUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUpdateInput = {
@@ -9426,6 +10863,7 @@ export namespace Prisma {
     subject?: SubjectUpdateOneRequiredWithoutQuestionsNestedInput
     user?: UserUpdateOneRequiredWithoutQuestionsNestedInput
     images?: QuestionImageUpdateManyWithoutQuestionNestedInput
+    reviews?: QuestionReviewUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateInput = {
@@ -9440,6 +10878,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     images?: QuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
+    reviews?: QuestionReviewUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionCreateManyInput = {
@@ -9568,6 +11007,88 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type QuestionReviewCreateInput = {
+    id?: string
+    difficulty: string
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: Date | string
+    createdAt?: Date | string
+    question: QuestionCreateNestedOneWithoutReviewsInput
+    user: UserCreateNestedOneWithoutReviewsInput
+  }
+
+  export type QuestionReviewUncheckedCreateInput = {
+    id?: string
+    questionId: string
+    userId: string
+    difficulty: string
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: Date | string
+    createdAt?: Date | string
+  }
+
+  export type QuestionReviewUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    interval?: IntFieldUpdateOperationsInput | number
+    easeFactor?: FloatFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    nextReviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    question?: QuestionUpdateOneRequiredWithoutReviewsNestedInput
+    user?: UserUpdateOneRequiredWithoutReviewsNestedInput
+  }
+
+  export type QuestionReviewUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    interval?: IntFieldUpdateOperationsInput | number
+    easeFactor?: FloatFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    nextReviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestionReviewCreateManyInput = {
+    id?: string
+    questionId: string
+    userId: string
+    difficulty: string
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: Date | string
+    createdAt?: Date | string
+  }
+
+  export type QuestionReviewUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    interval?: IntFieldUpdateOperationsInput | number
+    easeFactor?: FloatFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    nextReviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestionReviewUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    interval?: IntFieldUpdateOperationsInput | number
+    easeFactor?: FloatFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    nextReviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -9641,6 +11162,12 @@ export namespace Prisma {
     none?: QuestionImageWhereInput
   }
 
+  export type QuestionReviewListRelationFilter = {
+    every?: QuestionReviewWhereInput
+    some?: QuestionReviewWhereInput
+    none?: QuestionReviewWhereInput
+  }
+
   export type TaskListRelationFilter = {
     every?: TaskWhereInput
     some?: TaskWhereInput
@@ -9667,6 +11194,10 @@ export namespace Prisma {
   }
 
   export type QuestionImageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type QuestionReviewOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10003,6 +11534,113 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type QuestionScalarRelationFilter = {
+    is?: QuestionWhereInput
+    isNot?: QuestionWhereInput
+  }
+
+  export type QuestionReviewCountOrderByAggregateInput = {
+    id?: SortOrder
+    questionId?: SortOrder
+    userId?: SortOrder
+    difficulty?: SortOrder
+    interval?: SortOrder
+    easeFactor?: SortOrder
+    reviewCount?: SortOrder
+    nextReviewDate?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type QuestionReviewAvgOrderByAggregateInput = {
+    interval?: SortOrder
+    easeFactor?: SortOrder
+    reviewCount?: SortOrder
+  }
+
+  export type QuestionReviewMaxOrderByAggregateInput = {
+    id?: SortOrder
+    questionId?: SortOrder
+    userId?: SortOrder
+    difficulty?: SortOrder
+    interval?: SortOrder
+    easeFactor?: SortOrder
+    reviewCount?: SortOrder
+    nextReviewDate?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type QuestionReviewMinOrderByAggregateInput = {
+    id?: SortOrder
+    questionId?: SortOrder
+    userId?: SortOrder
+    difficulty?: SortOrder
+    interval?: SortOrder
+    easeFactor?: SortOrder
+    reviewCount?: SortOrder
+    nextReviewDate?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type QuestionReviewSumOrderByAggregateInput = {
+    interval?: SortOrder
+    easeFactor?: SortOrder
+    reviewCount?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type SubjectCreateNestedManyWithoutUserInput = {
     create?: XOR<SubjectCreateWithoutUserInput, SubjectUncheckedCreateWithoutUserInput> | SubjectCreateWithoutUserInput[] | SubjectUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SubjectCreateOrConnectWithoutUserInput | SubjectCreateOrConnectWithoutUserInput[]
@@ -10022,6 +11660,13 @@ export namespace Prisma {
     connectOrCreate?: QuestionImageCreateOrConnectWithoutUserInput | QuestionImageCreateOrConnectWithoutUserInput[]
     createMany?: QuestionImageCreateManyUserInputEnvelope
     connect?: QuestionImageWhereUniqueInput | QuestionImageWhereUniqueInput[]
+  }
+
+  export type QuestionReviewCreateNestedManyWithoutUserInput = {
+    create?: XOR<QuestionReviewCreateWithoutUserInput, QuestionReviewUncheckedCreateWithoutUserInput> | QuestionReviewCreateWithoutUserInput[] | QuestionReviewUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: QuestionReviewCreateOrConnectWithoutUserInput | QuestionReviewCreateOrConnectWithoutUserInput[]
+    createMany?: QuestionReviewCreateManyUserInputEnvelope
+    connect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
   }
 
   export type TaskCreateNestedManyWithoutUserInput = {
@@ -10057,6 +11702,13 @@ export namespace Prisma {
     connectOrCreate?: QuestionImageCreateOrConnectWithoutUserInput | QuestionImageCreateOrConnectWithoutUserInput[]
     createMany?: QuestionImageCreateManyUserInputEnvelope
     connect?: QuestionImageWhereUniqueInput | QuestionImageWhereUniqueInput[]
+  }
+
+  export type QuestionReviewUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<QuestionReviewCreateWithoutUserInput, QuestionReviewUncheckedCreateWithoutUserInput> | QuestionReviewCreateWithoutUserInput[] | QuestionReviewUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: QuestionReviewCreateOrConnectWithoutUserInput | QuestionReviewCreateOrConnectWithoutUserInput[]
+    createMany?: QuestionReviewCreateManyUserInputEnvelope
+    connect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
   }
 
   export type TaskUncheckedCreateNestedManyWithoutUserInput = {
@@ -10135,6 +11787,20 @@ export namespace Prisma {
     deleteMany?: QuestionImageScalarWhereInput | QuestionImageScalarWhereInput[]
   }
 
+  export type QuestionReviewUpdateManyWithoutUserNestedInput = {
+    create?: XOR<QuestionReviewCreateWithoutUserInput, QuestionReviewUncheckedCreateWithoutUserInput> | QuestionReviewCreateWithoutUserInput[] | QuestionReviewUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: QuestionReviewCreateOrConnectWithoutUserInput | QuestionReviewCreateOrConnectWithoutUserInput[]
+    upsert?: QuestionReviewUpsertWithWhereUniqueWithoutUserInput | QuestionReviewUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: QuestionReviewCreateManyUserInputEnvelope
+    set?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    disconnect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    delete?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    connect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    update?: QuestionReviewUpdateWithWhereUniqueWithoutUserInput | QuestionReviewUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: QuestionReviewUpdateManyWithWhereWithoutUserInput | QuestionReviewUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: QuestionReviewScalarWhereInput | QuestionReviewScalarWhereInput[]
+  }
+
   export type TaskUpdateManyWithoutUserNestedInput = {
     create?: XOR<TaskCreateWithoutUserInput, TaskUncheckedCreateWithoutUserInput> | TaskCreateWithoutUserInput[] | TaskUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TaskCreateOrConnectWithoutUserInput | TaskCreateOrConnectWithoutUserInput[]
@@ -10203,6 +11869,20 @@ export namespace Prisma {
     update?: QuestionImageUpdateWithWhereUniqueWithoutUserInput | QuestionImageUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: QuestionImageUpdateManyWithWhereWithoutUserInput | QuestionImageUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: QuestionImageScalarWhereInput | QuestionImageScalarWhereInput[]
+  }
+
+  export type QuestionReviewUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<QuestionReviewCreateWithoutUserInput, QuestionReviewUncheckedCreateWithoutUserInput> | QuestionReviewCreateWithoutUserInput[] | QuestionReviewUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: QuestionReviewCreateOrConnectWithoutUserInput | QuestionReviewCreateOrConnectWithoutUserInput[]
+    upsert?: QuestionReviewUpsertWithWhereUniqueWithoutUserInput | QuestionReviewUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: QuestionReviewCreateManyUserInputEnvelope
+    set?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    disconnect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    delete?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    connect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    update?: QuestionReviewUpdateWithWhereUniqueWithoutUserInput | QuestionReviewUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: QuestionReviewUpdateManyWithWhereWithoutUserInput | QuestionReviewUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: QuestionReviewScalarWhereInput | QuestionReviewScalarWhereInput[]
   }
 
   export type TaskUncheckedUpdateManyWithoutUserNestedInput = {
@@ -10398,11 +12078,25 @@ export namespace Prisma {
     connect?: QuestionImageWhereUniqueInput | QuestionImageWhereUniqueInput[]
   }
 
+  export type QuestionReviewCreateNestedManyWithoutQuestionInput = {
+    create?: XOR<QuestionReviewCreateWithoutQuestionInput, QuestionReviewUncheckedCreateWithoutQuestionInput> | QuestionReviewCreateWithoutQuestionInput[] | QuestionReviewUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: QuestionReviewCreateOrConnectWithoutQuestionInput | QuestionReviewCreateOrConnectWithoutQuestionInput[]
+    createMany?: QuestionReviewCreateManyQuestionInputEnvelope
+    connect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+  }
+
   export type QuestionImageUncheckedCreateNestedManyWithoutQuestionInput = {
     create?: XOR<QuestionImageCreateWithoutQuestionInput, QuestionImageUncheckedCreateWithoutQuestionInput> | QuestionImageCreateWithoutQuestionInput[] | QuestionImageUncheckedCreateWithoutQuestionInput[]
     connectOrCreate?: QuestionImageCreateOrConnectWithoutQuestionInput | QuestionImageCreateOrConnectWithoutQuestionInput[]
     createMany?: QuestionImageCreateManyQuestionInputEnvelope
     connect?: QuestionImageWhereUniqueInput | QuestionImageWhereUniqueInput[]
+  }
+
+  export type QuestionReviewUncheckedCreateNestedManyWithoutQuestionInput = {
+    create?: XOR<QuestionReviewCreateWithoutQuestionInput, QuestionReviewUncheckedCreateWithoutQuestionInput> | QuestionReviewCreateWithoutQuestionInput[] | QuestionReviewUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: QuestionReviewCreateOrConnectWithoutQuestionInput | QuestionReviewCreateOrConnectWithoutQuestionInput[]
+    createMany?: QuestionReviewCreateManyQuestionInputEnvelope
+    connect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
   }
 
   export type SubjectUpdateOneRequiredWithoutQuestionsNestedInput = {
@@ -10435,6 +12129,20 @@ export namespace Prisma {
     deleteMany?: QuestionImageScalarWhereInput | QuestionImageScalarWhereInput[]
   }
 
+  export type QuestionReviewUpdateManyWithoutQuestionNestedInput = {
+    create?: XOR<QuestionReviewCreateWithoutQuestionInput, QuestionReviewUncheckedCreateWithoutQuestionInput> | QuestionReviewCreateWithoutQuestionInput[] | QuestionReviewUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: QuestionReviewCreateOrConnectWithoutQuestionInput | QuestionReviewCreateOrConnectWithoutQuestionInput[]
+    upsert?: QuestionReviewUpsertWithWhereUniqueWithoutQuestionInput | QuestionReviewUpsertWithWhereUniqueWithoutQuestionInput[]
+    createMany?: QuestionReviewCreateManyQuestionInputEnvelope
+    set?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    disconnect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    delete?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    connect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    update?: QuestionReviewUpdateWithWhereUniqueWithoutQuestionInput | QuestionReviewUpdateWithWhereUniqueWithoutQuestionInput[]
+    updateMany?: QuestionReviewUpdateManyWithWhereWithoutQuestionInput | QuestionReviewUpdateManyWithWhereWithoutQuestionInput[]
+    deleteMany?: QuestionReviewScalarWhereInput | QuestionReviewScalarWhereInput[]
+  }
+
   export type QuestionImageUncheckedUpdateManyWithoutQuestionNestedInput = {
     create?: XOR<QuestionImageCreateWithoutQuestionInput, QuestionImageUncheckedCreateWithoutQuestionInput> | QuestionImageCreateWithoutQuestionInput[] | QuestionImageUncheckedCreateWithoutQuestionInput[]
     connectOrCreate?: QuestionImageCreateOrConnectWithoutQuestionInput | QuestionImageCreateOrConnectWithoutQuestionInput[]
@@ -10447,6 +12155,20 @@ export namespace Prisma {
     update?: QuestionImageUpdateWithWhereUniqueWithoutQuestionInput | QuestionImageUpdateWithWhereUniqueWithoutQuestionInput[]
     updateMany?: QuestionImageUpdateManyWithWhereWithoutQuestionInput | QuestionImageUpdateManyWithWhereWithoutQuestionInput[]
     deleteMany?: QuestionImageScalarWhereInput | QuestionImageScalarWhereInput[]
+  }
+
+  export type QuestionReviewUncheckedUpdateManyWithoutQuestionNestedInput = {
+    create?: XOR<QuestionReviewCreateWithoutQuestionInput, QuestionReviewUncheckedCreateWithoutQuestionInput> | QuestionReviewCreateWithoutQuestionInput[] | QuestionReviewUncheckedCreateWithoutQuestionInput[]
+    connectOrCreate?: QuestionReviewCreateOrConnectWithoutQuestionInput | QuestionReviewCreateOrConnectWithoutQuestionInput[]
+    upsert?: QuestionReviewUpsertWithWhereUniqueWithoutQuestionInput | QuestionReviewUpsertWithWhereUniqueWithoutQuestionInput[]
+    createMany?: QuestionReviewCreateManyQuestionInputEnvelope
+    set?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    disconnect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    delete?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    connect?: QuestionReviewWhereUniqueInput | QuestionReviewWhereUniqueInput[]
+    update?: QuestionReviewUpdateWithWhereUniqueWithoutQuestionInput | QuestionReviewUpdateWithWhereUniqueWithoutQuestionInput[]
+    updateMany?: QuestionReviewUpdateManyWithWhereWithoutQuestionInput | QuestionReviewUpdateManyWithWhereWithoutQuestionInput[]
+    deleteMany?: QuestionReviewScalarWhereInput | QuestionReviewScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutQuestionImagesInput = {
@@ -10477,6 +12199,50 @@ export namespace Prisma {
     delete?: QuestionWhereInput | boolean
     connect?: QuestionWhereUniqueInput
     update?: XOR<XOR<QuestionUpdateToOneWithWhereWithoutImagesInput, QuestionUpdateWithoutImagesInput>, QuestionUncheckedUpdateWithoutImagesInput>
+  }
+
+  export type QuestionCreateNestedOneWithoutReviewsInput = {
+    create?: XOR<QuestionCreateWithoutReviewsInput, QuestionUncheckedCreateWithoutReviewsInput>
+    connectOrCreate?: QuestionCreateOrConnectWithoutReviewsInput
+    connect?: QuestionWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReviewsInput = {
+    create?: XOR<UserCreateWithoutReviewsInput, UserUncheckedCreateWithoutReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReviewsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type QuestionUpdateOneRequiredWithoutReviewsNestedInput = {
+    create?: XOR<QuestionCreateWithoutReviewsInput, QuestionUncheckedCreateWithoutReviewsInput>
+    connectOrCreate?: QuestionCreateOrConnectWithoutReviewsInput
+    upsert?: QuestionUpsertWithoutReviewsInput
+    connect?: QuestionWhereUniqueInput
+    update?: XOR<XOR<QuestionUpdateToOneWithWhereWithoutReviewsInput, QuestionUpdateWithoutReviewsInput>, QuestionUncheckedUpdateWithoutReviewsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutReviewsNestedInput = {
+    create?: XOR<UserCreateWithoutReviewsInput, UserUncheckedCreateWithoutReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReviewsInput
+    upsert?: UserUpsertWithoutReviewsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReviewsInput, UserUpdateWithoutReviewsInput>, UserUncheckedUpdateWithoutReviewsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -10643,6 +12409,49 @@ export namespace Prisma {
     _max?: NestedEnumPriorityFilter<$PrismaModel>
   }
 
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type SubjectCreateWithoutUserInput = {
     id?: string
     name: string
@@ -10685,6 +12494,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     subject: SubjectCreateNestedOneWithoutQuestionsInput
     images?: QuestionImageCreateNestedManyWithoutQuestionInput
+    reviews?: QuestionReviewCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateWithoutUserInput = {
@@ -10698,6 +12508,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     images?: QuestionImageUncheckedCreateNestedManyWithoutQuestionInput
+    reviews?: QuestionReviewUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionCreateOrConnectWithoutUserInput = {
@@ -10740,6 +12551,37 @@ export namespace Prisma {
 
   export type QuestionImageCreateManyUserInputEnvelope = {
     data: QuestionImageCreateManyUserInput | QuestionImageCreateManyUserInput[]
+  }
+
+  export type QuestionReviewCreateWithoutUserInput = {
+    id?: string
+    difficulty: string
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: Date | string
+    createdAt?: Date | string
+    question: QuestionCreateNestedOneWithoutReviewsInput
+  }
+
+  export type QuestionReviewUncheckedCreateWithoutUserInput = {
+    id?: string
+    questionId: string
+    difficulty: string
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: Date | string
+    createdAt?: Date | string
+  }
+
+  export type QuestionReviewCreateOrConnectWithoutUserInput = {
+    where: QuestionReviewWhereUniqueInput
+    create: XOR<QuestionReviewCreateWithoutUserInput, QuestionReviewUncheckedCreateWithoutUserInput>
+  }
+
+  export type QuestionReviewCreateManyUserInputEnvelope = {
+    data: QuestionReviewCreateManyUserInput | QuestionReviewCreateManyUserInput[]
   }
 
   export type TaskCreateWithoutUserInput = {
@@ -10896,6 +12738,37 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"QuestionImage"> | Date | string
   }
 
+  export type QuestionReviewUpsertWithWhereUniqueWithoutUserInput = {
+    where: QuestionReviewWhereUniqueInput
+    update: XOR<QuestionReviewUpdateWithoutUserInput, QuestionReviewUncheckedUpdateWithoutUserInput>
+    create: XOR<QuestionReviewCreateWithoutUserInput, QuestionReviewUncheckedCreateWithoutUserInput>
+  }
+
+  export type QuestionReviewUpdateWithWhereUniqueWithoutUserInput = {
+    where: QuestionReviewWhereUniqueInput
+    data: XOR<QuestionReviewUpdateWithoutUserInput, QuestionReviewUncheckedUpdateWithoutUserInput>
+  }
+
+  export type QuestionReviewUpdateManyWithWhereWithoutUserInput = {
+    where: QuestionReviewScalarWhereInput
+    data: XOR<QuestionReviewUpdateManyMutationInput, QuestionReviewUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type QuestionReviewScalarWhereInput = {
+    AND?: QuestionReviewScalarWhereInput | QuestionReviewScalarWhereInput[]
+    OR?: QuestionReviewScalarWhereInput[]
+    NOT?: QuestionReviewScalarWhereInput | QuestionReviewScalarWhereInput[]
+    id?: StringFilter<"QuestionReview"> | string
+    questionId?: StringFilter<"QuestionReview"> | string
+    userId?: StringFilter<"QuestionReview"> | string
+    difficulty?: StringFilter<"QuestionReview"> | string
+    interval?: IntFilter<"QuestionReview"> | number
+    easeFactor?: FloatFilter<"QuestionReview"> | number
+    reviewCount?: IntFilter<"QuestionReview"> | number
+    nextReviewDate?: DateTimeFilter<"QuestionReview"> | Date | string
+    createdAt?: DateTimeFilter<"QuestionReview"> | Date | string
+  }
+
   export type TaskUpsertWithWhereUniqueWithoutUserInput = {
     where: TaskWhereUniqueInput
     update: XOR<TaskUpdateWithoutUserInput, TaskUncheckedUpdateWithoutUserInput>
@@ -10969,6 +12842,7 @@ export namespace Prisma {
     subjects?: SubjectCreateNestedManyWithoutUserInput
     questions?: QuestionCreateNestedManyWithoutUserInput
     questionImages?: QuestionImageCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewCreateNestedManyWithoutUserInput
     categories?: CategoryCreateNestedManyWithoutUserInput
   }
 
@@ -10985,6 +12859,7 @@ export namespace Prisma {
     subjects?: SubjectUncheckedCreateNestedManyWithoutUserInput
     questions?: QuestionUncheckedCreateNestedManyWithoutUserInput
     questionImages?: QuestionImageUncheckedCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewUncheckedCreateNestedManyWithoutUserInput
     categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -11040,6 +12915,7 @@ export namespace Prisma {
     subjects?: SubjectUpdateManyWithoutUserNestedInput
     questions?: QuestionUpdateManyWithoutUserNestedInput
     questionImages?: QuestionImageUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUpdateManyWithoutUserNestedInput
     categories?: CategoryUpdateManyWithoutUserNestedInput
   }
 
@@ -11056,6 +12932,7 @@ export namespace Prisma {
     subjects?: SubjectUncheckedUpdateManyWithoutUserNestedInput
     questions?: QuestionUncheckedUpdateManyWithoutUserNestedInput
     questionImages?: QuestionImageUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUncheckedUpdateManyWithoutUserNestedInput
     categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -11101,6 +12978,7 @@ export namespace Prisma {
     subjects?: SubjectCreateNestedManyWithoutUserInput
     questions?: QuestionCreateNestedManyWithoutUserInput
     questionImages?: QuestionImageCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewCreateNestedManyWithoutUserInput
     tasks?: TaskCreateNestedManyWithoutUserInput
   }
 
@@ -11117,6 +12995,7 @@ export namespace Prisma {
     subjects?: SubjectUncheckedCreateNestedManyWithoutUserInput
     questions?: QuestionUncheckedCreateNestedManyWithoutUserInput
     questionImages?: QuestionImageUncheckedCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewUncheckedCreateNestedManyWithoutUserInput
     tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -11182,6 +13061,7 @@ export namespace Prisma {
     subjects?: SubjectUpdateManyWithoutUserNestedInput
     questions?: QuestionUpdateManyWithoutUserNestedInput
     questionImages?: QuestionImageUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUpdateManyWithoutUserNestedInput
     tasks?: TaskUpdateManyWithoutUserNestedInput
   }
 
@@ -11198,6 +13078,7 @@ export namespace Prisma {
     subjects?: SubjectUncheckedUpdateManyWithoutUserNestedInput
     questions?: QuestionUncheckedUpdateManyWithoutUserNestedInput
     questionImages?: QuestionImageUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUncheckedUpdateManyWithoutUserNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -11229,6 +13110,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     questions?: QuestionCreateNestedManyWithoutUserInput
     questionImages?: QuestionImageCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewCreateNestedManyWithoutUserInput
     tasks?: TaskCreateNestedManyWithoutUserInput
     categories?: CategoryCreateNestedManyWithoutUserInput
   }
@@ -11245,6 +13127,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     questions?: QuestionUncheckedCreateNestedManyWithoutUserInput
     questionImages?: QuestionImageUncheckedCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewUncheckedCreateNestedManyWithoutUserInput
     tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
     categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
   }
@@ -11265,6 +13148,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutQuestionsInput
     images?: QuestionImageCreateNestedManyWithoutQuestionInput
+    reviews?: QuestionReviewCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateWithoutSubjectInput = {
@@ -11278,6 +13162,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     images?: QuestionImageUncheckedCreateNestedManyWithoutQuestionInput
+    reviews?: QuestionReviewUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionCreateOrConnectWithoutSubjectInput = {
@@ -11312,6 +13197,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questions?: QuestionUpdateManyWithoutUserNestedInput
     questionImages?: QuestionImageUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUpdateManyWithoutUserNestedInput
     tasks?: TaskUpdateManyWithoutUserNestedInput
     categories?: CategoryUpdateManyWithoutUserNestedInput
   }
@@ -11328,6 +13214,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questions?: QuestionUncheckedUpdateManyWithoutUserNestedInput
     questionImages?: QuestionImageUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUncheckedUpdateManyWithoutUserNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
     categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -11387,6 +13274,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     subjects?: SubjectCreateNestedManyWithoutUserInput
     questionImages?: QuestionImageCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewCreateNestedManyWithoutUserInput
     tasks?: TaskCreateNestedManyWithoutUserInput
     categories?: CategoryCreateNestedManyWithoutUserInput
   }
@@ -11403,6 +13291,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     subjects?: SubjectUncheckedCreateNestedManyWithoutUserInput
     questionImages?: QuestionImageUncheckedCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewUncheckedCreateNestedManyWithoutUserInput
     tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
     categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
   }
@@ -11443,6 +13332,37 @@ export namespace Prisma {
 
   export type QuestionImageCreateManyQuestionInputEnvelope = {
     data: QuestionImageCreateManyQuestionInput | QuestionImageCreateManyQuestionInput[]
+  }
+
+  export type QuestionReviewCreateWithoutQuestionInput = {
+    id?: string
+    difficulty: string
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: Date | string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutReviewsInput
+  }
+
+  export type QuestionReviewUncheckedCreateWithoutQuestionInput = {
+    id?: string
+    userId: string
+    difficulty: string
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: Date | string
+    createdAt?: Date | string
+  }
+
+  export type QuestionReviewCreateOrConnectWithoutQuestionInput = {
+    where: QuestionReviewWhereUniqueInput
+    create: XOR<QuestionReviewCreateWithoutQuestionInput, QuestionReviewUncheckedCreateWithoutQuestionInput>
+  }
+
+  export type QuestionReviewCreateManyQuestionInputEnvelope = {
+    data: QuestionReviewCreateManyQuestionInput | QuestionReviewCreateManyQuestionInput[]
   }
 
   export type SubjectUpsertWithoutQuestionsInput = {
@@ -11501,6 +13421,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     subjects?: SubjectUpdateManyWithoutUserNestedInput
     questionImages?: QuestionImageUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUpdateManyWithoutUserNestedInput
     tasks?: TaskUpdateManyWithoutUserNestedInput
     categories?: CategoryUpdateManyWithoutUserNestedInput
   }
@@ -11517,6 +13438,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     subjects?: SubjectUncheckedUpdateManyWithoutUserNestedInput
     questionImages?: QuestionImageUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUncheckedUpdateManyWithoutUserNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
     categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -11537,6 +13459,22 @@ export namespace Prisma {
     data: XOR<QuestionImageUpdateManyMutationInput, QuestionImageUncheckedUpdateManyWithoutQuestionInput>
   }
 
+  export type QuestionReviewUpsertWithWhereUniqueWithoutQuestionInput = {
+    where: QuestionReviewWhereUniqueInput
+    update: XOR<QuestionReviewUpdateWithoutQuestionInput, QuestionReviewUncheckedUpdateWithoutQuestionInput>
+    create: XOR<QuestionReviewCreateWithoutQuestionInput, QuestionReviewUncheckedCreateWithoutQuestionInput>
+  }
+
+  export type QuestionReviewUpdateWithWhereUniqueWithoutQuestionInput = {
+    where: QuestionReviewWhereUniqueInput
+    data: XOR<QuestionReviewUpdateWithoutQuestionInput, QuestionReviewUncheckedUpdateWithoutQuestionInput>
+  }
+
+  export type QuestionReviewUpdateManyWithWhereWithoutQuestionInput = {
+    where: QuestionReviewScalarWhereInput
+    data: XOR<QuestionReviewUpdateManyMutationInput, QuestionReviewUncheckedUpdateManyWithoutQuestionInput>
+  }
+
   export type UserCreateWithoutQuestionImagesInput = {
     id?: string
     email: string
@@ -11549,6 +13487,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     subjects?: SubjectCreateNestedManyWithoutUserInput
     questions?: QuestionCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewCreateNestedManyWithoutUserInput
     tasks?: TaskCreateNestedManyWithoutUserInput
     categories?: CategoryCreateNestedManyWithoutUserInput
   }
@@ -11565,6 +13504,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     subjects?: SubjectUncheckedCreateNestedManyWithoutUserInput
     questions?: QuestionUncheckedCreateNestedManyWithoutUserInput
+    reviews?: QuestionReviewUncheckedCreateNestedManyWithoutUserInput
     tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
     categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
   }
@@ -11585,6 +13525,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     subject: SubjectCreateNestedOneWithoutQuestionsInput
     user: UserCreateNestedOneWithoutQuestionsInput
+    reviews?: QuestionReviewCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateWithoutImagesInput = {
@@ -11598,6 +13539,7 @@ export namespace Prisma {
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    reviews?: QuestionReviewUncheckedCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionCreateOrConnectWithoutImagesInput = {
@@ -11628,6 +13570,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     subjects?: SubjectUpdateManyWithoutUserNestedInput
     questions?: QuestionUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUpdateManyWithoutUserNestedInput
     tasks?: TaskUpdateManyWithoutUserNestedInput
     categories?: CategoryUpdateManyWithoutUserNestedInput
   }
@@ -11644,6 +13587,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     subjects?: SubjectUncheckedUpdateManyWithoutUserNestedInput
     questions?: QuestionUncheckedUpdateManyWithoutUserNestedInput
+    reviews?: QuestionReviewUncheckedUpdateManyWithoutUserNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
     categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -11670,6 +13614,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     subject?: SubjectUpdateOneRequiredWithoutQuestionsNestedInput
     user?: UserUpdateOneRequiredWithoutQuestionsNestedInput
+    reviews?: QuestionReviewUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateWithoutImagesInput = {
@@ -11683,6 +13628,163 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reviews?: QuestionReviewUncheckedUpdateManyWithoutQuestionNestedInput
+  }
+
+  export type QuestionCreateWithoutReviewsInput = {
+    id?: string
+    text: string
+    answer?: string | null
+    difficulty?: string | null
+    status?: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subject: SubjectCreateNestedOneWithoutQuestionsInput
+    user: UserCreateNestedOneWithoutQuestionsInput
+    images?: QuestionImageCreateNestedManyWithoutQuestionInput
+  }
+
+  export type QuestionUncheckedCreateWithoutReviewsInput = {
+    id?: string
+    text: string
+    answer?: string | null
+    difficulty?: string | null
+    status?: string
+    notes?: string | null
+    subjectId: string
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: QuestionImageUncheckedCreateNestedManyWithoutQuestionInput
+  }
+
+  export type QuestionCreateOrConnectWithoutReviewsInput = {
+    where: QuestionWhereUniqueInput
+    create: XOR<QuestionCreateWithoutReviewsInput, QuestionUncheckedCreateWithoutReviewsInput>
+  }
+
+  export type UserCreateWithoutReviewsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    avatar?: string | null
+    password: string
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subjects?: SubjectCreateNestedManyWithoutUserInput
+    questions?: QuestionCreateNestedManyWithoutUserInput
+    questionImages?: QuestionImageCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+    categories?: CategoryCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutReviewsInput = {
+    id?: string
+    email: string
+    name?: string | null
+    avatar?: string | null
+    password: string
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    subjects?: SubjectUncheckedCreateNestedManyWithoutUserInput
+    questions?: QuestionUncheckedCreateNestedManyWithoutUserInput
+    questionImages?: QuestionImageUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    categories?: CategoryUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutReviewsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReviewsInput, UserUncheckedCreateWithoutReviewsInput>
+  }
+
+  export type QuestionUpsertWithoutReviewsInput = {
+    update: XOR<QuestionUpdateWithoutReviewsInput, QuestionUncheckedUpdateWithoutReviewsInput>
+    create: XOR<QuestionCreateWithoutReviewsInput, QuestionUncheckedCreateWithoutReviewsInput>
+    where?: QuestionWhereInput
+  }
+
+  export type QuestionUpdateToOneWithWhereWithoutReviewsInput = {
+    where?: QuestionWhereInput
+    data: XOR<QuestionUpdateWithoutReviewsInput, QuestionUncheckedUpdateWithoutReviewsInput>
+  }
+
+  export type QuestionUpdateWithoutReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    answer?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subject?: SubjectUpdateOneRequiredWithoutQuestionsNestedInput
+    user?: UserUpdateOneRequiredWithoutQuestionsNestedInput
+    images?: QuestionImageUpdateManyWithoutQuestionNestedInput
+  }
+
+  export type QuestionUncheckedUpdateWithoutReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    answer?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    subjectId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: QuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
+  }
+
+  export type UserUpsertWithoutReviewsInput = {
+    update: XOR<UserUpdateWithoutReviewsInput, UserUncheckedUpdateWithoutReviewsInput>
+    create: XOR<UserCreateWithoutReviewsInput, UserUncheckedCreateWithoutReviewsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReviewsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReviewsInput, UserUncheckedUpdateWithoutReviewsInput>
+  }
+
+  export type UserUpdateWithoutReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subjects?: SubjectUpdateManyWithoutUserNestedInput
+    questions?: QuestionUpdateManyWithoutUserNestedInput
+    questionImages?: QuestionImageUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+    categories?: CategoryUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subjects?: SubjectUncheckedUpdateManyWithoutUserNestedInput
+    questions?: QuestionUncheckedUpdateManyWithoutUserNestedInput
+    questionImages?: QuestionImageUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    categories?: CategoryUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SubjectCreateManyUserInput = {
@@ -11717,6 +13819,17 @@ export namespace Prisma {
     questionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type QuestionReviewCreateManyUserInput = {
+    id?: string
+    questionId: string
+    difficulty: string
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: Date | string
+    createdAt?: Date | string
   }
 
   export type TaskCreateManyUserInput = {
@@ -11782,6 +13895,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     subject?: SubjectUpdateOneRequiredWithoutQuestionsNestedInput
     images?: QuestionImageUpdateManyWithoutQuestionNestedInput
+    reviews?: QuestionReviewUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateWithoutUserInput = {
@@ -11795,6 +13909,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     images?: QuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
+    reviews?: QuestionReviewUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateManyWithoutUserInput = {
@@ -11843,6 +13958,39 @@ export namespace Prisma {
     questionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestionReviewUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    interval?: IntFieldUpdateOperationsInput | number
+    easeFactor?: FloatFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    nextReviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    question?: QuestionUpdateOneRequiredWithoutReviewsNestedInput
+  }
+
+  export type QuestionReviewUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    interval?: IntFieldUpdateOperationsInput | number
+    easeFactor?: FloatFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    nextReviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestionReviewUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questionId?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    interval?: IntFieldUpdateOperationsInput | number
+    easeFactor?: FloatFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    nextReviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TaskUpdateWithoutUserInput = {
@@ -11978,6 +14126,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutQuestionsNestedInput
     images?: QuestionImageUpdateManyWithoutQuestionNestedInput
+    reviews?: QuestionReviewUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateWithoutSubjectInput = {
@@ -11991,6 +14140,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     images?: QuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
+    reviews?: QuestionReviewUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateManyWithoutSubjectInput = {
@@ -12015,6 +14165,17 @@ export namespace Prisma {
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type QuestionReviewCreateManyQuestionInput = {
+    id?: string
+    userId: string
+    difficulty: string
+    interval: number
+    easeFactor: number
+    reviewCount: number
+    nextReviewDate: Date | string
+    createdAt?: Date | string
   }
 
   export type QuestionImageUpdateWithoutQuestionInput = {
@@ -12051,6 +14212,39 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestionReviewUpdateWithoutQuestionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    interval?: IntFieldUpdateOperationsInput | number
+    easeFactor?: FloatFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    nextReviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutReviewsNestedInput
+  }
+
+  export type QuestionReviewUncheckedUpdateWithoutQuestionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    interval?: IntFieldUpdateOperationsInput | number
+    easeFactor?: FloatFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    nextReviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestionReviewUncheckedUpdateManyWithoutQuestionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    difficulty?: StringFieldUpdateOperationsInput | string
+    interval?: IntFieldUpdateOperationsInput | number
+    easeFactor?: FloatFieldUpdateOperationsInput | number
+    reviewCount?: IntFieldUpdateOperationsInput | number
+    nextReviewDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

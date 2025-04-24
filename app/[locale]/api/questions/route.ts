@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
     if (!authToken) {
       return NextResponse.json(
         { success: false, error: 'Not authenticated' },
-        { status: 401 }
+        { status: 401 } 
       );
     }
     
