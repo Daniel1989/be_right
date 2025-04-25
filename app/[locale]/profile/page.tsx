@@ -4,8 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '@/app/providers/AuthProvider';
-import { message } from 'antd';
-
+import { toast } from 'sonner';
 export default function ProfilePage() {
   // Common translations at root level
   const t = useTranslations();
@@ -114,7 +113,7 @@ export default function ProfilePage() {
       router.refresh();
     } catch (error) {
       console.error('Error during logout:', error);
-      message.error(tProfile('logoutErrorAlert'));
+      toast.error(tProfile('logoutErrorAlert'));
     } finally {
       setIsLoggingOut(false);
     }

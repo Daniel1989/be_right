@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { message } from 'antd';
+import { toast } from 'sonner';
 
 // Define types for our data
 type Subject = {
@@ -84,7 +84,7 @@ function ErrorReason(props: {question: Question, locale: string}) {
   }, [reason])
   if(!reason) {
     return (
-      <p className='text-sm text-gray-500'><span>(AI正在分析出场原因...)</span></p>
+      <p className='text-sm text-gray-500'><span>(AI正在分析出错原因...)</span></p>
     );
   }
   return (
@@ -282,7 +282,7 @@ export default function DashboardPage() {
         
         // Show completion message
         if (stats.todayCompleted >= stats.todayGoal) {
-          message.success('恭喜！你已完成今日学习目标！');
+          toast.success('恭喜！你已完成今日学习目标！');
         }
         
         // Refresh the mastered questions
