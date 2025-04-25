@@ -176,7 +176,7 @@ export default function DashboardPage() {
       setIsLoading(true);
       
       // Build the API URL with query parameters
-      let url = `/${locale}/api/reviews?limit=QUESTION_LIMIT`;
+      let url = `/${locale}/api/reviews?limit=${QUESTION_LIMIT}`;
       if (selectedSubjectId) {
         url += `&subjectId=${selectedSubjectId}`;
       }

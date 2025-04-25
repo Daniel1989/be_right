@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
             }
           }
           Important: 
-          - Detect the language of the text in the image and provide your analysis in that same language. If the image contains ${locale === 'zh' ? 'Chinese' : 'English'} text, respond in ${locale === 'zh' ? 'Chinese' : 'English'}. If you can't detect the language clearly, default to ${locale === 'zh' ? 'Chinese' : 'English'}.`
+          - Detect the language of the text in the question and provide your analysis in that same language. If the question contains ${locale === 'zh' ? 'Chinese' : 'English'} text, respond in ${locale === 'zh' ? 'Chinese' : 'English'}. If you can't detect the language clearly, default to ${locale === 'zh' ? 'Chinese' : 'English'}.`
         },
         {
           role: 'user',
@@ -102,7 +102,6 @@ export async function POST(request: NextRequest) {
     const reasoning = (response.choices[0]?.message as any).content;
     const regex = /<think>(.*?)<\/think>/;
     const match = reasoning.match(regex);
-    console.log(match ? match[1] : '');
     const finalResult = await openai.chat.completions.create({
       model: "deepseek-chat",
       messages: [
@@ -119,7 +118,7 @@ export async function POST(request: NextRequest) {
             }
           }
           Important: 
-          - Detect the language of the text in the image and provide your analysis in that same language. If the image contains ${locale === 'zh' ? 'Chinese' : 'English'} text, respond in ${locale === 'zh' ? 'Chinese' : 'English'}. If you can't detect the language clearly, default to ${locale === 'zh' ? 'Chinese' : 'English'}.`
+          - Detect the language of the text in the question and provide your analysis in that same language. If the question contains ${locale === 'zh' ? 'Chinese' : 'English'} text, respond in ${locale === 'zh' ? 'Chinese' : 'English'}. If you can't detect the language clearly, default to ${locale === 'zh' ? 'Chinese' : 'English'}.`
         },
         {
           role: 'user',
@@ -132,8 +131,6 @@ export async function POST(request: NextRequest) {
       response_format: { type: "json_object" }
     });
 
-    // Extract the response content
-    console.log(finalResult.choices[0]?.message?.content);
     try {
       // Parse the JSON response
       const jsonResult = JSON.parse(finalResult.choices[0]?.message?.content!);
