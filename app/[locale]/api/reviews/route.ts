@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
 import { cookies } from 'next/headers';
 import { v4 as uuidv4 } from 'uuid';
+import { record } from 'zod';
 
 // Define review difficulty levels
 type ReviewDifficulty = 'again' | 'hard' | 'good' | 'easy';
@@ -44,9 +45,6 @@ export async function GET(request: NextRequest) {
     // Build the filter
     const filter: any = {
       userId,
-      nextReviewDate: {
-        lte: tomorrow // Modified: Due for review (now or tomorrow)
-      }
     };
     
     // Add subject filter if provided
@@ -69,19 +67,22 @@ export async function GET(request: NextRequest) {
       where: filter,
       select: {
         questionId: true,
+        createdAt: true,
+        nextReviewDate: true
       },
       orderBy: {
-        nextReviewDate: 'asc', // Review oldest due items first
+        createdAt: 'desc', // Use latest created item
       },
-      take: limit,
+      // take: limit,
+      distinct: ['questionId'], // Remove duplicate questionId
     });
-    const questionIds = reviewRecords.map(record => record.questionId);
-    
+    const questionIds = reviewRecords.filter(record=>record.nextReviewDate <= tomorrow).map(record => record.questionId);
+
     // Then fetch the actual questions with their review data
     const questions = await prisma.question.findMany({
       where: {
         id: {
-          in: questionIds
+          in: questionIds.slice(0, limit)
         }
       },
       include: {
@@ -120,7 +121,12 @@ export async function GET(request: NextRequest) {
     
     // Get total count of due questions for pagination
     const totalDueQuestions = await prisma.questionReview.count({
-      where: filter
+      where: {
+        ...filter,
+        nextReviewDate: {
+          lte: tomorrow
+        }
+      },
     });
     
     return NextResponse.json({

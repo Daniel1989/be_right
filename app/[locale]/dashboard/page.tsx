@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
+import { message } from 'antd';
 
 // Define types for our data
 type Subject = {
@@ -244,7 +245,7 @@ export default function DashboardPage() {
         
         // Show completion message
         if (stats.todayCompleted >= stats.todayGoal) {
-          alert('恭喜！你已完成今日学习目标！');
+          message.success('恭喜！你已完成今日学习目标！');
         }
         
         // Refresh the mastered questions
@@ -636,11 +637,11 @@ export default function DashboardPage() {
           </div>
         )}
         
-        {pagination.remaining > 0 && (
+        {/* {pagination.remaining > 0 && (
           <div className="mt-3 text-center text-sm text-gray-500">
             还有 {pagination.remaining} 道题待复习
           </div>
-        )}
+        )} */}
       </div>
       
       {/* Previously Mastered Questions */}

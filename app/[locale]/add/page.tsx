@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
-
+import { message } from 'antd';
 // Define types
 type Subject = {
   id: string;
@@ -770,9 +770,9 @@ export default function AddPage() {
       if (result.success) {
         const { total, successful, failed } = result.data;
         if (failed > 0) {
-          alert(`已保存 ${successful} 个问题，${failed} 个问题保存失败。`);
+          message.success(`已保存 ${successful} 个问题，${failed} 个问题保存失败。`);
         } else {
-          alert(`成功保存了 ${successful} 个问题！`);
+          message.success(`成功保存了 ${successful} 个问题！`);
         }
       } else {
         throw new Error(result.error || 'Failed to submit questions');

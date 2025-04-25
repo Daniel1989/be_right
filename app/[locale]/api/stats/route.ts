@@ -309,7 +309,17 @@ async function getSubjectProgress(userId: string, startDate: Date, endDate: Date
     });
     
     // For demonstration, assume 70% mastered
-    const masteredQuestions = Math.floor(totalQuestions * 0.7);
+    const masteredQuestions = await prisma.question.count({
+      where: {
+        userId,
+        subjectId: subject.id,
+        status: 'SOLVED',
+        createdAt: {
+          gte: startDate,
+          lte: endDate
+        }
+      }
+    });
     
     const progress = totalQuestions > 0 ? Math.round((masteredQuestions / totalQuestions) * 100) : 0;
     

@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '@/app/providers/AuthProvider';
+import { message } from 'antd';
 
 export default function ProfilePage() {
   // Common translations at root level
@@ -16,16 +17,16 @@ export default function ProfilePage() {
   const router = useRouter();
   const pathname = usePathname();
   const locale = pathname.split('/')[1] || 'en'; // Extract locale from path
-  const { user, logout } = useAuthContext();
+  const { user, logout, fetchCurrentUser } = useAuthContext();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [dailyGoal, setDailyGoal] = useState(1);
   const [originalGoal, setOriginalGoal] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
-  console.log(user);
   // Fetch current settings on component mount
   useEffect(() => {
     fetchSettings();
+    fetchCurrentUser();
   }, []);
 
   const fetchSettings = async () => {
@@ -113,7 +114,7 @@ export default function ProfilePage() {
       router.refresh();
     } catch (error) {
       console.error('Error during logout:', error);
-      alert(tProfile('logoutErrorAlert'));
+      message.error(tProfile('logoutErrorAlert'));
     } finally {
       setIsLoggingOut(false);
     }

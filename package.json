@@ -22,6 +22,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/uuid": "^10.0.0",
     "ali-oss": "^6.22.0",
+    "antd": "^5.24.8",
     "autoprefixer": "10.4.20",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
