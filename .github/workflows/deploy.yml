@@ -16,7 +16,16 @@ jobs:
 
     - name: build
       env:
+          bucket: ${{ secrets.bucket }}
+          region: ${{ secrets.region }}
+          accessKeyId: ${{ secrets.accessKeyId }}
+          accessKeySecret: ${{ secrets.accessKeySecret }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+          OPENAI_VISION_MODEL: ${{ secrets.OPENAI_VISION_MODEL }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_API_KEY_GITEE: ${{ secrets.DEEPSEEK_API_KEY_GITEE }}
+
       run: |
         npm install
         npm run build

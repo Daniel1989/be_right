@@ -9,6 +9,14 @@ const openai = new OpenAI({
   baseURL: "https://api.deepseek.com/v1",
 });
 
+const openaiGitee = new OpenAI({
+  apiKey: process.env.DEEPSEEK_API_KEY_GITEE,
+  baseURL: "https://ai.gitee.com/v1",
+  defaultHeaders: {
+    "X-Failover-Enabled": "true",
+  },
+});
+
 // Define Subject interface
 interface Subject {
   id: string;
@@ -22,46 +30,46 @@ export async function POST(request: NextRequest) {
     // Get current user from cookie
     const cookieStore = await cookies();
     const authToken = cookieStore.get('auth-token');
-    
+
     if (!authToken) {
       return NextResponse.json(
         { success: false, error: 'Not authenticated' },
         { status: 401 }
       );
     }
-    
+
     // Parse request body
     const body = await request.json();
     const { id } = body;
-    
+
     if (!id) {
       return NextResponse.json(
         { success: false, error: 'question id is required' },
         { status: 400 }
       );
     }
-    
+
     // Extract locale from URL
     const url = new URL(request.url);
     const pathname = url.pathname;
     const locale = pathname.split('/')[1] || 'en';
 
     const question = await prisma.question.findUnique({
-        where: {
-          id: id
-        },
-      });
+      where: {
+        id: id
+      },
+    });
 
-      if (!question) {
-        return NextResponse.json(
-          { success: false, error: 'question not found' },
-          { status: 400 }
-        );
-      }
-    
+    if (!question) {
+      return NextResponse.json(
+        { success: false, error: 'question not found' },
+        { status: 400 }
+      );
+    }
+
     // Call OpenAI API to analyze the image
-    const response = await openai.chat.completions.create({
-      model: "deepseek-reasoner",
+    const response = await openaiGitee.chat.completions.create({
+      model: "DeepSeek-R1-Distill-Qwen-32B",
       messages: [
         {
           role: 'system',
@@ -85,9 +93,16 @@ export async function POST(request: NextRequest) {
           `
         }
       ],
-      max_tokens: 1,
+      max_tokens: 1024,
+      temperature: 0.6,
+      top_p: 0.7,
+      frequency_penalty: 0,
     });
-    
+
+    const reasoning = (response.choices[0]?.message as any).content;
+    const regex = /<think>(.*?)<\/think>/;
+    const match = reasoning.match(regex);
+    console.log(match ? match[1] : '');
     const finalResult = await openai.chat.completions.create({
       model: "deepseek-chat",
       messages: [
@@ -109,7 +124,7 @@ export async function POST(request: NextRequest) {
         {
           role: 'user',
           content: `
-          Analyze why the student failed in this question: ${question.text}, with the wrong answer: ${question.notes}, and the correct answer: ${question.answer}, and the reasoning from the user: ${(response.choices[0]?.message as any)?.reasoning_content}
+          Analyze why the student failed in this question: ${question.text}, with the wrong answer: ${question.notes}, and the correct answer: ${question.answer}, and the reasoning from the user: ${match ? match[1] : ''}
           `
         }
       ],
@@ -118,7 +133,6 @@ export async function POST(request: NextRequest) {
     });
 
     // Extract the response content
-    console.log((response.choices[0]?.message as any).reasoning_content);
     console.log(finalResult.choices[0]?.message?.content);
     try {
       // Parse the JSON response
@@ -136,9 +150,10 @@ export async function POST(request: NextRequest) {
     } catch (parseError) {
       console.error('Error parsing OpenAI response:', parseError);
       return NextResponse.json(
-        { success: false, error: locale === 'zh' ? 
-          '无法解析分析结果' : 
-          'Failed to parse analysis results' 
+        {
+          success: false, error: locale === 'zh' ?
+            '无法解析分析结果' :
+            'Failed to parse analysis results'
         },
         { status: 500 }
       );
@@ -146,8 +161,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error analyzing image:', error);
     return NextResponse.json(
-        { success: false, error: 'Failed to analyze question' },
-        { status: 500 }
-      );
+      { success: false, error: 'Failed to analyze question' },
+      { status: 500 }
+    );
   }
 } 
