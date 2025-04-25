@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
 import { cookies } from 'next/headers';
+import { DEFALULT_DAILY_GOAL } from '@/app/lib/constants';
 
 /**
  * GET endpoint to fetch user learning settings
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         success: true,
         data: {
-          dailyGoal: 10
+          dailyGoal: DEFALULT_DAILY_GOAL
         }
       });
     }

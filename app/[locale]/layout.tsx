@@ -56,6 +56,8 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={inter.className}>
       <head>
+        <title>错题宝 - 失败是成功之母</title>
+        <meta name="description" content="Spaced repetition app for reviewing and mastering academic errors" />
         <link 
           rel="stylesheet" 
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 

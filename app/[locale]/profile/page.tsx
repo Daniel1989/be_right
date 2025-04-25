@@ -18,11 +18,11 @@ export default function ProfilePage() {
   const locale = pathname.split('/')[1] || 'en'; // Extract locale from path
   const { user, logout } = useAuthContext();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [dailyGoal, setDailyGoal] = useState(10);
-  const [originalGoal, setOriginalGoal] = useState(10);
+  const [dailyGoal, setDailyGoal] = useState(1);
+  const [originalGoal, setOriginalGoal] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
-
+  console.log(user);
   // Fetch current settings on component mount
   useEffect(() => {
     fetchSettings();
@@ -108,7 +108,6 @@ export default function ProfilePage() {
       if (logout) {
         await logout();
       }
-      
       // Redirect to login page
       router.push(`/${locale}/auth/login`);
       router.refresh();

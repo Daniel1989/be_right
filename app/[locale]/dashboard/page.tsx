@@ -70,7 +70,7 @@ export default function DashboardPage() {
     totalQuestions: 0,
     masteredQuestions: 0,
     learningDays: 0,
-    todayGoal: 10,
+    todayGoal: 1,
     todayCompleted: 0,
     streak: 0,
     reviewedToday: false,

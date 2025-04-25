@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 import prisma from '../../../../lib/prisma';
+import { DEFALULT_DAILY_GOAL } from '@/app/lib/constants';
 
 /**
  * GET endpoint to fetch learning statistics for the authenticated user
@@ -64,9 +65,10 @@ export async function GET(request: NextRequest) {
     const defaultGoal = await prisma.userSettings.findUnique({
       where: { userId },
       select: { dailyGoal: true }
-    }).then(settings => settings?.dailyGoal || 10);
-    const todayGoal = Math.min(defaultGoal, pendingQuestionsCount);
-    
+    }).then(settings => settings?.dailyGoal || DEFALULT_DAILY_GOAL);
+    // const todayGoal = Math.min(defaultGoal, pendingQuestionsCount);
+    const todayGoal = defaultGoal;
+
     // Calculate learning streak
     // A streak is counted if the user reviewed at least one question each day
     let streak = 0;

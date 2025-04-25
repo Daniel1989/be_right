@@ -32,3 +32,5 @@ export const staticSubjects = [
     { id: uuidv4(), name: '高中政治', color: '#FF5722', icon: 'gavel' },
     { id: uuidv4(), name: '高中信息技术', color: '#607D8B', icon: 'laptop-code' },
   ];
+
+  export const DEFALULT_DAILY_GOAL = 10;
