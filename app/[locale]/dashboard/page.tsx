@@ -36,6 +36,7 @@ type Question = {
   interval?: number;
   easeFactor?: number;
   reviewCount?: number;
+  errorReason?: string;
 };
 
 type Pagination = {
@@ -54,6 +55,42 @@ type LearningStats = {
   reviewedToday: boolean;
   pendingQuestionsCount: number;
 };
+
+function ErrorReason(props: {question: Question, locale: string}) {
+  const [reason, setReason] = useState(props.question.errorReason);
+  const fetchReason = async () => {
+    try {
+      const response = await fetch(`/${props.locale}/api/reason`, {
+        method: 'POST',
+        body: JSON.stringify({id: props.question.id})
+      });
+      if (!response.ok) {
+        return;
+        // throw new Error('Failed to fetch subjects');
+      }
+      
+      const data = await response.json();
+      if (data.success) {
+        setReason(data.data.reason);
+      }
+    } catch (err) {
+      console.error('Error fetching reason:', err);
+    }
+  };
+  useEffect(()=> {
+    if(!reason) {
+      fetchReason();
+    }
+  }, [reason])
+  if(!reason) {
+    return (
+      <p className='text-sm text-gray-500'><span>(AI正在分析出场原因...)</span></p>
+    );
+  }
+  return (
+    <p className='text-sm text-gray-500'><span>(出错原因:</span>{reason})</p>
+  )
+}
 
 export default function DashboardPage() {
   const t = useTranslations('navigation');
@@ -383,6 +420,7 @@ export default function DashboardPage() {
                 <div className="p-3 bg-red-50 rounded mb-3">
                   <h3 className="text-red-700 font-semibold mb-1">错误答案:</h3>
                   <p>{currentReviewQuestion.notes}</p>
+                  <ErrorReason locale={locale} question={currentReviewQuestion} />
                 </div>
                 
                 <div className="p-3 bg-green-50 rounded mb-6">

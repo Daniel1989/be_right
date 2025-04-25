@@ -169,7 +169,8 @@ exports.Prisma.QuestionScalarFieldEnum = {
   subjectId: 'subjectId',
   userId: 'userId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  errorReason: 'errorReason'
 };
 
 exports.Prisma.QuestionImageScalarFieldEnum = {

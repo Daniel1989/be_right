@@ -6377,6 +6377,7 @@ export namespace Prisma {
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    errorReason: string | null
   }
 
   export type QuestionMaxAggregateOutputType = {
@@ -6390,6 +6391,7 @@ export namespace Prisma {
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    errorReason: string | null
   }
 
   export type QuestionCountAggregateOutputType = {
@@ -6403,6 +6405,7 @@ export namespace Prisma {
     userId: number
     createdAt: number
     updatedAt: number
+    errorReason: number
     _all: number
   }
 
@@ -6418,6 +6421,7 @@ export namespace Prisma {
     userId?: true
     createdAt?: true
     updatedAt?: true
+    errorReason?: true
   }
 
   export type QuestionMaxAggregateInputType = {
@@ -6431,6 +6435,7 @@ export namespace Prisma {
     userId?: true
     createdAt?: true
     updatedAt?: true
+    errorReason?: true
   }
 
   export type QuestionCountAggregateInputType = {
@@ -6444,6 +6449,7 @@ export namespace Prisma {
     userId?: true
     createdAt?: true
     updatedAt?: true
+    errorReason?: true
     _all?: true
   }
 
@@ -6530,6 +6536,7 @@ export namespace Prisma {
     userId: string
     createdAt: Date
     updatedAt: Date
+    errorReason: string | null
     _count: QuestionCountAggregateOutputType | null
     _min: QuestionMinAggregateOutputType | null
     _max: QuestionMaxAggregateOutputType | null
@@ -6560,6 +6567,7 @@ export namespace Prisma {
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    errorReason?: boolean
     subject?: boolean | SubjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     images?: boolean | Question$imagesArgs<ExtArgs>
@@ -6578,6 +6586,7 @@ export namespace Prisma {
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    errorReason?: boolean
     subject?: boolean | SubjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["question"]>
@@ -6593,6 +6602,7 @@ export namespace Prisma {
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    errorReason?: boolean
     subject?: boolean | SubjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["question"]>
@@ -6608,9 +6618,10 @@ export namespace Prisma {
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    errorReason?: boolean
   }
 
-  export type QuestionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "answer" | "difficulty" | "status" | "notes" | "subjectId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["question"]>
+  export type QuestionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "answer" | "difficulty" | "status" | "notes" | "subjectId" | "userId" | "createdAt" | "updatedAt" | "errorReason", ExtArgs["result"]["question"]>
   export type QuestionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     subject?: boolean | SubjectDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6646,6 +6657,7 @@ export namespace Prisma {
       userId: string
       createdAt: Date
       updatedAt: Date
+      errorReason: string | null
     }, ExtArgs["result"]["question"]>
     composites: {}
   }
@@ -7083,6 +7095,7 @@ export namespace Prisma {
     readonly userId: FieldRef<"Question", 'String'>
     readonly createdAt: FieldRef<"Question", 'DateTime'>
     readonly updatedAt: FieldRef<"Question", 'DateTime'>
+    readonly errorReason: FieldRef<"Question", 'String'>
   }
     
 
@@ -11017,7 +11030,8 @@ export namespace Prisma {
     subjectId: 'subjectId',
     userId: 'userId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    errorReason: 'errorReason'
   };
 
   export type QuestionScalarFieldEnum = (typeof QuestionScalarFieldEnum)[keyof typeof QuestionScalarFieldEnum]
@@ -11458,6 +11472,7 @@ export namespace Prisma {
     userId?: StringFilter<"Question"> | string
     createdAt?: DateTimeFilter<"Question"> | Date | string
     updatedAt?: DateTimeFilter<"Question"> | Date | string
+    errorReason?: StringNullableFilter<"Question"> | string | null
     subject?: XOR<SubjectScalarRelationFilter, SubjectWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     images?: QuestionImageListRelationFilter
@@ -11475,6 +11490,7 @@ export namespace Prisma {
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    errorReason?: SortOrderInput | SortOrder
     subject?: SubjectOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     images?: QuestionImageOrderByRelationAggregateInput
@@ -11495,6 +11511,7 @@ export namespace Prisma {
     userId?: StringFilter<"Question"> | string
     createdAt?: DateTimeFilter<"Question"> | Date | string
     updatedAt?: DateTimeFilter<"Question"> | Date | string
+    errorReason?: StringNullableFilter<"Question"> | string | null
     subject?: XOR<SubjectScalarRelationFilter, SubjectWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     images?: QuestionImageListRelationFilter
@@ -11512,6 +11529,7 @@ export namespace Prisma {
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    errorReason?: SortOrderInput | SortOrder
     _count?: QuestionCountOrderByAggregateInput
     _max?: QuestionMaxOrderByAggregateInput
     _min?: QuestionMinOrderByAggregateInput
@@ -11531,6 +11549,7 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"Question"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Question"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Question"> | Date | string
+    errorReason?: StringNullableWithAggregatesFilter<"Question"> | string | null
   }
 
   export type QuestionImageWhereInput = {
@@ -12109,6 +12128,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
     subject: SubjectCreateNestedOneWithoutQuestionsInput
     user: UserCreateNestedOneWithoutQuestionsInput
     images?: QuestionImageCreateNestedManyWithoutQuestionInput
@@ -12126,6 +12146,7 @@ export namespace Prisma {
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
     images?: QuestionImageUncheckedCreateNestedManyWithoutQuestionInput
     reviews?: QuestionReviewUncheckedCreateNestedManyWithoutQuestionInput
   }
@@ -12139,6 +12160,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: SubjectUpdateOneRequiredWithoutQuestionsNestedInput
     user?: UserUpdateOneRequiredWithoutQuestionsNestedInput
     images?: QuestionImageUpdateManyWithoutQuestionNestedInput
@@ -12156,6 +12178,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     images?: QuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
     reviews?: QuestionReviewUncheckedUpdateManyWithoutQuestionNestedInput
   }
@@ -12171,6 +12194,7 @@ export namespace Prisma {
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
   }
 
   export type QuestionUpdateManyMutationInput = {
@@ -12182,6 +12206,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuestionUncheckedUpdateManyInput = {
@@ -12195,6 +12220,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuestionImageCreateInput = {
@@ -12801,6 +12827,7 @@ export namespace Prisma {
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    errorReason?: SortOrder
   }
 
   export type QuestionMaxOrderByAggregateInput = {
@@ -12814,6 +12841,7 @@ export namespace Prisma {
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    errorReason?: SortOrder
   }
 
   export type QuestionMinOrderByAggregateInput = {
@@ -12827,6 +12855,7 @@ export namespace Prisma {
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    errorReason?: SortOrder
   }
 
   export type QuestionNullableScalarRelationFilter = {
@@ -13909,6 +13938,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
     subject: SubjectCreateNestedOneWithoutQuestionsInput
     images?: QuestionImageCreateNestedManyWithoutQuestionInput
     reviews?: QuestionReviewCreateNestedManyWithoutQuestionInput
@@ -13924,6 +13954,7 @@ export namespace Prisma {
     subjectId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
     images?: QuestionImageUncheckedCreateNestedManyWithoutQuestionInput
     reviews?: QuestionReviewUncheckedCreateNestedManyWithoutQuestionInput
   }
@@ -14140,6 +14171,7 @@ export namespace Prisma {
     userId?: StringFilter<"Question"> | string
     createdAt?: DateTimeFilter<"Question"> | Date | string
     updatedAt?: DateTimeFilter<"Question"> | Date | string
+    errorReason?: StringNullableFilter<"Question"> | string | null
   }
 
   export type QuestionImageUpsertWithWhereUniqueWithoutUserInput = {
@@ -14617,6 +14649,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
     user: UserCreateNestedOneWithoutQuestionsInput
     images?: QuestionImageCreateNestedManyWithoutQuestionInput
     reviews?: QuestionReviewCreateNestedManyWithoutQuestionInput
@@ -14632,6 +14665,7 @@ export namespace Prisma {
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
     images?: QuestionImageUncheckedCreateNestedManyWithoutQuestionInput
     reviews?: QuestionReviewUncheckedCreateNestedManyWithoutQuestionInput
   }
@@ -15002,6 +15036,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
     subject: SubjectCreateNestedOneWithoutQuestionsInput
     user: UserCreateNestedOneWithoutQuestionsInput
     reviews?: QuestionReviewCreateNestedManyWithoutQuestionInput
@@ -15018,6 +15053,7 @@ export namespace Prisma {
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
     reviews?: QuestionReviewUncheckedCreateNestedManyWithoutQuestionInput
   }
 
@@ -15093,6 +15129,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: SubjectUpdateOneRequiredWithoutQuestionsNestedInput
     user?: UserUpdateOneRequiredWithoutQuestionsNestedInput
     reviews?: QuestionReviewUpdateManyWithoutQuestionNestedInput
@@ -15109,6 +15146,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     reviews?: QuestionReviewUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
@@ -15121,6 +15159,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
     subject: SubjectCreateNestedOneWithoutQuestionsInput
     user: UserCreateNestedOneWithoutQuestionsInput
     images?: QuestionImageCreateNestedManyWithoutQuestionInput
@@ -15137,6 +15176,7 @@ export namespace Prisma {
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
     images?: QuestionImageUncheckedCreateNestedManyWithoutQuestionInput
   }
 
@@ -15206,6 +15246,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: SubjectUpdateOneRequiredWithoutQuestionsNestedInput
     user?: UserUpdateOneRequiredWithoutQuestionsNestedInput
     images?: QuestionImageUpdateManyWithoutQuestionNestedInput
@@ -15222,6 +15263,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     images?: QuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
   }
 
@@ -15380,6 +15422,7 @@ export namespace Prisma {
     subjectId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
   }
 
   export type QuestionImageCreateManyUserInput = {
@@ -15466,6 +15509,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: SubjectUpdateOneRequiredWithoutQuestionsNestedInput
     images?: QuestionImageUpdateManyWithoutQuestionNestedInput
     reviews?: QuestionReviewUpdateManyWithoutQuestionNestedInput
@@ -15481,6 +15525,7 @@ export namespace Prisma {
     subjectId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     images?: QuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
     reviews?: QuestionReviewUncheckedUpdateManyWithoutQuestionNestedInput
   }
@@ -15495,6 +15540,7 @@ export namespace Prisma {
     subjectId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuestionImageUpdateWithoutUserInput = {
@@ -15686,6 +15732,7 @@ export namespace Prisma {
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    errorReason?: string | null
   }
 
   export type QuestionUpdateWithoutSubjectInput = {
@@ -15697,6 +15744,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutQuestionsNestedInput
     images?: QuestionImageUpdateManyWithoutQuestionNestedInput
     reviews?: QuestionReviewUpdateManyWithoutQuestionNestedInput
@@ -15712,6 +15760,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
     images?: QuestionImageUncheckedUpdateManyWithoutQuestionNestedInput
     reviews?: QuestionReviewUncheckedUpdateManyWithoutQuestionNestedInput
   }
@@ -15726,6 +15775,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    errorReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type QuestionImageCreateManyQuestionInput = {

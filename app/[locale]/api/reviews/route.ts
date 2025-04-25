@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
 import { cookies } from 'next/headers';
 import { v4 as uuidv4 } from 'uuid';
-import { record } from 'zod';
 
 // Define review difficulty levels
 type ReviewDifficulty = 'again' | 'hard' | 'good' | 'easy';
@@ -111,6 +110,7 @@ export async function GET(request: NextRequest) {
         updatedAt: question.updatedAt,
         subject: question.subject,
         images: question.images,
+        errorReason: question.errorReason,
         // Anki-specific properties
         nextReviewDate: reviewData?.nextReviewDate,
         interval: reviewData?.interval,

@@ -87,20 +87,21 @@ model Subject {
 
 // Question model for error questions
 model Question {
-  id         String           @id @default(uuid())
-  text       String
-  answer     String?
-  difficulty String?          @default("MEDIUM") // EASY, MEDIUM, HARD
-  status     String           @default("PENDING") // PENDING, SOLVED, SKIPPED, REVIEWED
-  notes      String?
-  subjectId  String
-  subject    Subject          @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  userId     String
-  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  images     QuestionImage[]
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
-  reviews    QuestionReview[]
+  id          String           @id @default(uuid())
+  text        String
+  answer      String?
+  difficulty  String?          @default("MEDIUM") // EASY, MEDIUM, HARD
+  status      String           @default("PENDING") // PENDING, SOLVED, SKIPPED, REVIEWED
+  notes       String?
+  subjectId   String
+  subject     Subject          @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images      QuestionImage[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  reviews     QuestionReview[]
+  errorReason String?
 
   @@index([userId])
   @@index([subjectId])

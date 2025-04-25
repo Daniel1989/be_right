@@ -101,6 +101,7 @@ model Question {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   reviews     QuestionReview[]
+  errorReason String?
 
   @@index([userId])
   @@index([subjectId])

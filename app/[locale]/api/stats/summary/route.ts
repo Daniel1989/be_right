@@ -6,7 +6,7 @@ import OpenAI from 'openai';
 // Initialize the OpenAI client
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_BASE_URL,
+  baseURL: "https://ark.cn-beijing.volces.com/api/v3",
 });
 
 /**
