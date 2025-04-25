@@ -619,11 +619,20 @@ export default function DashboardPage() {
             <h3 className="text-lg font-medium text-gray-700 mb-1">
               {stats.todayCompleted > 0 ? "今日已完成全部复习" : "暂无待复习错题"}
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 mb-4">
               {stats.todayCompleted > 0 
                 ? "做得好！你已复习完今天的所有错题。明天再继续保持！" 
-                : "可以在“添加”页面收集错题，或者等待已添加错题进入复习计划。"}
+                : "可以在'添加'页面收集错题，或者等待已添加错题进入复习计划。"}
             </p>
+            {stats.totalQuestions === 0 && (
+              <button 
+                onClick={() => router.push(`/${locale}/add`)}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-sm"
+              >
+                <i className="fas fa-plus mr-2"></i>
+                去添加第一道错题
+              </button>
+            )}
           </div>
         )}
         

@@ -15,6 +15,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const locale = useLocale();
   const t = useTranslations('auth');
+  const t2 = useTranslations('app');
   const { login, error: authError } = useAuth();
 
   // Get callback URL from search params if it exists
@@ -47,7 +48,7 @@ export default function LoginForm() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-indigo-600">Be Right</h1>
+        <h1 className="text-2xl font-bold text-indigo-600">{t2('title')}</h1>
         <p className="text-gray-500 mt-2">{t('login.tagline')}</p>
       </div>
 
@@ -100,9 +101,9 @@ export default function LoginForm() {
               required
             />
           </div>
-          <Link href={`/${locale}/auth/forgot-password`} className="block text-right mt-2 text-sm text-indigo-600 hover:text-indigo-700">
+          {/* <Link href={`/${locale}/auth/forgot-password`} className="block text-right mt-2 text-sm text-indigo-600 hover:text-indigo-700">
             {t('login.forgotPassword')}
-          </Link>
+          </Link> */}
         </div>
 
         <button
@@ -113,13 +114,13 @@ export default function LoginForm() {
           {isLoading ? t('login.loggingIn') : t('login.submit')}
         </button>
 
-        <div className="flex items-center my-6">
+        {/* <div className="flex items-center my-6">
           <div className="flex-1 h-px bg-gray-200"></div>
           <div className="px-4 text-sm text-gray-400">{t('login.orContinueWith')}</div>
           <div className="flex-1 h-px bg-gray-200"></div>
-        </div>
+        </div> */}
 
-        <div className="flex justify-center space-x-4">
+        {/* <div className="flex justify-center space-x-4">
           <button type="button" className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
             <svg className="h-5 w-5 text-indigo-600" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm6.2 19.1a1 1 0 0 1-1.4-1.3 5.2 5.2 0 0 0 1.1-3.2c0-1.4-.5-2.7-1.5-3.8-.9 1.1-2.2 1.9-3.6 2.3a2 2 0 0 1-1.8-.2 2 2 0 0 1-.8-1.7v-.1a6 6 0 0 1 1.8-4.3 6 6 0 0 1 8.4 0A8.4 8.4 0 0 1 22 12a9.9 9.9 0 0 1-2.4 6.5c-.5.6-1 .5-1.4.6z" />
@@ -138,7 +139,7 @@ export default function LoginForm() {
               <path d="M13.92 10.5c-.19 0-.38-.06-.52-.19a1.55 1.55 0 0 0-1.87-.01c-.14.12-.33.18-.52.18-.23 0-.45-.1-.59-.27-.23-.32-.18-.76.13-1.01.81-.61 1.82-.92 2.81-.92.99 0 2 .31 2.81.92a.736.736 0 0 1 .13 1.01c-.14.17-.36.27-.59.27z" />
             </svg>
           </button>
-        </div>
+        </div> */}
       </form>
 
       <div className="mt-auto text-center p-6 text-sm text-gray-500">

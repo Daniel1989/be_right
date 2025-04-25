@@ -163,14 +163,15 @@ export default function ProfilePage() {
             </p>
             
             <div className="flex items-center mb-2">
-              <input
+              {/* <input
                 type="number"
                 min="1"
                 max="50"
                 value={dailyGoal}
                 onChange={handleGoalChange}
                 className="w-16 p-2 border border-gray-300 rounded-lg mr-3 text-center"
-              />
+              /> */}
+              <span className='mr-3 text-center text-gray-600'>{dailyGoal}</span>
               <span className="text-gray-600">{tProfile('questionsPerDay')}</span>
             </div>
             

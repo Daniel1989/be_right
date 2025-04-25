@@ -71,34 +71,34 @@ export default function StatsPage() {
   const [isSummaryLoading, setIsSummaryLoading] = useState(true);
   
   // Fetch summary data
-  useEffect(() => {
-    const fetchSummary = async () => {
-      try {
-        setIsSummaryLoading(true);
-        const response = await fetch(`/${locale}/api/stats/summary`);
+  // useEffect(() => {
+  //   const fetchSummary = async () => {
+  //     try {
+  //       setIsSummaryLoading(true);
+  //       const response = await fetch(`/${locale}/api/stats/summary`);
         
-        if (!response.ok) {
-          throw new Error('Failed to load summary');
-        }
+  //       if (!response.ok) {
+  //         throw new Error('Failed to load summary');
+  //       }
         
-        const data = await response.json();
+  //       const data = await response.json();
         
-        if (data.success) {
-          setSummary(data.data.summary);
-        } else {
-          throw new Error(data.error || 'Failed to load summary');
-        }
-      } catch (err) {
-        console.error('Error fetching summary:', err);
-        // For summary, we'll just hide it on error rather than showing an error message
-        setSummary('');
-      } finally {
-        setIsSummaryLoading(false);
-      }
-    };
+  //       if (data.success) {
+  //         setSummary(data.data.summary);
+  //       } else {
+  //         throw new Error(data.error || 'Failed to load summary');
+  //       }
+  //     } catch (err) {
+  //       console.error('Error fetching summary:', err);
+  //       // For summary, we'll just hide it on error rather than showing an error message
+  //       setSummary('');
+  //     } finally {
+  //       setIsSummaryLoading(false);
+  //     }
+  //   };
     
-    fetchSummary();
-  }, [locale]);
+  //   fetchSummary();
+  // }, [locale]);
   
   // Fetch data from API when time filter changes
   useEffect(() => {

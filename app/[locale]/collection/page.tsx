@@ -214,12 +214,12 @@ export default function CollectionPage() {
       <div className="bg-white rounded-lg shadow p-4 mb-4">
         <div className="flex justify-between items-center mb-3">
           <h3 className="font-medium">科目筛选</h3>
-          <button 
+          {/* <button 
             className="text-indigo-600 text-sm"
             onClick={() => handleSubjectFilter(null)}
           >
             查看全部
-          </button>
+          </button> */}
         </div>
         
         <div className="flex overflow-x-auto pb-2 space-x-2">

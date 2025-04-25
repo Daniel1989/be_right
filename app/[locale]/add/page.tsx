@@ -891,12 +891,12 @@ export default function AddPage() {
             
             <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-between p-4">
               <div className="flex justify-between">
-                <button className="w-11 h-11 rounded-full bg-black/30 flex items-center justify-center text-white">
+                {/* <button className="w-11 h-11 rounded-full bg-black/30 flex items-center justify-center text-white">
                   <i className="fas fa-bolt"></i>
                 </button>
                 <button className="w-11 h-11 rounded-full bg-black/30 flex items-center justify-center text-white">
                   <i className="fas fa-times"></i>
-                </button>
+                </button> */}
               </div>
               
               <div className="flex justify-around items-center">
@@ -927,9 +927,9 @@ export default function AddPage() {
             </div>
           </div>
           
-          <h2 className="text-xl font-bold mb-4">最近拍摄</h2>
+          {/* <h2 className="text-xl font-bold mb-4">最近拍摄</h2> */}
           
-          <div className="flex gap-4 overflow-x-auto pb-2 mb-6">
+          {/* <div className="flex gap-4 overflow-x-auto pb-2 mb-6">
             {recentImages.length > 0 ? recentImages.map((image) => (
               <div key={image.id} className="flex-shrink-0 w-[120px] h-[160px] relative rounded-xl overflow-hidden shadow-md">
                 <Image 
@@ -962,7 +962,7 @@ export default function AddPage() {
             )) : (
               <div className="text-gray-500 italic">No recent images</div>
             )}
-          </div>
+          </div> */}
           
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center mb-3 font-bold">
@@ -1015,7 +1015,7 @@ export default function AddPage() {
             </button>
           </div>
           
-          {recentImages.length > 0 && (
+          {/* {recentImages.length > 0 && (
             <div className="mt-6">
               <h3 className="text-lg font-semibold mb-3">最近上传</h3>
               <div className="grid grid-cols-3 gap-3">
@@ -1041,7 +1041,7 @@ export default function AddPage() {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       )}
       
