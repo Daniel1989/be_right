@@ -56,6 +56,8 @@ type LearningStats = {
   pendingQuestionsCount: number;
 };
 
+const QUESTION_LIMIT = 1000;
+
 function ErrorReason(props: {question: Question, locale: string}) {
   const [reason, setReason] = useState(props.question.errorReason);
   const fetchReason = async () => {
@@ -116,7 +118,7 @@ export default function DashboardPage() {
   });
   const [pagination, setPagination] = useState<Pagination>({
     total: 0,
-    limit: 10,
+    limit: QUESTION_LIMIT,
     remaining: 0
   });
   const [currentReviewQuestion, setCurrentReviewQuestion] = useState<Question | null>(null);
@@ -174,7 +176,7 @@ export default function DashboardPage() {
       setIsLoading(true);
       
       // Build the API URL with query parameters
-      let url = `/${locale}/api/reviews?limit=10`;
+      let url = `/${locale}/api/reviews?limit=QUESTION_LIMIT`;
       if (selectedSubjectId) {
         url += `&subjectId=${selectedSubjectId}`;
       }
@@ -193,7 +195,7 @@ export default function DashboardPage() {
         setQuestions([]);
         setPagination({
           total: 0,
-          limit: 10,
+          limit: QUESTION_LIMIT,
           remaining: 0
         });
       }
@@ -208,7 +210,7 @@ export default function DashboardPage() {
 
   const fetchMasteredQuestions = async () => {
     try {
-      const response = await fetch(`/${locale}/api/questions?status=SOLVED&limit=5`);
+      const response = await fetch(`/${locale}/api/questions?status=SOLVED&limit=${QUESTION_LIMIT}`);
       if (!response.ok) {
         throw new Error('Failed to fetch mastered questions');
       }
